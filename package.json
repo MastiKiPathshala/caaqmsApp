@@ -1,14 +1,37 @@
 {
-    "name": "app-service-hello-world",
-    "description": "Simple Hello World Node.js sample for Azure App Service",
-    "version": "0.0.1",
-    "private": true,
-    "license": "MIT",
-    "author": "Microsoft",
-    "engines": {
-        "node": ">=6.9.1"
-    },
-    "scripts": {
-        "start": "node index.js"
-    }
+  "name": "caqms-web-app",
+  "version": "0.0.1",
+  "description": "Continuous Air Quality Monitoring System Web Application",
+  "start": "bin/www",
+  "main": "bin/www",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.15.3",
+    "hogan-express": "^0.5.2",
+    "http": "^0.0.0",
+    "loglevel": "^1.4.1",
+    "path": "^0.12.7"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "sudo node bin/www",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MastiKiPathshala/caqmsApp.git"
+  },
+  "keywords": [
+    "Air",
+    "Quality",
+    "Continuous",
+    "Monitoring"
+  ],
+  "author": "Prosenjit Pal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MastiKiPathshala/caqmsApp/issues"
+  },
+  "homepage": "https://github.com/MastiKiPathshala/caqmsApp#readme"
 }

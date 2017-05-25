@@ -1,21 +1,23 @@
 var locationInit = function () 
 {
 	var locationSet = [];
-	var locationString = 'Kolkata, West Bengal, India';
 
     $.ajax({
 		method: 'GET',
-		//url: 'http://maps.google.com/maps/api/geocode/json?address=' + locationString + '&sensor=false'
 		url: '/api/sensorData/v1.0/gatewayLocations'
 	}).done(function(data) {
 
 		if (data.status === "OK") {
-			gatewayLocation = { lat: data.results[0].lat, lng: data.results[0].lng };
-			console.log ("SecurIoT Gateway location: " + JSON.stringify(gatewayLocation));
+			console.info ("Number of Gateways : " + data.results.length);
+			for (var idx = 0; idx < data.results.length; idx++) {
+				gatewayLocation = { lat: data.results.lat[i], lng: data.results.lng[i] ,quality: data.results.airQuality[i]};
+
+				console.info ("Index: " + idx + ", SecurIoT Gateway location/quality: " + JSON.stringify(gatewayLocation));
+				locationSet.push (gatewayLocation);
+			}
 		} else {
-			gatewayLocation = { lat: 12.963778, lng: 77.712111 };
+			gatewayLocation = { lat: 12.963778, lng: 77.712111, quality: 50 };
 		}
-		locationSet.push (gatewayLocation);
 
 		map = new google.maps.Map(document.getElementById('map'), {
 			zoom: 5,
@@ -29,9 +31,19 @@ var locationInit = function ()
 		heatmap.setMap(map);
 		*/
 		image = '/images/green-dot.png';
-		locationSet.forEach(function (gatewayLocation) {
+		locationSet.forEach(function (location) {
+			if( gatewayLocation.quality <= 40) {
+				image = '/images/green-dot.png';
+			}
+			else if( gatewayLocation.quality > 40 && gatewayLocation.quality <= 60) {
+				image = '/images/yellow-dot.png';
+			}
+			else {
+				image = '/images/red-dot.png';
+			}
+
 			marker = new google.maps.Marker({
-				position: gatewayLocation,
+				position: location,
 				icon: image,
 				map: map
 			});

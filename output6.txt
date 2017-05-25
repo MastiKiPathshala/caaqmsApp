@@ -1,0 +1,1 @@
+{"gatewayid":"b8:27:eb:94:7c:9d","latitude":22.964777667,"longitude":89.727344833,"qualityscore":57.411944167499996}

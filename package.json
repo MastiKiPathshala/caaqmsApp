@@ -5,12 +5,14 @@
   "start": "bin/www",
   "main": "bin/www",
   "dependencies": {
+    "azure-storage": "^2.1.0",
     "body-parser": "^1.17.2",
     "cookie-parser": "^1.4.3",
     "express": "^4.15.3",
     "hogan-express": "^0.5.2",
     "http": "^0.0.0",
     "loglevel": "^1.4.1",
+    "moment-timezone": "^0.5.13",
     "path": "^0.12.7"
   },
   "devDependencies": {},

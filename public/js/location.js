@@ -8,9 +8,9 @@ var locationInit = function ()
 	}).done(function(data) {
 
 		if (data.status === "OK") {
-			console.info ("Number of Gateways : " + data.results.length);
-			for (var idx = 0; idx < data.results.length; idx++) {
-				gatewayLocation = { lat: data.results.lat[i], lng: data.results.lng[i] ,quality: data.results.airQuality[i]};
+			console.info ("Number of Gateways : " + data.results.lat.length);
+			for (var idx = 0; idx < data.results.lat.length; idx++) {
+				gatewayLocation = { lat: data.results.lat[idx], lng: data.results.lng[idx] ,quality: data.results.airQuality[idx]};
 
 				console.info ("Index: " + idx + ", SecurIoT Gateway location/quality: " + JSON.stringify(gatewayLocation));
 				locationSet.push (gatewayLocation);

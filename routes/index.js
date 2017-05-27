@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
 
 router.get('/:page', function(req, res, next) {
  
-var managment = false,restart=false,upgrade = false,scan =false, sensors = false,edit = false,baseline = false,diag = false, stat = false, settings = false,dashboard = false;
+var managment = false,restart=false,upgrade = false,scan =false, sensors = false,edit = false,baseline = false,diag = false, stat = false, settings = false,dashboard = false,analytics=false;
 
 switch(req.params.page){
 
@@ -53,17 +53,20 @@ switch(req.params.page){
 	break;
 
 	case 'statistics.html':
-	stat = true;
-	managment = true;
-	break;  
+		stat = true;
+		managment = true;
+		break;
+
+	case 'analytics.html':
+		analytics = true;
+		break;
 }
 
 res.locals = {
-	managment:managment,restart:restart,upgrade:upgrade,scan :scan, sensors:sensors,edit:edit,baseline:baseline,diag:diag, stat:stat, settings:settings,dashboard:dashboard
+	managment:managment,restart:restart,upgrade:upgrade,scan :scan, sensors:sensors,edit:edit,baseline:baseline,diag:diag, stat:stat, settings:settings,dashboard:dashboard,analytics:analytics
 };
 
-
-  	res.render(req.params.page, { title: 'Express',partials: {sidebar:'sidebar',head:'head'} });
+	res.render(req.params.page, { title: 'Express',partials: {sidebar:'sidebar',head:'head'} });
 });
 
 module.exports = router;

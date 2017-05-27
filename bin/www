@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var log = require ('loglevel');
+log = require ('loglevel');
 
 /*
  * Overwriting loglevel plugin to allow timestamp to be appended

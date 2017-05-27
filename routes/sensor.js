@@ -28,19 +28,19 @@ router.get('/gatewayLocations', function(req, res, next) {
 	gatewayLocation.airQuality = [];
 
 	var reqStatus = "OK";
-	console.log('GET request for gatewayLocations : ' + req);
+	log.debug('GET request for gatewayLocations : ' + req);
 
 	var containerName = 'rpi-blob-container';
 	blobService.listBlobsSegmented (containerName, null, function(err, result) {
 
 		if (err) {
 
-			console.log("Couldn't list blobs for container %s", containerName);
+			log.debug("Couldn't list blobs for container %s", containerName);
 			console.error(err);
 
 		} else {
 
-			console.log('Successfully listed blobs for container %s', containerName);
+			log.debug('Successfully listed blobs for container %s', containerName);
 			var data = result.entries;
 
 			for(var i = 0; i < data.length; i++){
@@ -48,7 +48,7 @@ router.get('/gatewayLocations', function(req, res, next) {
 				var name = data[i].name;
 
 				if(name.indexOf(path) > -1){
-					console.log(name);
+					log.debug(name);
 
 					FetchBlobData(name);
 				}
@@ -61,19 +61,19 @@ router.get('/gatewayLocations', function(req, res, next) {
 	var FetchBlobData = function (name) {
 
 		count++;
-		console.log('output'+count+'.txt');
+		log.debug('output'+count+'.txt');
 
 		blobService.getBlobToStream('rpi-blob-container', name, fs.createWriteStream('output'+count+'.txt'), function(error, result, response) {
 
 			if (!error) {
 
-				console.log("File name: "+'output'+count+'.txt');
+				log.debug("File name: "+'output'+count+'.txt');
 
 				var data = fs.readFile('output'+count+'.txt',function(err,data){
 
 					if(err){
 
-						console.log(err);
+						log.error(err);
 					}else {
 
 						var splitData = data.toString().split("\n");
@@ -84,7 +84,7 @@ router.get('/gatewayLocations', function(req, res, next) {
 							var lastData = splitData[i];
 							var parseData = JSON.parse(lastData);
 
-							console.log("latitude: "+parseData.latitude + " longitude: "+parseData.longitude+ " qualityScore: "+parseData.qualityscore);
+							log.debug("latitude: "+parseData.latitude + " longitude: "+parseData.longitude+ " qualityScore: "+parseData.qualityscore);
 
 							var latitude = parseFloat(parseData.latitude);
 							var longitude = parseFloat(parseData.longitude);
@@ -95,16 +95,16 @@ router.get('/gatewayLocations', function(req, res, next) {
 							gatewayLocation.airQuality[i] = qualityScore;
 
 						}
-						console.log(gatewayLocation);
+						log.debug(gatewayLocation);
 						res.json({status: reqStatus, results: gatewayLocation});
 
-						console.log('GET response for gatewayLocations : status = ' + reqStatus);
+						log.debug('GET response for gatewayLocations : status = ' + reqStatus);
 						return;
 					}
 				});
 			}else{
 
-				console.log(error);
+				log.error(error);
 			}
 		})
 	}

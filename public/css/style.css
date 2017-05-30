@@ -1,3 +1,4 @@
+
 /* Font / Universal Properties */
 [class*="entypo-"]:before {
   font-family: 'entypo', sans-serif;
@@ -9,40 +10,70 @@
   font: 20px 'Agency FB', sans-serif;
 }
 
-body { height:100%; background-color: black; color:rgba(200,200,200,0.8);}
-
+body { height:100%; background-color: #808080; color:rgb(70,0,0) ; position: relative;}
+.topbar
+{
+    -webkit-transform: translate3d(0,0,0);
+}
 
 header{
   width: 100%;
-  height: 100px;
+  height: 60px;
+  position: fixed;
   top:0;
   left: 0;
-  z-index:100;
-  color:white;
+  margin: 0 auto;
+  z-index:1000;
+  background-color:rgb(56,0,0);
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
   
 }
    #head{
-    color: rgba(2,255,255,0.5);
+    float: left;
+    z-index:1000;
+    color: rgb(100,0,0);
     opacity: 1;
-    position: fixed;
-    left:20px;
-    top:20px;
-    text-align: center;
-    font-size: 30px;
+    position: absolute;
+    font-size: 20px;
+    margin-left: 5px;
    }
+   #foot{
+    z-index:1000;
+    color: white;
+    opacity: 1;
+    position: absolute;
+    text-align: center;
+    font-size: 20px;
+   }
+
+   footer{
+  background-color:rgb(56,0,0);
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 20px;
+  text-align: center;
+
+}
    .scroll
    {
     overflow-y:auto;
    }
+
+
+
 /* Left Menu */
 #leftmenu {
-  position: fixed;
+  position: absolute;
   float: left;
   margin-left: 50px;
   width: 210px;
 }
 
 #date_time {
+  margin-top: 50px;
   margin-left: 30px;
   width: 200px;
   height: 200px;
@@ -51,14 +82,14 @@ header{
 #time {
   margin-left: 110px;
   position: fixed;
-  background: rgba(0,0,0,0.8);
+  background: rgba(80,80,80,0.8);
   line-height: 0;
 }
 
 #date {
   position: fixed;
   margin-top: 20px;
-  background: rgba(0,0,0,0.8);
+  background: rgba(80,80,80,0.8);
 }
 
 .title {
@@ -71,7 +102,7 @@ header{
 }
 
 .title_underline {
-  border-color: rgba(2,255,255,0.5);
+  border-color: rgba(136,0,0,0.5);
 }
 
 .menu {
@@ -96,23 +127,23 @@ header{
   cursor: pointer;
 }
 
-.caption {
-  color: rgba(2,255,255,0.6);
+.caption,a {
+  color: rgb(148,0,0);
   display: inline;
   transition: 0.3s;
   cursor: pointer;
 }
-.caption:hover { color: rgba(2,254,255,1); }
+.caption:hover { color: rgba(136,0,0,1); }
 
 .app_icon {
   width: 48px;
-  color: rgba(2,255,255,0.6);
+  color: rgba(136,0,0,0.6);
   font-size: 40px;
   text-align: center;
   display: inline-block;
   cursor: pointer;
 }
-.app_icon:hover { color: rgba(2,254,255,1); }
+.app_icon:hover { color: rgba(136,0,0,1); }
 
 
 
@@ -124,7 +155,7 @@ header{
 }
 
 #note_input {
-  color: rgba(2,255,255,0.6);
+  color: rgba(136,0,0,0.6);
   padding: 5px;
   border-style: none;
   background: transparent;
@@ -133,7 +164,7 @@ header{
   width: calc(100% - 15px);
 }
 #note_input:hover {
-  color: rgba(2,254,255,1);
+  color: rgba(136,0,0,1);
   transition: 0.3s;
 }
 
@@ -176,7 +207,7 @@ ul {
   width: 250px;
   height: 250px;
   border-radius: 50%;
-  box-shadow: 0px 0px 50px 15px rgba(2,255,255,0.3), inset 0px 0px 50px 15px rgba(2,255,255,0.3);
+  box-shadow: 0px 0px 50px 15px rgba(136,0,0,0.3), inset 0px 0px 50px 15px rgba(136,0,0,0.3);
 }
 
 .case_container {
@@ -190,10 +221,10 @@ ul {
 
 .core2 {
     border-radius: 50%;
-    
+  background-position:50% 36%;
   width: 110px;
   height: 110px;
-  border: 5px solid rgba(2,255,255,0.15);
+  border: 5px solid rgba(136,0,0,0.15);
   animation: flicker2 0.2s infinite;
   margin-left: auto; 
   margin-right: auto;
@@ -218,7 +249,7 @@ ul {
   display:block;
   width: 3px;
   height: 11px;
-  background: rgba(2,254,255,0.8);
+  background: rgba(136,0,0,0.8);
   position: absolute;
   margin-left: 105px;
   margin-top: -110px;
@@ -226,9 +257,9 @@ ul {
 }
 
 @keyframes colour_ease2 {
-  0% { background: rgba(2,254,255,1); }
-  50% { background: rgba(2,254,255,0.3); }
-  100% { background: rgba(2,254,255,1); }
+  0% { background: rgba(136,0,0,1); }
+  50% { background: rgba(136,0,0,0.3); }
+  100% { background: rgba(136,0,0,1); }
 }
 
 .marks li:first-child {transform:rotate(6deg) translateY(125px)}
@@ -297,39 +328,39 @@ ul {
   width: 0;
   height: 200px;
   float: left;
-  border-left: 1px solid rgba(2,255,255,0.3);
+  border-left: 1px solid rgba(136,0,0,0.3);
 }
 
 .hline {
   width: 200px;
   height: 0;
-  border-bottom: 1px solid rgba(2,255,255,0.3);
+  border-bottom: 1px solid rgba(136,0,0,0.3);
 }
 
 #particle1 {
   position: fixed;
   margin-left: 260px;
-  color: rgba(2,255,255,0.3);
+  color: rgba(136,0,0,0.3);
   margin-top: 410px;
 }
 
 #particle1_1 {
   position: fixed;
   margin-left: 255px;
-  color: rgba(2,255,255,0.3);
+  color: rgba(136,0,0,0.3);
   margin-top: 480px;
 }
 
 #particle1_2 {
   position: fixed;
   margin-left: 275px;
-  color: rgba(2,255,255,0.3);
+  color: rgba(136,0,0,0.3);
   margin-top: 580px;
 }
 
 #particle1_3 {
   position: fixed;
-  color: rgba(2,255,255,0.3);
+  color: rgba(136,0,0,0.3);
   font-size: 90px;
   margin-left: 190px;
   margin-top: 730px;
@@ -341,14 +372,14 @@ ul {
   position: fixed;
   margin-left: 20px;
   margin-top: 20px;
-   border-color: rgba(2,255,255,0.15);
+   border-color: rgba(136,0,0,0.15);
 }
 
 #particle3 {
   position: fixed;
   height: 240px;
   margin-left: 40px;
-   border-color: rgba(2,255,255,0.15);
+   border-color: rgba(136,0,0,0.15);
 }
 
 #particle4 {
@@ -356,7 +387,7 @@ ul {
   height: 240px;
   margin-top: 200px;
   margin-left: -10px;
-   border-color: rgba(2,255,255,0.15);
+   border-color: rgba(136,0,0,0.15);
 }
 
 #particle5 {
@@ -364,7 +395,7 @@ ul {
   height: 290px;
   margin-top: -90px;
   margin-left: 230px;
-  border-color: rgba(2,255,255,0.15);
+  border-color: rgba(136,0,0,0.15);
 }
 
 #particle6 {
@@ -372,7 +403,7 @@ ul {
   height: 290px;
   margin-top: 5px;
   margin-left: 3px;
-  border-color: rgba(2,255,255,0.2);
+  border-color: rgba(136,0,0,0.2);
 }
 
 #particle7 {
@@ -380,7 +411,7 @@ ul {
   height: 290px;
   margin-top: 5px;
   margin-left: 3px;
-  border-color: rgba(2,255,255,0.15);
+  border-color: rgba(136,0,0,0.15);
 }
 
 #particle8 {
@@ -388,34 +419,37 @@ ul {
   height: 500px;
   margin-left: -232px;
   margin-top: 280px;
-  border-color: rgba(2,255,255,0.15);
+  border-color: rgba(136,0,0,0.15);
 }
 
 #particle9 {
   position: fixed;
   height: 320px;
   margin-left: 3px;
-  border-color: rgba(2,255,255,0.2);
+  border-color: rgba(136,0,0,0.2);
 }
 
 /* Right Menu Particles */
 #particle10 {
-  width: 330px;
-  float: right;
-  border-color: rgba(2,255,255,0.5);
+
+  width: 100px;
+  border-color: rgba(136,0,0,0.5);
+  border-bottom: 1px solid rgba(136,0,0,0.3);
 }
 
 #particle11 {
-  margin-right: 30px;
-  margin-top: 3px;
-  width: 330px;
-  float: right;
-  border-color: rgba(2,255,255,0.5);
+  left: 20px;
+  top:10px;
+  position: absolute;
+   width: 500px;
+  height: 500px;
+  border-radius: 50%;
+
 }
 
 #particle12 {
   float: left;
   height: 352px;
   margin-top: -40px;
-  border-color: rgba(2,255,255,0.5);
+  border-color: rgba(136,0,0,0.5);
 }

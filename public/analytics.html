@@ -1,42 +1,40 @@
 <!DOCTYPE html>
 <head>
-<title>Analtics</title>
+<title>Analytics</title>
+
+<meta name="author" content="Taniya Datta">
 <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
- 
   <link rel='stylesheet prefetch' href='css/cjbzr.css'/>
-   <link rel='stylesheet prefetch' type="text/css" href="css/style.css"/>
-   <link rel="stylesheet" type="text/css" href="http://weloveiconfonts.com/api/?family=entypo"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
-  <style type="text/css">
-  	/*body{
-  		font-family: "Times New Roman", Times, serif;
-  		font-size: 20px;
-  		color:#00BFFF;
-  		background-repeat:no-repeat;
-        background-attachment: fixed;
-        margin:0;
-        background-size:100% 100%;
-  	}*/
-
-  	
-
-  </style>
-
+  <link rel='stylesheet prefetch' type="text/css" href="css/style.css"/>
+  <link rel="stylesheet" type="text/css" href="http://weloveiconfonts.com/api/?family=entypo"/>
+ 
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
   <script type="text/javascript" src="js/location.js"></script>
-  <script src="canvasjs.min.js"></script>
+  
+  <script type="text/javascript">
+      $(function(){
+        var includes = $('[data-include]');
+          jQuery.each(includes, function(){
+             var file =$(this).data('include') + '.html';
+                $(this).load(file);
+    });
+  });
+
+  </script>
 </head>
 
 <body >
-     <header>
 
-     <span id="head"></span>
-	
-	</header>
+<div data-include="header"></div>
+
+
 <!-- Left Menu -->
 <div id="leftmenu">
-  
   <div id="date_time">
     <div id="date" class="semi_arc e4">
       <div class="semi_arc_2 e4_1">
@@ -52,30 +50,35 @@
         <div id="day" style="font-size: 17px; margin-top: 10px;"></div>
     </div>
   </div>
-  
-  <p class="title">Sensors</p>
+  <span id="head"></span>
+  <br/>
+  <p class="title">Dashboard</p>
   <div class="hline title_underline"></div>
   
-  <span class="menuitem entypo-gauge" style="font-size: 30px; margin-left: 10px;">
-    <p id="cpu" class="caption" style="font-size: 20px;">CPU Usage: 19%</p>
+  <span class="menuitem entypo-chart-line" style="font-size: 30px; margin-left: 10px;">
+    <p id="cpu" class="caption" style="font-size: 20px;"><a href="#" onClick="window.open('dashboard.html', '_parent')">Trend Data</a></p>
   </span> <br/>
+  <span class="menuitem entypo-megaphone" style="font-size: 30px; margin-left: 10px;">
+    <p id="cpu" class="caption" style="font-size: 20px;"><a href="#" onClick="window.open('alerts.html', '_blank')">Alerts</a></p>
+  </span>
 
   
-  <p class="title">Data Viewer</p>
+  <p class="title">Device Management</p>
   <div class="hline title_underline"></div> 
   
   <div class="menu">
-    <button class="menuitem"> <span class="entypo-right-open"/> <p class="caption">Gps</p> </button>
-    <button class="menuitem"> <span class="entypo-right-open"/> <p class="caption">Temperature</p> </button>
-    <button class="menuitem"> <span class="entypo-right-open"/> <p class="caption">Humidity</p> </button>
-    <button class="menuitem"> <span class="entypo-right-open"/> <p class="caption">SO2</p> </button>
+    
+    <button class="menuitem"> <span class="entypo-mobile"/> <p class="caption">Device 1</p> </button>
+    <button class="menuitem"> <span class="entypo-mobile"/> <p class="caption">Device 2</p> </button>
+    <button class="menuitem"> <span class="entypo-mobile"/> <p class="caption">Device 3</p> </button>
+    <button class="menuitem"> <span class="entypo-mobile"/> <p class="caption">Device 4</p> </button>
     
     <hr style="border-color: transparent; margin: 0;"/>
     <div class="hline" style="margin-top: 5px; margin-bottom: 5px;"></div>
-    
-    <button class="menuitem"> <span class="entypo-right-open"/> <p class="caption">NO2</p> </button>
-    <button class="menuitem"> <span class="entypo-right-open"/> <p class="caption">NH3</p> </button>
-    <button class="menuitem"> <span class="entypo-right-open"/> <p class="caption">Something</p> </button>
+     <p class="title">Downloads</p>
+  <div class="hline title_underline"></div>
+
+
   </div>
   
 </div>
@@ -86,17 +89,17 @@
 
 <!-- Arc Reactor -->
 <div id="arc_container"  >
-  <div class="arc_reactor" style="position:absolute;left:900px; top:100px">
-    <div class="case_container" >
-      <div class="e7">
-        <div class="semi_arc_3 e5_1" >
-          <div class="semi_arc_3 e5_2" >
-            <div class="semi_arc_3 e5_3" >
-              <div class="semi_arc_3 e5_4" ></div>
+    <div class="arc_reactor" style="position:absolute;left:900px; top:250px">
+      <div class="case_container" >
+        <div class="e7">
+          <div class="semi_arc_3 e5_1" >
+            <div class="semi_arc_3 e5_2" >
+              <div class="semi_arc_3 e5_3" >
+                <div class="semi_arc_3 e5_4" ></div>
             </div>
           </div>
         </div>
-        <div class="core2" style="background:url(images/temperature1.png);background-position:50% 36%"></div>
+        <div id="temperature" class="core2" style="background:url(images/temperature1.png);background-position:50% 36%"></div>
       </div>
       <ul class="marks" >
         <li></li><li></li><li></li><li></li><li></li><li></li>
@@ -116,17 +119,17 @@
 
 <!-- Arc Reactor -->
 <div id="arc_container"  >
-  <div class="arc_reactor" style="position:absolute;left:500px; top:100px">
-    <div class="case_container" >
-      <div class="e7">
-        <div class="semi_arc_3 e5_1" >
-          <div class="semi_arc_3 e5_2" >
-            <div class="semi_arc_3 e5_3" >
-              <div class="semi_arc_3 e5_4" ></div>
+    <div class="arc_reactor" style="position:absolute;left:500px; top:250px">
+      <div class="case_container" >
+        <div class="e7">
+          <div class="semi_arc_3 e5_1" >
+            <div class="semi_arc_3 e5_2" >
+              <div class="semi_arc_3 e5_3" >
+                <div class="semi_arc_3 e5_4" ></div>
             </div>
           </div>
         </div>
-        <div class="core2" style="background:url(images/so2.png);background-position:50% 36%"></div>
+        <div id="so2" class="core2" style="background:url(images/so21.png);background-position:50% 36%"></div>
       </div>
       <ul class="marks" >
         <li></li><li></li><li></li><li></li><li></li><li></li>
@@ -145,17 +148,17 @@
 </div>
 <!-- Arc Reactor -->
 <div id="arc_container"  >
-  <div class="arc_reactor" style="position:absolute;left:500px; top:420px">
-    <div class="case_container" >
-      <div class="e7">
-        <div class="semi_arc_3 e5_1" >
-          <div class="semi_arc_3 e5_2" >
-            <div class="semi_arc_3 e5_3" >
-              <div class="semi_arc_3 e5_4" ></div>
+    <div class="arc_reactor" style="position:absolute;left:500px; top:570px">
+      <div class="case_container" >
+        <div class="e7">
+          <div class="semi_arc_3 e5_1" >
+            <div class="semi_arc_3 e5_2" >
+              <div class="semi_arc_3 e5_3" >
+                <div class="semi_arc_3 e5_4" ></div>
             </div>
           </div>
         </div>
-        <div class="core2" style="background:url(images/humidity1.png);background-position:50% 36%"></div>
+        <div id="humidity" class="core2" style="background:url(images/humidity1.png);background-position:50% 36%"></div>
       </div>
       <ul class="marks" >
         <li></li><li></li><li></li><li></li><li></li><li></li>
@@ -174,17 +177,18 @@
 </div>
 <!-- Arc Reactor -->
 <div id="arc_container"  >
-  <div class="arc_reactor" style="position:absolute;left:900px; top:420px">
-    <div class="case_container" >
-      <div class="e7">
-        <div class="semi_arc_3 e5_1" >
-          <div class="semi_arc_3 e5_2" >
-            <div class="semi_arc_3 e5_3" >
-              <div class="semi_arc_3 e5_4" ></div>
+  <!div class="circle" style="position:absolute;left: 830px;top:300px;" ><!/div>
+    <div class="arc_reactor" style="position:absolute;left:900px; top:570px">
+      <div class="case_container" >
+        <div class="e7">
+          <div class="semi_arc_3 e5_1" >
+            <div class="semi_arc_3 e5_2" >
+              <div class="semi_arc_3 e5_3" >
+                <div class="semi_arc_3 e5_4" ></div>
             </div>
           </div>
         </div>
-        <div class="core2" style="background:url(images/nh3.png);background-position:50% 36%"></div>
+        <div id="no2" class="core2" style="background:url(images/no21.png);background-position:50% 36%"></div>
       </div>
       <ul class="marks" >
         <li></li><li></li><li></li><li></li><li></li><li></li>
@@ -202,79 +206,13 @@
   </div>
 </div>
 </div>
+
 <!-- Particles -->
 <!-- Left Menu Particles -->
-<canvas id="particle1" width="20" height="500"></canvas> <script>
-var canvas = document.getElementById('particle1');
-var context = canvas.getContext('2d');
 
-context.beginPath();
-context.moveTo(0, 0);
-context.lineTo(0, 70);
-context.lineTo(10, 85);
-context.lineTo(10, 135);
-context.lineTo(0, 150);
-context.lineTo(0, 480);
-context.lineTo(5, 490);
-context.lineTo(10, 490);
-context.lineTo(20, 490);
-context.lineTo(20, 250);
-context.lineTo(10, 235);
-context.lineTo(10, 185);
-context.lineTo(20, 170);
-context.lineTo(20, 40);
-context.lineTo(10, 30);
-context.lineTo(10, 20);
+<div data-include="left-menu"></div>
 
-context.closePath();
-context.lineWidth = 1;
-context.fillStyle = 'rgba(2,254,255,0.3)';
-context.fill();
-context.strokeStyle = 'transparent';
-context.stroke();
-</script>
-
-<canvas id="particle1_1" width="40" height="510"></canvas> <script>
-var canvas = document.getElementById('particle1_1');
-var context = canvas.getContext('2d');
-
-context.beginPath();
-context.lineTo(0, 0);
-context.lineTo(10, 15);
-context.lineTo(10, 65);
-context.lineTo(0, 80);
-context.lineTo(0, 0);
-
-context.closePath();
-context.lineWidth = 1;
-context.fillStyle = 'rgba(2,254,255,0.3)';
-context.fill();
-context.strokeStyle = 'transparent';
-context.stroke();
-</script>
-
-<canvas id="particle1_2" width="40" height="510"></canvas> <script>
-var canvas = document.getElementById('particle1_2');
-var context = canvas.getContext('2d');
-
-context.beginPath();
-context.lineTo(10, 80);
-context.lineTo(0, 65);
-context.lineTo(0, 15);
-context.lineTo(10, 0);
-context.lineTo(10, 80);
-
-context.closePath();
-context.lineWidth = 1;
-context.fillStyle = 'rgba(2,254,255,0.3)';
-context.fill();
-context.strokeStyle = 'transparent';
-context.stroke();
-</script>
-
-<div id="particle1_3">
-</div>
-
+<div id="particle1_3"></div>
 <div id="particle2"><br/><br/></div>
 <div id="particle3" class="vline"/>
 <div id="particle4" class="vline"/>
@@ -283,74 +221,107 @@ context.stroke();
 <div id="particle7" class="vline"/>
 <div id="particle8" class="vline"/>
 <div id="particle9" class="vline"/>
-  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 
 
-	<!div id="placeholder" style="width:600px;height:300px">
-		
-	<!/div>
-
+<div data-include="footer"></div>
 
 </body>
 <script type="text/javascript">
 
-      document.getElementById("head").innerHTML = "GatewayId: "+ getItem();
+     $(document).ready(function() {
+	       TemperatureInit();
+	       HumidityInit();
+	       So2Init();
+	       No2Init();
+
+      });
+      
+      
+       var gatewayId=getItem();
+       $('#leftmenu #head').html("   Device Id :"+ gatewayId);
+      //document.getElementById("leftmenu head").innerHTML = "Device Id :"+ gatewayId;
+      
+      setInterval(function(){
+    
+        var key1=gatewayId+"temperature";
+
+          if(window.localStorage.getItem(key1)=='green')
+             {  
+                $('#arc_container .arc_reactor .case_container .e7 #temperature').css({"background": "url(images/temperature1.png)","background-position":"50% 36% "});
+                $('#arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('#arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('#arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+
+              }
+          else  if(window.localStorage.getItem(key1)=='yellow')
+              {
+                $('#arc_container .arc_reactor .case_container .e7 #temperature').css({"background": "url(images/temperature2.png)","background-position":"50% 36% "});
+              }
+          else
+              {  $('#arc_container .arc_reactor .case_container .e7 #temperature').css({"background": "url(images/temperature3.png)","background-position":"50% 36% "});
+              }
+
+        var key2=gatewayId+"humidity";
+
+       
+        if(window.localStorage.getItem(key2)=='green')
+
+              $('#arc_container .arc_reactor .case_container .e7 #humidity').css({"background": "url(images/humidity1.png)","background-position":"50% 36% "});
+
+        else  if(window.localStorage.getItem(key2)=='yellow')
+
+              $('#arc_container .arc_reactor .case_container .e7 #thumidity').css({"background": "url(images/humidity2.png)","background-position":"50% 36% "});
+
+        else
+             $('#arc_container .arc_reactor .case_container .e7 #humidity').css({"background": "url(images/humidity3.png)","background-position":"50% 36% "});
+
+
+
+        var key3=gatewayId+"so2";
+
+        if(window.localStorage.getItem(key3)=='green')
+
+              $('#arc_container .arc_reactor .case_container .e7 #so2').css({"background": "url(images/so21.png)","background-position":"50% 36% "});
+        else  if(window.localStorage.getItem(key3)=='yellow')
+
+              $('#arc_container .arc_reactor .case_container .e7 #so2').css({"background": "url(images/so22.png)","background-position":"50% 36% "});
+        else
+              $('#arc_container .arc_reactor .case_container .e7 #so2').css({"background": "url(images/so23.png)","background-position":"50% 36% "});
+
+
+        var key4=gatewayId+"no2";
+
+        if(window.localStorage.getItem(key4)=='green')
+
+              $('#arc_container .arc_reactor .case_container .e7 #no2').css({"background": "url(images/no21.png)","background-position":"50% 36% "});
+
+        else  if(window.localStorage.getItem(key4)=='yellow')
+
+              $('#arc_container .arc_reactor .case_container .e7 #no2').css({"background": "url(images/no22.png)","background-position":"50% 36% "});
+
+        else
+              $('#arc_container .arc_reactor .case_container .e7 #no2').css({"background": "url(images/no23.png)","background-position":"50% 36% "});
+      
+      },5000);
+      
+
       setInterval(function() {
+       
        var date=Date();
        var split=date.toString().split(" ");
        var hour=split[4].split(":");
-       $('#leftmenu #date_time #date #date1').html(split[2]);
-       $('#leftmenu #date_time #date #month').html(split[1]);
-       $('#leftmenu #date_time #time #hour').html(hour[0]+":"+hour[1]);
-       $('#leftmenu #date_time #time #second').html(hour[2]);
-       $('#leftmenu #date_time #time #day').html(split[0]);
+      
+          $('#leftmenu #date_time #date #date1').html(split[2]);
+          $('#leftmenu #date_time #date #month').html(split[1]);
+          $('#leftmenu #date_time #time #hour').html(hour[0]+":"+hour[1]);
+          $('#leftmenu #date_time #time #second').html(hour[2]);
+          $('#leftmenu #date_time #time #day').html(split[0]);
 
       },1000);
-      
-      /*$(document).ready(function(){
-      		$.plot($("#placeholder"), [ [[0, 0], [1, 1]] ], { yaxis: { max: 1 } });
-      });
-     /* window.onload = function() {
-		var chart = new CanvasJS.Chart("chartContainer", {
-			title: {
-				text: "Line Chart"
-			},
-			axisX: {
-				interval: 10
-			},
-			data: [{
-				type: "line",
-				dataPoints: [
-				  { x: 10, y: 45 },
-				  { x: 20, y: 14 },
-				  { x: 30, y: 20 },
-				  { x: 40, y: 60 },
-				  { x: 50, y: 50 },
-				  { x: 60, y: 80 },
-				  { x: 70, y: 40 },
-				  { x: 80, y: 60 },
-				  { x: 90, y: 10 },
-				  { x: 100, y: 50 },
-				  { x: 110, y: 40 },
-				  { x: 120, y: 14 },
-				  { x: 130, y: 70 },
-				  { x: 140, y: 40 },
-				  { x: 150, y: 90 },
-				]
-			}]
-		});
-		chart.render();
-	}
-       /*var canvas = document.getElementById('myCanvas1');
-      var context = canvas.getContext('2d');
 
-      context.rect(250, 50, 300, 200);
-      context.fillStyle='rgba(200, 200, 200, 0.5)';
-      context.shadowColor = '#999';
-      context.shadowBlur = 20;
-      context.shadowOffsetX = 10;
-      context.shadowOffsetY = 10;
-      context.fill();*/
+     
+      //console.log(navigator.getBattery());
+      //console.log(navigator.onLine );
       </script>
      
 </html>

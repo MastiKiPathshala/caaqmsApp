@@ -1,3 +1,17 @@
+/*************************************************************************
+ *
+ * $file: sensor.js
+ *
+ * @brief: web App back-end code, reading data from blobs and sending
+ * it to browser.
+ *
+ * @author: Saurabh Singh
+ *
+ * @date: 15 May 2017 First version of web app back-end code
+ *
+ * This file is subject to the terms and conditions defined in
+ * file 'LICENSE.txt', which is part of this source code package.
+ */
 var express = require('express');
 var router = express.Router();
 

@@ -5,7 +5,8 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes/index');
 var sensorData = require('./routes/sensor');
-
+var deviceManagement = require('./routes/device_management');
+var deviceSchedule = require('./routes/device_schedule');
 var app = express ();
 
 // view engine setup
@@ -28,7 +29,8 @@ app.use(function (req, res, next) {
 
 app.use('/', routes);
 app.use('/api/sensorData/v1.0', sensorData);
-
+app.use('/api/deviceManagement/v1.0', deviceManagement);
+app.use('/api/deviceSchedule/v1.0', deviceSchedule);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
 

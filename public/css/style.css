@@ -10,7 +10,7 @@
   font: 20px 'Agency FB', sans-serif;
 }
 
-body { height:100%; background-color: #808080; color:rgb(70,0,0) ; position: relative;}
+body { height:100%; background-color: rgb(240,240,240); color:black ; position: relative;}
 .topbar
 {
     -webkit-transform: translate3d(0,0,0);
@@ -24,7 +24,7 @@ header{
   left: 0;
   margin: 0 auto;
   z-index:1000;
-  background-color:rgb(56,0,0);
+  background-color:black;
   transform: translateZ(0);
   -webkit-transform: translateZ(0);
   
@@ -48,7 +48,8 @@ header{
    }
 
    footer{
-  background-color:rgb(56,0,0);
+  z-index:1000;
+  background-color:black;
   position: fixed;
   right: 0;
   bottom: 0;
@@ -61,9 +62,42 @@ header{
    {
     overflow-y:auto;
    }
+.sidebar-nav{
+  padding-top: 5%;
+  /* make sidebar nav vertical */ 
+}
+@media (min-width: 768px) {
+  .sidebar-nav .navbar .navbar-collapse {
+    padding: 0;
+    max-height: none;
+  }
+  .sidebar-nav .navbar ul {
+    float: none;
+  }
+  .sidebar-nav .navbar ul:not {
+    display: block;
+  }
+  .sidebar-nav .navbar li {
+    float: none;
+    display: block;
+  }
+  .sidebar-nav .navbar li a {
+    margin-top:40%;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    font-size: 10px;
+    margin-left :5%;
+  }
 
-
-
+  .sidebar-nav .navbar li a span {
+    margin-top:10%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 30px;
+    display: block;
+    margin-left :5%;
+  }
+}
 /* Left Menu */
 #leftmenu {
   position: absolute;
@@ -128,7 +162,7 @@ header{
 }
 
 .caption,a {
-  color: rgb(148,0,0);
+  color: black;
   display: inline;
   transition: 0.3s;
   cursor: pointer;
@@ -190,7 +224,10 @@ ul {
   margin:0;
   padding:0
 }
-
+.text
+{
+display: none;
+}
 #arc_container {
   position: absolute;
   width: 100%;
@@ -229,6 +266,11 @@ ul {
   margin-left: auto; 
   margin-right: auto;
   margin-top: 40px;
+}
+.core2 : hover .text
+{
+display: inline;
+z-index: 100;
 }
 
 .e7 {
@@ -338,28 +380,28 @@ ul {
 }
 
 #particle1 {
-  position: fixed;
+  position: absolute;
   margin-left: 260px;
   color: rgba(136,0,0,0.3);
   margin-top: 410px;
 }
 
 #particle1_1 {
-  position: fixed;
+  position: absolute;
   margin-left: 255px;
   color: rgba(136,0,0,0.3);
   margin-top: 480px;
 }
 
 #particle1_2 {
-  position: fixed;
+  position: absolute;
   margin-left: 275px;
   color: rgba(136,0,0,0.3);
   margin-top: 580px;
 }
 
 #particle1_3 {
-  position: fixed;
+  position: absolute;
   color: rgba(136,0,0,0.3);
   font-size: 90px;
   margin-left: 190px;
@@ -369,21 +411,21 @@ ul {
 }
 
 #particle2 {
-  position: fixed;
+  position: absolute;
   margin-left: 20px;
   margin-top: 20px;
    border-color: rgba(136,0,0,0.15);
 }
 
 #particle3 {
-  position: fixed;
+  position:absolute;
   height: 240px;
   margin-left: 40px;
    border-color: rgba(136,0,0,0.15);
 }
 
 #particle4 {
-  position: fixed;
+  position: absolute;
   height: 240px;
   margin-top: 200px;
   margin-left: -10px;
@@ -391,7 +433,7 @@ ul {
 }
 
 #particle5 {
-  position: fixed;
+  position: absolute;
   height: 290px;
   margin-top: -90px;
   margin-left: 230px;
@@ -399,7 +441,7 @@ ul {
 }
 
 #particle6 {
-  position: fixed;
+  position: absolute;
   height: 290px;
   margin-top: 5px;
   margin-left: 3px;
@@ -407,7 +449,7 @@ ul {
 }
 
 #particle7 {
-  position: fixed;
+  position: absolute;
   height: 290px;
   margin-top: 5px;
   margin-left: 3px;
@@ -415,7 +457,7 @@ ul {
 }
 
 #particle8 {
-  position: fixed;
+  position: absolute;
   height: 500px;
   margin-left: -232px;
   margin-top: 280px;
@@ -423,7 +465,7 @@ ul {
 }
 
 #particle9 {
-  position: fixed;
+  position: absolute;
   height: 320px;
   margin-left: 3px;
   border-color: rgba(136,0,0,0.2);

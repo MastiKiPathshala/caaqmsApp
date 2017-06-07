@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<head>
+<title>Methods</title>
+
+<meta name="author" content="Taniya Datta">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+  <link rel='stylesheet' href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css"/> 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel='stylesheet prefetch' href='css/cjbzr.css'/>
+  <link rel='stylesheet prefetch' type="text/css" href="css/style.css"/>
+  <link rel="stylesheet" type="text/css" href="http://weloveiconfonts.com/api/?family=entypo"/>
+ 
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+  
+  <style type="text/css">
+    h1{
+      position: absolute;
+      margin-top: 5%;
+      margin-left:3%;
+      
+    }
+    h2{
+      position: absolute;
+      margin-top:350px;
+      margin-left:5%;
+      
+    }
+    .box {
+    background-color:white;
+    position:absolute;
+    width: 85%;
+    height: 220px;
+    border: 1px black;
+    font-size: 10px;
+    padding-left: 5%;
+    margin-top: 9% ;
+    margin-left: 5% ;
+    margin-right: 10%;
+}
+    #myForm1
+    {
+      width:20%;
+    }
+    #history{
+      position: absolute;
+      margin-top:30%;
+      margin-left: 5%;
+    }
+  </style>
+    <script type="text/javascript">
+      $(function(){
+        var includes = $('[data-include]');
+          jQuery.each(includes, function(){
+             var file =$(this).data('include') + '.html';
+                $(this).load(file);
+    });
+  });
+      var deviceId =window.localStorage.getItem('deviceIdForMethod');
+  </script>
+  </head>
+  <body>
+   <div data-include="header"></div>
+   <div id="heading"></div>
+   
+  <div id="form" class="box">
+   <form action="javascript:callMethod()">
+      <div class="form-group" id="myForm1"><span class="menuitem entypo-menu">
+        <label for="sel1"> Method:</label></span>
+        <select class="form-control" id="sel1">
+          <option selected="selected">Select a method</option>
+          <option>reboot</option>
+          <option>softwareUpgrade</option>
+          <option>configReset</option>
+          <option>sendDiagnostics</option>
+        </select>
+        <div class="version" style="display: none; ">
+            <label >swversion:<input type="text" name="swversion" value="version" style="width:250px"></label></div><br/>
+        <button type="submit" class="btn btn-default" id="btn" style="display: none; ">Invoke Method</button>
+      </div>
+  </form>
+  </div>
+  <h2> Method History</h2>
+  <div id="history" class="box" style="height:auto">
+    <table style="width:100%">
+      <thead>
+        <th>METHOD NAME</th>
+        <th>RESULT</th>
+        <th>VALUES SENT</th>
+        <th>VALUES RETURNED</th>
+        <th>LOCAL TIME CREATED</th>
+        <th>LOCAL TIME UPDATED</th>
+      </thead>
+      
+      </table>
+  </div>
+
+   <div data-include="footer"></div>
+
+<script type="text/javascript">
+  $('#heading').html('<h1><span class="glyphicon glyphicon-arrow-left" id="back"/> Invoke method for '+deviceId+'</h1');
+  
+  $(document).on("click", "#back", function(){
+    window.open('devices.html', '_parent');
+
+});
+
+$('#form #myForm1 #sel1').on('change', function() {
+  var text=$('#form #myForm1 #sel1 :selected').text();
+    if(text=="softwareUpgrade")
+      {
+        $('#form #myForm1 .version').show();
+        $('#form #myForm1 #btn').show();
+      }
+      else
+      {  $('#form #myForm1 .version').hide();
+         $('#form #myForm1 #btn').show(); 
+      }
+
+      });
+function callMethod()
+{
+  var taskName=$('#form #myForm1 #sel1 :selected').text();
+  window.localStorage.setItem('taskName',taskName);
+  deviceId ="'"+deviceId+"'";
+  $.ajax({
+  method: 'POST',
+  url: '/api/deviceManagement/v1.0/sendCommandToGateway',
+  data :{
+   deviceid : JSON.stringify({ id: [deviceId] }),
+   taskname : taskName,
+   payload : null,
+   timeoutInSeconds : 30
+   
+  }
+ }).done(function(data) {
+   if (data.status === "OK") {
+      console.log("Successful!")
+   }
+    else {
+   alert(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+  console.log (data);
+  
+ });
+
+}
+
+</script>
+
+  </body>
+  </html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<head>
+<title>Schedule Method</title>
+
+<meta name="author" content="Taniya Datta">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+  <link rel='stylesheet' href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css"/> 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel='stylesheet prefetch' href='css/cjbzr.css'/>
+  <link rel='stylesheet prefetch' type="text/css" href="css/style.css"/>
+  <link rel="stylesheet" type="text/css" href="http://weloveiconfonts.com/api/?family=entypo"/>
+ 
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+  
+  <style type="text/css">
+    h1{
+      position: absolute;
+      margin-top: 5%;
+      margin-left:3%;
+      
+    }
+  
+    .box {
+    background-color:white;
+    position:absolute;
+    width: 85%;
+    height: 450px;
+    border: 1px black;
+    font-size: 10px;
+    padding-left: 5%;
+    padding-top: 5%;
+    margin-top: 9% ;
+    margin-left: 5% ;
+    margin-right: 10%;
+}
+    #myForm1
+    {
+      width:20%;
+    }
+    #history{
+      position: absolute;
+      margin-top:30%;
+      margin-left: 5%;
+    }
+  </style>
+    <script type="text/javascript">
+      $(function(){
+        var includes = $('[data-include]');
+          jQuery.each(includes, function(){
+             var file =$(this).data('include') + '.html';
+                $(this).load(file);
+    });
+  });
+      var deviceId =window.localStorage.getItem('deviceIdForMethod');
+  </script>
+  </head>
+  <body>
+   <div data-include="header"></div>
+   <div id="heading"></div>
+   
+  <div id="form" class="box">
+   <form action="javascript:callMethod()">
+      <div class="form-group" id="myForm1">
+            <label >DATA TYPE</label>
+            <select class="form-control" id="dataType" style="width:250px">
+          <option selected="selected">temperature</option>
+          <option>humidity</option>
+          <option>so2</option>
+          <option>no2</option>
+        </select><br/>
+            <label >OPERATOR&ensp;&ensp;<input type="text" name="operator" value=">" id="2" style="width:50px"/></label><br/>
+            <label >THRESHOLD&ensp;<input type="text" name="threshold" value="60" id="3" style="width:50px"/></label><br/>
+            <label >OUTPUT</label>
+            <select class="form-control" id="output" style="width:250px">
+          <option selected="selected">AlarmTemp</option>
+          <option>AlarmHumidity</option>
+          <option>AlarmSo2</option>
+          <option>AlarmNo2</option>
+        </select>
+            <br/>
+        <br/><button type="submit1" class="btn btn-default" id="cancel" onclick="cancel1s()">Cancel</button>&emsp;<button type="submit" class="btn btn-default" id="btn" style="background-color:rgb(210,210,240)">Add Rule</button>
+      </div>
+  </form>
+  </div>
+  
+
+   <div data-include="footer"></div>
+
+<script type="text/javascript">
+function cancel1()
+{
+  window.open('devices.html', '_parent');
+}
+  $('#heading').html('<h1><span class="glyphicon glyphicon-arrow-left" id="back"/> Create rule for ' +deviceId+'</h1');
+  
+  $(document).on("click", "#back", function(){
+    window.open('devices.html', '_parent');
+
+});
+
+function callMethod()
+{
+  deviceId ="'"+deviceId+"'";
+  var dataType=$('#form #myForm1 #dataType :selected').text();
+  dataType="'"+dataType+"'";
+  var output=$('#form #myForm1 #output :selected').text();
+  output="'"+output+"'";
+  var operator=$('#form #myForm1 #2').val();
+  operator="'"+operator+"'";
+  var threshold =$('#form #myForm1 #3').val();
+  alert(dataType+" "+output+" "+operator+" "+threshold+" "+deviceId);
+  
+    $.ajax({
+  method: 'POST',
+  url: '/api/alerts/v1.0/setRule',
+  data :{
+    deviceId : deviceId,
+    dataType : dataType,
+    operator : operator,
+    threshold : threshold,
+    ruleOutput : output
+   
+   }
+ }).done(function(data) {
+
+  if (data.status === "OK") {
+   console.log(data.results);
+   window.open('rules.html', '_parent');
+   
+  } else {
+   alert(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+  console.log (data.message);
+ });
+
+}
+
+</script>
+
+  </body>
+  </html>

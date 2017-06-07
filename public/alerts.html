@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<head>
+<title>Alerts</title>
+
+<meta name="author" content="Taniya Datta">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	
+  <link rel='stylesheet' href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css"/>	
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel='stylesheet prefetch' href='css/cjbzr.css'/>
+  <link rel='stylesheet prefetch' type="text/css" href="css/style.css"/>
+  <link rel="stylesheet" type="text/css" href="http://weloveiconfonts.com/api/?family=entypo"/>
+ 
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+  <script type="text/javascript" src="js/location.js"></script>
+
+  
+  <script type="text/javascript">
+      $(function(){
+        var includes = $('[data-include]');
+          jQuery.each(includes, function(){
+             var file =$(this).data('include') + '.html';
+                $(this).load(file);
+    });
+  });
+
+  </script>
+</head>
+
+<body >
+<div data-include="header"></div>
+
+<!--Table-->
+<div class="container" style="margin-top:90px;margin-left:300px;position:absolute; width:600px">
+  <h2>Alert List</h2>
+  <table id="table" class="table table-bordered table-hover table-responsive" width="95%">
+    <thead class="thead-inverse">
+      <tr>
+        <th>gatewayId</th>
+        <th>time</th>
+        <th>dataType</th>
+        <th>Alarm Description</th>
+        <th>qualityScore</th>
+        <th>sensorId</th>
+      </tr>
+    </thead>
+    <tfoot>
+        <tr>
+        <th>gatewayId</th>
+        <th>time</th>
+        <th>dataType</th>
+        <th>Alarm Description</th>
+        <th>qualityScore</th>
+        <th>sensorId</th>
+      </tr>
+
+    </tfoot>
+    <tbody>
+    
+    </tbody>
+  </table>
+</div>
+
+ <div id="leftmenu" style="margin-top:50px">
+    <p class="title"></p>
+      <div class="hline title_underline"></div>
+
+ 
+     <span class="menuitem entypo-mobile" style="font-size: 30px; margin-left: 10px;">
+      <p id="head" class="caption" style="font-size: 20px;"><a href="#" onClick="goToViewer()">ID</a></p>
+      </span> <br/>
+      
+    
+    <p class="title"></p>
+      <div class="hline title_underline" style="font-size: 30px; margin-top: 30px;"></div> 
+  
+    <div class="menu">
+    
+    <hr style="border-color: transparent; margin: 0;"/>
+    <div class="hline" style="margin-top: 5px; margin-bottom: 5px;"></div>
+    
+    <form action="">
+    <div class="form-group" id="myForm2"><span class="menuitem entypo-menu" style="font-size: 20px; margin-left: 7px;">
+  		<label for="sel1" > Gateway Id:</label></span>
+  		<select class="form-control" id="sel1">
+   		 <option>All</option>
+  </select><br/>
+</div>
+</form>
+  
+    <form action="">
+    <div class="form-group" id="myForm"><span class="menuitem entypo-menu" style="font-size: 20px; margin-left: 7px;">
+  		<label for="sel1" > Get Alert List for past:</label></span>
+  		<select class="form-control" id="sel1">
+   		 <option>1 day</option>
+    	<option selected="selected">7days</option>
+    	<option>30days</option>
+  </select><br/>
+</div>
+</form>
+<form action="javascript:getAlerts()">
+    <div class="form-group" id="myForm1"><span class="menuitem entypo-menu" style="font-size: 20px; margin-left: 7px;">
+  		<label for="sel1"> Datatype:</label></span>
+  		<select class="form-control" id="sel1">
+   		 <option>temperature</option>
+    	<option selected="selected">All</option>
+    	<option>humidity</option>
+    	<option>so2</option>
+    	<option>no2</option>
+  </select><br/>
+  <button type="submit" class="btn btn-default">Submit</button>
+</div>
+</form>
+
+  </div>
+</div>
+
+
+
+
+ <!-- Left Menu Particles -->
+  
+<div data-include="left-menu"></div>
+
+<div id="particle1_3"></div>
+<div id="particle2"><br/><br/></div>
+<div id="particle3" class="vline"/>
+<div id="particle4" class="vline"/>
+<div id="particle5" class="vline"/>
+<div id="particle6" class="vline"/>
+<div id="particle7" class="vline"/>
+<div id="particle8" class="vline"/>
+<div id="particle9" class="vline"/>
+
+
+
+<div data-include="footer"></div>
+<script type="text/javascript">
+var gatewayId=getItem();
+
+$(document).ready(function() {
+	 	
+	 
+     $('#leftmenu .menuitem #head a').html("Device Id :"+ gatewayId);
+
+     $('.container #table').DataTable();
+   
+   	 var gateways =window.localStorage.getItem('gateways');
+     gateways=JSON.parse(gateways);
+     console.log(gateways[0]);
+     	
+     	for(var i=0;i<gateways.length;i++){
+    
+    		$('#leftmenu .menu #myForm2 #sel1').append('<option>'+gateways[i].gatewayId+'</option>');
+			}
+    
+    	$('#leftmenu .menu #myForm2 #sel1 option:selected').attr("selected",null);
+    	$('#leftmenu .menu #myForm2 #sel1 option').filter(function () { return $(this).html() == gatewayId; }).attr("selected","selected");
+     
+     var time=$('#leftmenu .menu #myForm #sel1 :selected').text();
+     var dataType=$('#leftmenu .menu #myForm1 #sel1 :selected').text();
+
+   /* $.ajax({
+		method: 'POST',
+		url: '/api/alerts/v1.0/getalerts',
+		data: { gatewayId: gatewayId , time :time ,dataType :dataType}
+
+		
+	}).done(function(data) {
+
+		if (data.status === "OK") {
+      var row,col;
+
+			for(var i = 0; i < data.results.length; i++){
+				    col += '<td>'+data.results[i]+'</td>';
+					row += '</tr>';
+					$('.container #table').append(row);
+				console.log(data.results);
+			    
+		
+	 }
+	}
+});*/
+} );
+
+	 
+	 /*var time=$('#leftmenu .menu #myForm #sel1 :selected').text();
+     	alert(time);
+     var dataType=$('#leftmenu .menu #myForm1 #sel1 :selected').text();
+     	alert(dataType);*/
+
+       	 
+       function goToViewer()
+       {  
+           window.localStorage.setItem('gateway',gatewayId);
+           window.location.href="analytics.html";
+
+       }
+       function getAlerts()
+       {
+      
+	 	var Time=$('#leftmenu .menu #myForm #sel1 :selected').text();
+     //	alert(Time);
+     	var datatype=$('#leftmenu .menu #myForm1 #sel1 :selected').text();
+     	//alert(datatype);
+     	var gateway=$('#leftmenu .menu #myForm2 #sel1 :selected').text();
+     	//alert(gateway);
+
+     	$.ajax({
+    method: 'PUT',
+    url: '/api/alerts/v1.0/getalerts',
+    data: { gatewayId: gateway , time :Time ,dataType :datatype}
+
+    
+  }).done(function(data) {
+
+    if (data.status === "OK") { 
+      
+      for(var i = 0; i < data.results.length; i++){
+            //var x=JSON.parse(data.results[i]);
+            var row='<tr>',col;
+            col = '<td>'+data.results[i].gatewayid+'</td>'+'<td>'+data.results[i].time+'</td>'+'<td>'+data.results[i].dataType+'</td>'+'<td>'+data.results[i].alarmDescription+'</td>'+'<td>'+data.results[i].qualityscore+'</td>'+'<td>'+data.results[i].sensorid+'</td>';
+          row += col+'</tr>';
+          $('.container #table').append(row);
+        console.log(data.results[i]);
+          
+    
+   }
+  }
+  else{ alert('ok');
+    console.log(data.results);
+  }
+}).fail(function(data) {
+    console.log (data);
+  });
+/*
+       $.ajax({
+    method: 'PUT',
+    url: 'http://caaqms-gateway-hub.azure-devices.net/jobs/v2/BLR-CAAQMS-LAB-1/methods/81?api-version=2016-09-01',
+    headers:
+    {
+    'Authorization': 'z9tKFfbs5uJB0pXQ3CVdpCRCPzCWUOhlyDY45LNjw08=',
+    'Content-Type': 'application/json',
+    'Request-Id': '105'
+  },
+
+    data: {
+    'jobId': 81,
+     'type': 'scheduleTwinUpdate', 
+    'updateTwin':'lastReboot: 2017-06-01T12:10:23.104Z',      
+    'queryCondition': "deviceId = 'BLR-CAAQMS-LAB-1'",
+    'startTime': '2017-06-02T13:50:23.104Z',       
+    'maxExecutionTimeInSeconds': '3600'    
+}
+
+    
+  }).done(function(data) {
+
+    if (data.status === "OK") { 
+      
+      alert('ok');
+          
+  }
+  else{ alert('no');
+    console.log(data.results);
+  }
+}).fail(function(data) {
+    console.log (data);
+  });
+       
+  */
+       }
+</script>
+</body>
+</html>

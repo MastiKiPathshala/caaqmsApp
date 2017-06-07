@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<head>
+<title>Edit Tags</title>
+
+<meta name="author" content="Taniya Datta">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+  <link rel='stylesheet' href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css"/> 
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel='stylesheet prefetch' href='css/cjbzr.css'/>
+  <link rel='stylesheet prefetch' type="text/css" href="css/style.css"/>
+  <link rel="stylesheet" type="text/css" href="http://weloveiconfonts.com/api/?family=entypo"/>
+ 
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+  
+  <style type="text/css">
+    h1{
+      position: absolute;
+      margin-top: 5%;
+      margin-left:3%;
+      
+    }
+    
+    .box {
+    background-color:white;
+    position:absolute;
+    width: 85%;
+    height: 220px;
+    border: 1px black;
+    font-size: 10px;
+    padding-left: 5%;
+    margin-top: 9% ;
+    margin-left: 5% ;
+    margin-right: 10%;
+}
+    #myForm1
+    {
+      display:inline;
+      margin-top:5%;
+      position: absolute;
+    }
+    
+  </style>
+    <script type="text/javascript">
+      $(function(){
+        var includes = $('[data-include]');
+          jQuery.each(includes, function(){
+             var file =$(this).data('include') + '.html';
+                $(this).load(file);
+    });
+  });
+      var deviceId =window.localStorage.getItem('deviceIdForMethod');
+  </script>
+  </head>
+  <body>
+   <div data-include="header"></div>
+   <div id="heading"></div>
+   
+  <div id="form" class="box">
+   <form action="javascript:callMethod()">
+      <div class="form-group" id="myForm1" >
+            <label >DESIRED PROPERTY NAME&emsp;</label><input type="text" name="jobName" value="desired.frequency.dataFrequency" id="1" style="width:250px"/>
+            <label >VALUE&emsp;</label><input type="text" name="method" value="50Hz" id="2" style="width:250px"/>
+            <label >DATA TYPE&emsp;</label><select class="form-control" id="sel1" style="display:inline;width:100px">
+                <option selected="selected">String</option>
+                <option >Number</option>
+                <option>Boolean</option>
+                 </select><br/>
+            
+        <br/><button type="" class="btn btn-default" id="cancel" onclick="cancel1()">Cancel</button>&emsp;<button type="submit" class="btn btn-default" id="btn" ">Save Changes To Device Twin</button>
+      </div>
+      </div>
+  </form>
+  </div>
+  
+
+   <div data-include="footer"></div>
+
+<script type="text/javascript">
+ function cancel1()
+{
+  window.open('devices.html', '_parent');
+}
+  $('#heading').html('<h1><span class="glyphicon glyphicon-arrow-left" id="back"/> Edit Tags for '+deviceId+'</h1');
+  
+  $(document).on("click", "#back", function(){
+    window.open('devices.html', '_parent');
+
+});
+
+
+function callMethod()
+{ var twinpatch='';
+  deviceId ="'"+deviceId+"'";
+
+    $.ajax({
+  method: 'POST',
+  url: '/api/deviceManagement/v1.0/updateDesiredTwinProperty',
+  data :{
+   deviceid : JSON.stringify({ id: ['BLR-CAAQMS-LAB-1','BLR-CAAQMS-LAB-2'] }),
+   twinPatchData : JSON.stringify({tags: { sensorType: "gps" },
+          properties: { 
+           desired: {
+            frequency:{ 
+             dataFrequency: '50hz'
+            }, 
+           }
+          }
+         })
+   
+  }
+ }).done(function(data) {
+
+  if  (data.status === "OK") {
+   console.log(data.results);
+   window.open('devices.html', '_parent');
+
+   
+  } else {
+   alert(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+  console.log (data);
+ });
+
+}
+
+</script>
+
+  </body>
+  </html>

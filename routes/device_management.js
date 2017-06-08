@@ -1,13 +1,13 @@
 /*************************************************************************
  *
- * $file: device_schedule.js
+ * $file: device_management.js
  *
  * @brief: web App back-end code, for fetching config from twin, 
  * updating twin, triggering command from app.
  *
  * @author: Saurabh Singh
  *
- * @date: 15 May 2017 First version of web app back-end code
+ * @date: 31 May 2017 First version of web app back-end code
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
@@ -131,7 +131,7 @@ router.post('/sendCommandToGateway', function(req, res, next) {
 		startCommandExecutionOnDevice(deviceIdList[li]);
 	}
 	for(var list in deviceIdList){
-		setInterval(function(){
+		setTimeout(function(){
 			
 			queryTwinLastCommandExecution(deviceIdList[list])
 		}, 2000);

@@ -40,6 +40,21 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+io = require('socket.io').listen(server);
+
+/**
+ * Global io socket
+ */
+ioSocket = null;
+
+io.sockets.on('connection', function (socket) {
+
+   log.trace('web-service: io socket connected');
+
+   ioSocket = socket;
+
+});
+
 
 /*
  * Listen on provided port, on all network interfaces.

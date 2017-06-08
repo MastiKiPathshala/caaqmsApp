@@ -7,6 +7,7 @@ var routes = require('./routes/index');
 var sensorData = require('./routes/sensor');
 var deviceManagement = require('./routes/device_management');
 var deviceSchedule = require('./routes/device_schedule');
+var alerts = require('./routes/alarm');
 var app = express ();
 
 // view engine setup
@@ -31,6 +32,7 @@ app.use('/', routes);
 app.use('/api/sensorData/v1.0', sensorData);
 app.use('/api/deviceManagement/v1.0', deviceManagement);
 app.use('/api/deviceSchedule/v1.0', deviceSchedule);
+app.use('/api/alerts/v1.0', alerts);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
 

@@ -14,32 +14,9 @@
  * file 'LICENSE.txt', which is part of this source code package.
  *
  ************************************************************************/
-var locationInit = function () 
+var createMap =function()
 {
-	var locationSet = [];
-
-    $.ajax({
-		method: 'GET',
-		url: '/api/sensorData/v1.0/gatewayLocations'
-	}).done(function(data) {
-
-		if (data.status === "OK") {
-			for(var i = 0; i < data.results.lat.length; i++){
-				
-				console.log(data.results);
-			    gatewayLocation = { gatewayId: data.results.gatId[i], lat: data.results.lat[i], lng: data.results.lng[i] ,quality: data.results.airQuality[i]};
-				
-			    console.log ("SecurIoT Gateway location: " + JSON.stringify(gatewayLocation));
-			    locationSet.push (gatewayLocation);
-				
-			}
-		} else {
-			
-			gatewayLocation = { gatewayId: "b8:27:eb:94:7c:9d" ,lat:12.963778 , lng: 77.712111 ,quality: 30};
-			locationSet.push (gatewayLocation);
-			alert(data.results);
-		}
-		var styledMapType = new google.maps.StyledMapType(
+	var styledMapType = new google.maps.StyledMapType(
             [
               {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
             {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},
@@ -123,29 +100,57 @@ var locationInit = function ()
             {name: 'Styled Map'});
 		
 		map = new google.maps.Map(document.getElementById('map'), {
-			zoom: 5,
+			zoom: 4,
 			mapTypeId: 'satellite',
-			center: gatewayLocation
+			center: { lat:12.963778 , lng: 77.712111 }
 		});
 		map.mapTypes.set('styled_map', styledMapType);
         map.setMapTypeId('styled_map');
 		//var infowindow = new google.maps.InfoWindow();
-		map.addListener('center_changed', function() {
-          // 3 seconds after the center of the map has changed, pan back to the
-          // marker.
-          window.setTimeout(function() {
-            map.panTo(marker.getPosition());
-          }, 3000);
-        });
+		/**/
+
+}
+var locationInit = function () 
+{   createMap();
+	var locationSet = [];
+	var gateways    =[];
+	
+    $.ajax({
+		method: 'GET',
+		url: '/api/sensorData/v1.0/gatewayLocations'
+	}).done(function(data) {
+
+		if (data.status === "OK") {
+			for(var i = 0; i < data.results.lat.length; i++){
+				
+				console.log(data.results);
+			    gatewayLocation = { gatewayId: data.results.gatId[i], lat: data.results.lat[i], lng: data.results.lng[i] ,quality: data.results.airQuality[i]};
+				
+			    console.log ("SecurIoT Gateway location: " + JSON.stringify(gatewayLocation));
+			    locationSet.push (gatewayLocation);
+			    //map.setCenter({ lat:gatewayLocation.lat , lng: gatewayLocation.lng });
+				
+			}
+		} else {
+			
+			gatewayLocation = { gatewayId: "b8:27:eb:94:7c:9d" ,lat:12.963778 , lng: 77.712111 ,quality: 30};
+			locationSet.push (gatewayLocation);
+			console.log(data.results);
+		}
+		
+		
 
 		/*
 		var heatmap = new google.maps.visualization.HeatmapLayer({
-Â  			data: locations
+ 			data: locations
 		});
 		heatmap.setMap(map);
 		*/
-		//image = '/images/green-dot.png';
+		var bounds = new google.maps.LatLngBounds();
+
 		locationSet.forEach(function (gatewayLocation) {
+
+			gateways.push({'gatewayId':gatewayLocation.gatewayId});	
 			if( gatewayLocation.quality >=60){
 					
 					image = '/images/green-dot.png';
@@ -168,15 +173,26 @@ var locationInit = function ()
                 customInfo: gatewayLocation.gatewayId
 				
 			});
+			bounds.extend(marker.getPosition());
+			map.fitBounds(bounds);
+			zoomChangeBoundsListener = google.maps.event.addListenerOnce(map, 'bounds_changed', function(event) {
+        	if (this.getZoom()){
+            	this.setZoom(5);
+        		}
+			});
+
 			marker.addListener('click', function() {
-			    alert(this.getTitle());
-				window.localStorage.removeItem('gateway');
+			    //alert(this.getTitle());
+				window.localStorage.removeItem("'"+gatewayId+"temperature'");
+				window.localStorage.removeItem("'"+gatewayId+"so2'");
+				window.localStorage.removeItem("'"+gatewayId+"no2'");
+				window.localStorage.removeItem("'"+gatewayId+"so2'");
                 var gatewayId=this.getTitle();
-            console.log("Item: "+window.localStorage.getItem('gateway'));
+
+            	console.log("Item: "+window.localStorage.getItem('gateway'));
             	window.localStorage.setItem('gateway',gatewayId);
-            console.log("Item1: "+window.localStorage.getItem('gateway'));
-			 	window.open('analytics.html','_blank');  
-             map.setCenter(marker.getPosition());
+            	console.log("Item1: "+window.localStorage.getItem('gateway'));
+			 	window.open('analytics.html','_parent');  
           /*return function() {
           infowindow.setContent(gatewayLocation);
           infowindow.open(map, marker);
@@ -185,6 +201,13 @@ var locationInit = function ()
    	        
         });
 		});
+		setTimeout(function(){google.maps.event.removeListener(zoomChangeBoundsListener)}, 20000);
+		map.addListener('center_changed', function() { // 3 seconds after the center of the map has changed, pan back to the marker
+          window.setTimeout(function() {
+            map.panTo(marker.getPosition());
+          }, 3000);
+        });
+		window.localStorage.setItem('gateways',JSON.stringify(gateways));
 		
 	}).fail(function(data) {
 		console.log (data);
@@ -235,7 +258,7 @@ var TemperatureInit = function ()
 				
 			}
 		} else {
-			
+			window.localStorage.setItem(key,"grey");
 			console.log(data.results);
 		}
 		
@@ -280,7 +303,7 @@ var HumidityInit = function ()
 				
 			}
 		} else {
-			
+			window.localStorage.setItem(key,"grey");
 			console.log(data.results);
 		}
 		
@@ -324,6 +347,7 @@ var So2Init = function ()
 				
 			}
 		} else {
+			window.localStorage.setItem(key,"grey");
 			console.log(data.results);
 			
 		}
@@ -369,8 +393,8 @@ var No2Init = function ()
 				
 			}
 		} else {
-			
-			alert(data.results);
+			window.localStorage.setItem(key,"grey");
+			//alert(data.results);
 		}
 		
 	}).fail(function(data) {

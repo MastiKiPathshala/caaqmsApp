@@ -62,9 +62,9 @@
   <div id="form" class="box">
    <form action="javascript:callMethod()">
       <div class="form-group" id="myForm1" >
-            <label style="">TAGS&ensp;</label><input type="text" name="jobName" value="tags.sensorType" id="1" style="display:inline;width:250px"/>
+            <label >TAGS&ensp;</label><input type="text" name="jobName" value="sensorType" id="1" style="display:inline;width:250px"/>
             <label >VALUE&ensp;</label><input type="text" name="method" value="gps" id="2" style="display:inline;width:250px"/>
-            <label >DATA TYPE&ensp;</label><select class="form-control" id="sel1"  style="display:inline;width:100px">
+            <label >DATA TYPE&ensp;</label><select class="form-control" id="3"  style="display:inline;width:100px">
                 <option selected="selected">String</option>
                 <option >Number</option>
                 <option>Boolean</option>
@@ -93,23 +93,31 @@ function cancel1()
 
 
 function callMethod()
-{ var twinpatch='';
-  deviceId ="'"+deviceId+"'";
+{   var patch = {};
+    patch.tags={};
+  var tag=$('#form #myForm1 #1').val();
+  var value=$('#form #myForm1 #2').val();
+  var type=$('#form #myForm1 #3 :selected').text();
+  if(type=="String")
+  {
+    patch.tags[tag]=value;
+  }
+  else if(type=="Boolean")
+  {
+    patch.tags[tag]=JSON.parse(value);
+  }
+  else
+  {
+    patch.tags[tag]=parseInt(value);
+  }
+  alert(JSON.stringify(patch));
 
     $.ajax({
   method: 'POST',
   url: '/api/deviceManagement/v1.0/updateDesiredTwinProperty',
   data :{
-   deviceid : JSON.stringify({ id: ['BLR-CAAQMS-LAB-1','BLR-CAAQMS-LAB-2'] }),
-   twinPatchData : JSON.stringify({tags: { sensorType: "gps" },
-          properties: { 
-           desired: {
-            frequency:{ 
-             dataFrequency: '50hz'
-            }, 
-           }
-          }
-         })
+   deviceid : JSON.stringify({ id: [deviceId] }),
+   twinPatchData : JSON.stringify(patch)
    
   }
  }).done(function(data) {

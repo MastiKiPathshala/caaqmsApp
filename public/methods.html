@@ -77,7 +77,7 @@
           <option>reboot</option>
           <option>softwareUpgrade</option>
           <option>configReset</option>
-          <option>sendDiagnostics</option>
+          <option>remoteDiagnostics</option>
         </select>
         <div class="version" style="display: none; ">
             <label >swversion:<input type="text" name="swversion" value="version" style="width:250px"></label></div><br/>
@@ -127,7 +127,6 @@ function callMethod()
 {
   var taskName=$('#form #myForm1 #sel1 :selected').text();
   window.localStorage.setItem('taskName',taskName);
-  deviceId ="'"+deviceId+"'";
   $.ajax({
   method: 'POST',
   url: '/api/deviceManagement/v1.0/sendCommandToGateway',

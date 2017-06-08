@@ -30,7 +30,9 @@
 
 <body >
 
-<div data-include="header"></div>
+<div data-include="header">
+	
+</div>
 
 
 <!-- Left Menu -->
@@ -54,32 +56,14 @@
   <br/>
   <p class="title">Dashboard</p>
   <div class="hline title_underline"></div>
+
+  <span class="menuitem entypo-map" style="font-size: 30px;margin-left: 10px;">
+    <p id="cpu" class="caption" style="font-size: 20px;"><a href="#" onClick="window.open('index.html', '_parent')" >Gateway Locations</a></p>
+  </span>
   
   <span class="menuitem entypo-chart-line" style="font-size: 30px; margin-left: 10px;">
-    <p id="cpu" class="caption" style="font-size: 20px;"><a href="#" onClick="window.open('dashboard.html', '_parent')">Trend Data</a></p>
+    <p id="cpu" class="caption" style="font-size: 20px;"><a href="#" onClick="window.open('timeSeries.html', '_parent')">Trend Data</a></p>
   </span> <br/>
-  <span class="menuitem entypo-megaphone" style="font-size: 30px; margin-left: 10px;">
-    <p id="cpu" class="caption" style="font-size: 20px;"><a href="#" onClick="window.open('alerts.html', '_blank')">Alerts</a></p>
-  </span>
-
-  
-  <p class="title">Device Management</p>
-  <div class="hline title_underline"></div> 
-  
-  <div class="menu">
-    
-    <button class="menuitem"> <span class="entypo-mobile"/> <p class="caption">Device 1</p> </button>
-    <button class="menuitem"> <span class="entypo-mobile"/> <p class="caption">Device 2</p> </button>
-    <button class="menuitem"> <span class="entypo-mobile"/> <p class="caption">Device 3</p> </button>
-    <button class="menuitem"> <span class="entypo-mobile"/> <p class="caption">Device 4</p> </button>
-    
-    <hr style="border-color: transparent; margin: 0;"/>
-    <div class="hline" style="margin-top: 5px; margin-bottom: 5px;"></div>
-     <p class="title">Downloads</p>
-  <div class="hline title_underline"></div>
-
-
-  </div>
   
 </div>
 
@@ -88,6 +72,7 @@
 <div class="scroll">
 
 <!-- Arc Reactor -->
+<div id="1">
 <div id="arc_container"  >
     <div class="arc_reactor" style="position:absolute;left:900px; top:250px">
       <div class="case_container" >
@@ -99,7 +84,7 @@
             </div>
           </div>
         </div>
-        <div id="temperature" class="core2" style="background:url(images/temperature1.png);background-position:50% 36%"></div>
+        <div id="temperature" class="core2" style="background:url(images/temperature_grey.png);background-position:50% 36%"></div>
       </div>
       <ul class="marks" >
         <li></li><li></li><li></li><li></li><li></li><li></li>
@@ -116,8 +101,10 @@
     </div>
   </div>
 </div>
+</div>
 
 <!-- Arc Reactor -->
+<div id="3">
 <div id="arc_container"  >
     <div class="arc_reactor" style="position:absolute;left:500px; top:250px">
       <div class="case_container" >
@@ -129,7 +116,7 @@
             </div>
           </div>
         </div>
-        <div id="so2" class="core2" style="background:url(images/so21.png);background-position:50% 36%"></div>
+        <div id="so2" class="core2" style="background:url(images/so2_grey.png);background-position:50% 36%;"></div>
       </div>
       <ul class="marks" >
         <li></li><li></li><li></li><li></li><li></li><li></li>
@@ -146,7 +133,9 @@
     </div>
   </div>
 </div>
+</div>
 <!-- Arc Reactor -->
+<div id="2">
 <div id="arc_container"  >
     <div class="arc_reactor" style="position:absolute;left:500px; top:570px">
       <div class="case_container" >
@@ -158,7 +147,7 @@
             </div>
           </div>
         </div>
-        <div id="humidity" class="core2" style="background:url(images/humidity1.png);background-position:50% 36%"></div>
+        <div id="humidity" class="core2" style="background:url(images/humidity_grey.png);background-position:50% 36%"></div>
       </div>
       <ul class="marks" >
         <li></li><li></li><li></li><li></li><li></li><li></li>
@@ -175,9 +164,10 @@
     </div>
   </div>
 </div>
+</div>
 <!-- Arc Reactor -->
+<div id="4">
 <div id="arc_container"  >
-  <!div class="circle" style="position:absolute;left: 830px;top:300px;" ><!/div>
     <div class="arc_reactor" style="position:absolute;left:900px; top:570px">
       <div class="case_container" >
         <div class="e7">
@@ -188,7 +178,7 @@
             </div>
           </div>
         </div>
-        <div id="no2" class="core2" style="background:url(images/no21.png);background-position:50% 36%"></div>
+        <div id="no2" class="core2" style="background:url(images/no2_grey.png);background-position:50% 36%"></div>
       </div>
       <ul class="marks" >
         <li></li><li></li><li></li><li></li><li></li><li></li>
@@ -206,11 +196,11 @@
   </div>
 </div>
 </div>
-
+</div>
 <!-- Particles -->
 <!-- Left Menu Particles -->
 
-<div data-include="left-menu"></div>
+
 
 <div id="particle1_3"></div>
 <div id="particle2"><br/><br/></div>
@@ -220,14 +210,13 @@
 <div id="particle6" class="vline"/>
 <div id="particle7" class="vline"/>
 <div id="particle8" class="vline"/>
-<div id="particle9" class="vline"/>
+<div id="particle9" class="vline" style="margin-left:230px" />
 
 
 <div data-include="footer"></div>
 
 </body>
 <script type="text/javascript">
-
      $(document).ready(function() {
 	       TemperatureInit();
 	       HumidityInit();
@@ -239,6 +228,16 @@
       
        var gatewayId=getItem();
        $('#leftmenu #head').html("   Device Id :"+ gatewayId);
+       var gateways =window.localStorage.getItem('gateways');
+        gateways=JSON.parse(gateways);
+     	  console.log(gateways[0]);
+     	
+     		for(var i=0;i<gateways.length;i++){
+    				//if((gateways[i].gatewayId)!=gatewayId)
+    			$('#leftmenu .menu .menuitem').append('<button class="menuitem"> <span class="entypo-mobile"/> <p class="caption">'+gateways[i].gatewayId+'</p> </button><br/>');
+    
+
+			}
       //document.getElementById("leftmenu head").innerHTML = "Device Id :"+ gatewayId;
       
       setInterval(function(){
@@ -247,60 +246,111 @@
 
           if(window.localStorage.getItem(key1)=='green')
              {  
-                $('#arc_container .arc_reactor .case_container .e7 #temperature').css({"background": "url(images/temperature1.png)","background-position":"50% 36% "});
-                $('#arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
-                $('#arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
-                $('#arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+                $('#1 #arc_container .arc_reactor .case_container .e7 #temperature').css({"background": "url(images/temperature1.png)","background-position":"50% 36% "});
+                $('.scroll #1 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #1 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #1 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
 
               }
           else  if(window.localStorage.getItem(key1)=='yellow')
               {
                 $('#arc_container .arc_reactor .case_container .e7 #temperature').css({"background": "url(images/temperature2.png)","background-position":"50% 36% "});
+                 $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
               }
+          else if(window.localStorage.getItem(key1)=='yellow')
+          {		$('#arc_container .arc_reactor .case_container .e7 #temperature').css({"background": "url(images/temperature3.png)","background-position":"50% 36% "});
+          		 $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+          }
           else
-              {  $('#arc_container .arc_reactor .case_container .e7 #temperature').css({"background": "url(images/temperature3.png)","background-position":"50% 36% "});
+              {  
+          		 $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
               }
 
         var key2=gatewayId+"humidity";
 
        
         if(window.localStorage.getItem(key2)=='green')
+        {
 
-              $('#arc_container .arc_reactor .case_container .e7 #humidity').css({"background": "url(images/humidity1.png)","background-position":"50% 36% "});
+              $('#2 #arc_container .arc_reactor .case_container .e7 #humidity').css({"background": "url(images/humidity1.png)","background-position":"50% 36% "});
+               $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+            }
 
         else  if(window.localStorage.getItem(key2)=='yellow')
-
-              $('#arc_container .arc_reactor .case_container .e7 #thumidity').css({"background": "url(images/humidity2.png)","background-position":"50% 36% "});
-
-        else
-             $('#arc_container .arc_reactor .case_container .e7 #humidity').css({"background": "url(images/humidity3.png)","background-position":"50% 36% "});
+        {
+              $('#2 #arc_container .arc_reactor .case_container .e7 #thumidity').css({"background": "url(images/humidity2.png)","background-position":"50% 36% "});
+               $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll  #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+            }
+        else{
+             $('#2 #arc_container .arc_reactor .case_container .e7 #humidity').css({"background": "url(images/humidity3.png)","background-position":"50% 36% "});
+              $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+           }
 
 
 
         var key3=gatewayId+"so2";
 
         if(window.localStorage.getItem(key3)=='green')
-
-              $('#arc_container .arc_reactor .case_container .e7 #so2').css({"background": "url(images/so21.png)","background-position":"50% 36% "});
+        {
+              $('#3 #arc_container .arc_reactor .case_container .e7 #so2').css({"background": "url(images/so21.png)","background-position":"50% 36% "});
+               $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+              }
         else  if(window.localStorage.getItem(key3)=='yellow')
-
-              $('#arc_container .arc_reactor .case_container .e7 #so2').css({"background": "url(images/so22.png)","background-position":"50% 36% "});
+            {
+              $('#3 #arc_container .arc_reactor .case_container .e7 #so2').css({"background": "url(images/so22.png)","background-position":"50% 36% "});
+               $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+              }
         else
-              $('#arc_container .arc_reactor .case_container .e7 #so2').css({"background": "url(images/so23.png)","background-position":"50% 36% "});
+        {
+              $('#3 #arc_container .arc_reactor .case_container .e7 #so2').css({"background": "url(images/so23.png)","background-position":"50% 36% "});
+               $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+              }
 
 
         var key4=gatewayId+"no2";
 
         if(window.localStorage.getItem(key4)=='green')
-
-              $('#arc_container .arc_reactor .case_container .e7 #no2').css({"background": "url(images/no21.png)","background-position":"50% 36% "});
+        {
+              $('#4 #arc_container .arc_reactor .case_container .e7 #no2').css({"background": "url(images/no21.png)","background-position":"50% 36% "});
+               $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+        }
 
         else  if(window.localStorage.getItem(key4)=='yellow')
-
-              $('#arc_container .arc_reactor .case_container .e7 #no2').css({"background": "url(images/no22.png)","background-position":"50% 36% "});
+        {
+              $('#4 #arc_container .arc_reactor .case_container .e7 #no2').css({"background": "url(images/no22.png)","background-position":"50% 36% "});
+               $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+             // $('.scroll #arc_container .arc_reactor .case_container .e7 #no2').prop('title','no2');
+        }
 
         else
-              $('#arc_container .arc_reactor .case_container .e7 #no2').css({"background": "url(images/no23.png)","background-position":"50% 36% "});
+        {
+              $('#4 #arc_container .arc_reactor .case_container .e7 #no2').css({"background": "url(images/no23.png)","background-position":"50% 36% "});
+               $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+        }
       
       },5000);
       

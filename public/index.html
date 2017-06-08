@@ -32,12 +32,12 @@
 
 		<style>
 			#map { 
-				height: 80%;
+				height: 90%;
 				width: 50%;
 				min-width: 50%;
 				float: left;
 				position: absolute;
-      	margin-top:5% ;
+      			margin-top:5% ;
 			}
 		    html, body {
                 height: 100%;
@@ -46,13 +46,13 @@
       		.tablet-view{
       			
       			margin-top: 5%;
-            margin-left: 52%;
+           	 	margin-left: 52%;
       			height: 52%;
-				    width: 48%;
-				    min-width: 40%;
-   				  overflow-y: scroll;
-  				  scroll-behavior: smooth;
-  				  position: relative;
+				width: 48%;
+				min-width: 40%;
+   				overflow-y: scroll;
+  				scroll-behavior: smooth;
+  				position: relative;
  				 }
  				 .container1 {
   				position:absolute;
@@ -65,11 +65,6 @@
   				width: 104%;
   				height: 52%;
 				}
-				
-
-				
-
-
 
 		</style>
 
@@ -101,35 +96,27 @@
    <!--Table-->
   <h3>Alert List</h3>
   <scroll-container>
-  <table id="table" class="table table-bordered table-hover table-responsive" width="98%">
-    <thead class="thead-inverse">
-      <tr>
-        <th>gatewayId</th>
-        <th>time</th>
-        <th>dataType</th>
-        <th>Alarm Description</th>
-        <th>qualityScore</th>
-        <th>sensorId</th>
-      </tr>
-    </thead>
+ 	 <table id="table" class="table table-bordered table-hover table-responsive" width="98%">
+    	<thead class="thead-inverse">
+      	<tr>
+        	<th>gatewayId</th>
+        	<th>time</th>
+        	<th>dataType</th>
+        	<th>Alarm Description</th>
+        	<th>qualityScore</th>
+        	<th>sensorId</th>
+     	 </tr>
+    	</thead>
   
-    <tbody>
-    <tr>
-        <th>b8:27:eb:94:7c:9d</th>
-        <th>undefined</th>
-        <th>so2</th>
-        <th>undefined</th>
-        <th>47</th>
-        <th>undefined</th>
-      </tr>
-    </tbody>
-  </table>
-   </scroll-container>
+    	<tbody>
+    	</tbody>
+  	</table>
+  </scroll-container>
 </div>
 
 <div class="container1 w3-panel w3-card-2 w3-light-grey" >
-<div class="row">
-<h3 style="margin-left:20px"> Key Performance Indicators</h3>
+	<div class="row">
+		<h3 style="margin-left:20px"> Key Performance Indicators</h3>
         <div class="col-sm-2 ">
         <h4> Overall Efficiency</h4>
             <div class="well w3-light-grey " id="container1">
@@ -169,8 +156,8 @@
 <script>
 
 $(document).ready(function() {
-		$('.container #table').DataTable();
-		$.ajax({
+		
+$.ajax({
     method: 'PUT',
     url: '/api/alerts/v1.0/getalerts',
     data: { gatewayId: 'All' , time :'7days' ,dataType :'All'}
@@ -184,20 +171,21 @@ $(document).ready(function() {
             //var x=JSON.parse(data.results[i]);
             var row='<tr>',col;
             col = '<td>'+data.results[i].gatewayid+'</td>'+'<td>'+data.results[i].time+'</td>'+'<td>'+data.results[i].dataType+'</td>'+'<td>'+data.results[i].alarmDescription+'</td>'+'<td>'+data.results[i].qualityscore+'</td>'+'<td>'+data.results[i].sensorid+'</td>';
-          row += col+'</tr>';
-          $('.container #table').append(row);
-        console.log(data.results[i]);
+         	 row += col+'</tr>';
+          	$('.container #table').append(row);
+        	console.log(data.results[i]);
           
     
    }
+   $('.container #table').DataTable();
   }
-  else{ alert('ok');
+  else{ 
     console.log(data.results);
   }
 }).fail(function(data) {
     console.log (data);
-  });
-	});
+});
+});
    
  var bar = new ProgressBar.SemiCircle(container1, {
   strokeWidth: 12,
@@ -391,10 +379,9 @@ bar6.text.style.fontSize = '3rem';
 
 bar6.animate(0.742); 
 	
-			$(document).ready(function() {
 
-				
-				// Initializing locations of all SecurIoT Gateways 
+	$(document).ready(function() {
+	// Initializing locations of all SecurIoT Gateways 
 				locationInit();
 				
 			})

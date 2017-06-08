@@ -106,13 +106,9 @@ function cancel1()
 
 function callMethod()
 {
-  deviceId ="'"+deviceId+"'";
   var dataType=$('#form #myForm1 #dataType :selected').text();
-  dataType="'"+dataType+"'";
   var output=$('#form #myForm1 #output :selected').text();
-  output="'"+output+"'";
   var operator=$('#form #myForm1 #2').val();
-  operator="'"+operator+"'";
   var threshold =$('#form #myForm1 #3').val();
   alert(dataType+" "+output+" "+operator+" "+threshold+" "+deviceId);
   

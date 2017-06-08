@@ -112,7 +112,7 @@ div p
       
       
 <div class="col-sm-11">
-	<div id="mySidenav" class="sidenav"></div>
+  <div id="mySidenav" class="sidenav"></div>
 <!--Table-->
 <div class="container" style="margin-top:5%;margin-left:0%;position:absolute; width:95%">
   <h2 class="entypto-arrows-ccw" style="display:inline">All Devices<a onclick="refresh()">
@@ -155,26 +155,26 @@ function jobSchedule()
   $('.row .col-sm-11 #mySidenav').append(html1);
   
   var deviceId,devicesForScheduling=[];
+  window.localStorage.removeItem('devicesForScheduling');
   
   if($('.container #table :checkbox:checked').length > 0)
-  {	
-  		$('.container #table :checkbox:checked').each(function () {
-  			deviceId=$('.container #table :checkbox:checked').attr("name");
-  			deviceId="'"+deviceId+"'";
-  			devicesForScheduling.push(deviceId);
-		});
+  { 
+      $('.container #table :checkbox:checked').each(function () {
+        deviceId=$('.container #table :checkbox:checked').attr("name");
+        devicesForScheduling.push(deviceId);
+    });
 
-		window.localStorage.setItem('devicesForScheduling',devicesForScheduling);
+    window.localStorage.setItem('devicesForScheduling',JSON.stringify(devicesForScheduling));
 }
 else
 { 
-	$('.container #table :checkbox').each(function () {
-  			deviceId=$('.container #table :checkbox').attr("name");
-  			deviceId="'"+deviceId+"'";
-  			devicesForScheduling.push(deviceId);
-		});
-	window.localStorage.setItem('devicesForScheduling',devicesForScheduling);
-	alert(devicesForScheduling);
+  $('.container #table :checkbox').each(function () {
+        deviceId=$('.container #table :checkbox').attr("name");
+        devicesForScheduling.push(deviceId);
+
+    });
+  window.localStorage.setItem('devicesForScheduling',JSON.stringify(devicesForScheduling));
+  alert(devicesForScheduling);
 }
 
  
@@ -207,7 +207,7 @@ $(document).on("click", "#job", function(){
 });
 var GetWholeTwinConfig = function () 
 { 
-	openNav();
+  openNav();
 
   $('.row .col-sm-11 #mySidenav').append('<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a><a href="#"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Device Details </a><div id="details"><a> Disable Device</a><span id="addRule" style="font-size:25px"><a>Add Rule</a></span><a href="">Commands</a><span id="methods" style="font-size:25px"><a >Methods<br/></span></a><a href="">Remove Device</a></div><a>Device Twin</a><div id="twin" ><a id="downloadAnchorElem" style="font-size:15px;margin-left:80%">Download</a><a href="#" style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Tags </a><span id="editTags" style="font-size:25px"><a style="font-size:15px;margin-left:90%;display:inline" >Edit</a></span><div id="tags" class="box"></div><a href="#"  style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Desired Properties </a><span id="editDesired" style="font-size:25px"><a style="font-size:15px;margin-left:90%;display:inline" >Edit</a></span><div id="desired" class="box"></div><a href="#"  style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Reported Properties</a><div id="reported" class="box"></div></div><a href="#" ><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Device Properties</a><div id="properties" class="box"></div><a href="#" ><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Recent Job</a><div class="box"></div>');
 
@@ -277,9 +277,9 @@ function closeNav() {
 function refresh()
 {
   var tb = document.getElementById('table');
-  	while(tb.rows.length > 1) {
-  		tb.deleteRow(1);
-		}
+    while(tb.rows.length > 1) {
+      tb.deleteRow(1);
+    }
   //alert("cleared");
   fillTable();
 }
@@ -288,10 +288,10 @@ function refresh()
 function fillTable(){
  
       $.ajax({
-    	method: 'GET',
-    	url: '/api/deviceManagement/v1.0/deviceId'
+      method: 'GET',
+      url: '/api/deviceManagement/v1.0/deviceId'
     
-  		}).done(function(data) {
+      }).done(function(data) {
 
     if (data.status === "OK") { 
       
@@ -301,25 +301,25 @@ function fillTable(){
                 col = '<td ><label><input type="checkbox" name='+data.results[i].gatewayId+' ></label></td>'+'<td >'+data.results[i].status+'</td>'+'<td >'+data.results[i].gatewayId+'</td>'+'<td >'+data.results[i].manufacturer+'</td>'+'<td >'+data.results[i].hardwareVersion+'</td>'+'<td >'+data.results[i].softwareVersion+'</td>'+'<td >'+data.results[i].reboot.lastReboot+'</td>';
               row += col+'</tr>';
           $('.row .col-sm-11 .container #table').append(row);
-        	console.log(data.results[i]);
+          console.log(data.results[i]);
           
     
-   		}addRowHandlers();
-   		$('.row .col-sm-11 .container #table').DataTable();
-  	}
-  	else{ 
-    		console.log(data.message);
-  		}
-	}).fail(function(data) {
-    	console.log (data);
-  	});
+      }addRowHandlers();
+      $('.row .col-sm-11 .container #table').DataTable();
+    }
+    else{ 
+        console.log(data.message);
+      }
+  }).fail(function(data) {
+      console.log (data);
+    });
 }
 
 function addRowHandlers() {
     var rows = document.getElementById("table").rows;
-    	for (i = 1; i < rows.length; i++) {
-        		rows[i].onclick = function(){ 
-        			return function(){
+      for (i = 1; i < rows.length; i++) {
+            rows[i].onclick = function(){ 
+              return function(){
                var id = this.cells[i].innerHTML;
                window.localStorage.setItem('deviceIdForMethod',id);
                //alert(id);
@@ -339,15 +339,15 @@ function methods()
    
    
   $('.row .col-sm-11 #mySidenav #details #methods').empty();
-  	if(x=='100')
-  	{
-    	$('.row .col-sm-11 #mySidenav #details #methods').append("<progress value="+x+" max='100'></progress><span id='btn' >&ensp;&#10003;</span>");
+    if(x=='100')
+    {
+      $('.row .col-sm-11 #mySidenav #details #methods').append("<progress value="+x+" max='100'></progress><span id='btn' >&ensp;&#10003;</span>");
   
-	}
-	else{
+  }
+  else{
       x++;
-  	$('.row .col-sm-11 #mySidenav #details #methods').append("<progress value="+x+" max='100'></progress>");
-	}
+    $('.row .col-sm-11 #mySidenav #details #methods').append("<progress value="+x+" max='100'></progress>");
+  }
 }
 
 

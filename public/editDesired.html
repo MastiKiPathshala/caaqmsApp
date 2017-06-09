@@ -64,9 +64,9 @@
   <div id="form" class="box">
    <form action="javascript:callMethod()">
       <div class="form-group" id="myForm1" >
-            <label >DESIRED PROPERTY NAME&emsp;</label><input type="text" name="jobName" value="desired.frequency.dataFrequency" id="1" style="width:250px"/>
+            <label >DESIRED PROPERTY NAME&emsp;</label><input type="text" name="jobName" value="frequency.dataFrequency" id="1" style="width:250px"/>
             <label >VALUE&emsp;</label><input type="text" name="method" value="50Hz" id="2" style="width:250px"/>
-            <label >DATA TYPE&emsp;</label><select class="form-control" id="sel1" style="display:inline;width:100px">
+            <label >DATA TYPE&emsp;</label><select class="form-control" id="3" style="display:inline;width:100px">
                 <option selected="selected">String</option>
                 <option >Number</option>
                 <option>Boolean</option>
@@ -95,23 +95,68 @@
 
 
 function callMethod()
-{ var twinpatch='';
-  deviceId ="'"+deviceId+"'";
+{ 
+    var patch = {};
+    patch.properties={};
+    patch.properties.desired={};
+  
+  var begin=patch.properties.desired;
+
+  var tag=$('#form #myForm1 #1').val();
+  var value=$('#form #myForm1 #2').val();
+  
+  var arr_tag=tag.split(".");
+  console.log(arr_tag);
+  var type=$('#form #myForm1 #3 :selected').text();
+  
+  if(type=="String")
+  { for(var i=0;i<arr_tag.length;i++)
+    {if(i==arr_tag.length-1)
+      {
+     begin[arr_tag[i]]=value;
+      }
+    else{
+      begin[arr_tag[i]]={};
+      begin=begin[arr_tag[i]];
+    }
+  }
+
+}
+  else if(type=="Boolean")
+  {
+    for(var i=0;i<arr_tag.length;i++)
+    {if(i==arr_tag.length-1)
+      {
+     begin[arr_tag[i]]=JSON.parse(value);
+      }
+    else{
+      begin[arr_tag[i]]={};
+      begin=begin[arr_tag[i]];
+    }
+  }
+  }
+  else
+  {
+    for(var i=0;i<arr_tag.length;i++)
+    {
+      if(i==arr_tag.length-1)
+      {
+     begin[arr_tag[i]]=parseInt(value);
+      }
+    else{
+      begin[arr_tag[i]]={};
+      begin=begin[arr_tag[i]];
+    }
+  }
+  }
+  alert(JSON.stringify(patch));
 
     $.ajax({
   method: 'POST',
   url: '/api/deviceManagement/v1.0/updateDesiredTwinProperty',
   data :{
-   deviceid : JSON.stringify({ id: ['BLR-CAAQMS-LAB-1','BLR-CAAQMS-LAB-2'] }),
-   twinPatchData : JSON.stringify({tags: { sensorType: "gps" },
-          properties: { 
-           desired: {
-            frequency:{ 
-             dataFrequency: '50hz'
-            }, 
-           }
-          }
-         })
+   deviceid : JSON.stringify({ id: [deviceId] }),
+   twinPatchData : JSON.stringify(patch)
    
   }
  }).done(function(data) {

@@ -84,7 +84,7 @@
           <option>AlarmNo2</option>
         </select>
             <br/>
-        <br/><button type="submit1" class="btn btn-default" id="cancel" onclick="cancel1s()">Cancel</button>&emsp;<button type="submit" class="btn btn-default" id="btn" style="background-color:rgb(210,210,240)">Add Rule</button>
+        <br/><button type="submit1" class="btn btn-default" id="cancel" onclick="cancel1()">Cancel</button>&emsp;<button type="submit" class="btn btn-default" id="btn" style="background-color:rgb(210,210,240)">Add Rule</button>
       </div>
   </form>
   </div>
@@ -106,13 +106,9 @@ function cancel1()
 
 function callMethod()
 {
-  deviceId ="'"+deviceId+"'";
   var dataType=$('#form #myForm1 #dataType :selected').text();
-  dataType="'"+dataType+"'";
   var output=$('#form #myForm1 #output :selected').text();
-  output="'"+output+"'";
   var operator=$('#form #myForm1 #2').val();
-  operator="'"+operator+"'";
   var threshold =$('#form #myForm1 #3').val();
   alert(dataType+" "+output+" "+operator+" "+threshold+" "+deviceId);
   

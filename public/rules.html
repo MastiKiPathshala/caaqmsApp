@@ -47,12 +47,12 @@
   <span class="entypo-arrows-ccw" style="font-size: 30px;margin-left:2%"></span></a> </h2>
     <table id="table" class="table table-bordered table-hover table-responsive" width="100%" style="background-color:white;overflow-x:scroll">
     <col width="">
-    <col width="10%">
+    <col width="30%">
     <col width="15%">
     <col width="13%">
-    <col width="18%">
-    <col width="25%">
-    <col width="25%">
+    <col width="8%">
+    <col width="8%">
+    <col width="15%">
       <thead class="thead-inverse">
         <tr>
           <th height="10px">STATUS</th>
@@ -88,7 +88,7 @@ $.ajax({
     for(var i = 0; i < data.results.length; i++){
             //var x=JSON.parse(data.results[i]);
             var row='<tr>',col;
-                col = '<td >'+data.results[i].status+'</td>'+'<td >'+data.results[i].gatewayId+'</td>'+'<td >'+data.results[i].manufacturer+'</td>'+'<td >'+data.results[i].hardwareVersion+'</td>'+'<td >'+data.results[i].softwareVersion+'</td>'+'<td >'+data.results[i].reboot.lastReboot+'</td>';
+                col = '<td >'+data.results[i].status+'</td>'+'<td >'+data.results[i].ruleId+'</td>'+'<td >'+data.results[i].deviceId+'</td>'+'<td >'+data.results[i].dataType+'</td>'+'<td >'+data.results[i].operator+'</td>'+'<td >'+data.results[i].threshold+'</td>'+'<td >'+data.results[i].ruleOutput+'</td>';
               row += col+'</tr>';
           $('.row .col-sm-11 .container #table').append(row);
         console.log(data.results[i]);

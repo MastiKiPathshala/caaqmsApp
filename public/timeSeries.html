@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<title>Timeseries Data</title>
+  <meta name="author" content="Taniya Datta">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  
+   <link rel="stylesheet" type="text/css" href="http://weloveiconfonts.com/api/?family=entypo"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <link rel='stylesheet prefetch' href='css/cjbzr.css'/>
+  <link rel='stylesheet prefetch' type="text/css" href="css/style.css"/>
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+  <script type="text/javascript" src="js/location.js"></script>
+<script type="text/javascript">
+      $(function(){
+        var includes = $('[data-include]');
+          jQuery.each(includes, function(){
+             var file =$(this).data('include') + '.html';
+                $(this).load(file);
+    });
+  });
+  
+  </script>
+</head>
+
+<body>
+<div data-include="header"></div>
+
+  <div id="leftmenu" style="margin-top:100px">
+    <p class="title"></p>
+      <div class="hline title_underline"></div>
+
+ 
+     <span class="menuitem entypo-mobile" style="font-size: 30px; margin-left: 10px;">
+      <p id="head" class="caption" style="font-size: 20px;"><a href="#" onClick="goToViewer()">ID</a></p>
+      </span> <br/>
+      
+</div>
+
+<!--Charts-->
+<div id="chartContainer" style="height: 300px; width:500px;top:30px;left:300px;position:absolute;margin-top:30px"></div>
+<div id="chartContainer1" style="height: 300px; width:500px;top:380px;left:300px;position:absolute;"></div>
+<div id="chartContainer2" style="height: 300px; width:500px;top:30px;left:810px;position:absolute;margin-top:30px"></div>
+<div id="chartContainer3" style="height: 300px; width:500px;top:380px;left:810px;position:absolute;"></div>
+  
+
+  <!-- Left Menu Particles -->
+
+
+<div id="particle1_3"></div>
+<div id="particle2"><br/><br/></div>
+<div id="particle3" class="vline"/>
+<div id="particle4" class="vline"/>
+<div id="particle5" class="vline"/>
+<div id="particle6" class="vline"/>
+<div id="particle7" class="vline"/>
+<div id="particle8" class="vline"/>
+<div id="particle9" class="vline" style="margin-left:230px" />
+
+<script type="text/javascript">
+  window.onload = function () {
+
+     var gatewayId=getItem();
+     var key =gatewayId+"temperature_dashboard";
+     var temp =window.localStorage.getItem(key);
+       temp=parseFloat(temp);
+       console.log(temp);
+
+    //chart.options.data[0].dataPoints.push({y: temp}); // Add a new dataPoint to dataPoints array
+ 
+
+    var chart = new CanvasJS.Chart("chartContainer",
+    { backgroundColor: "rgb(255,255,255)",
+      title:{
+      text: "Temperature-Sensor Line Chart",  
+      fontColor: "black"  
+      },
+      axisX:{
+        title: "Timeline",
+        gridThickness: 2
+    },
+    axisY: {
+        title: "Temperature"
+    },
+      data: [
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "Temperature",
+        dataPoints: [
+        { x: 10, y:0}
+      
+        ]
+      }       
+      ]
+    });
+
+    chart.render();
+    //chart.options.data[0].dataPoints.push({x:9,y: temp});
+    chart.options.data[0].dataPoints[0].y = temp; 
+    chart.render(); // Update an existing dataPoint
+  
+
+  var chart1 = new CanvasJS.Chart("chartContainer1",
+    {backgroundColor: "rgb(255,255,255)",
+      title:{
+      text: "Humidity-Sensor Line Chart",  
+      fontColor: "black"  
+      },
+      axisX:{
+        title: "Timeline",
+        gridThickness: 2
+    },
+    axisY: {
+        title: "Humidity"
+    },
+      data: [
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "Humidity",
+        dataPoints: [
+        { x: 10, y:0}
+      
+        ]
+      }       
+      ]
+    });
+
+    chart1.render();
+    //chart.options.data[0].dataPoints.push({x:9,y: temp});
+    chart1.options.data[0].dataPoints[0].y = temp; 
+    chart1.render(); // Update an existing dataPoint
+    
+
+    var chart2 = new CanvasJS.Chart("chartContainer2",
+    {backgroundColor: "rgb(255,255,255)",
+      title:{
+      text: "SO2-Sensor Line Chart",  
+      fontColor: "black"  
+      },
+      axisX:{
+        title: "Timeline",
+        gridThickness: 2
+    },
+    axisY: {
+        title: "SO2"
+    },
+      data: [
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "SO2",
+        dataPoints: [
+        { x: 10, y:0}
+      
+        ]
+      }       
+      ]
+    });
+
+    chart2.render();
+    //chart.options.data[0].dataPoints.push({x:9,y: temp});
+    chart2.options.data[0].dataPoints[0].y = temp; 
+    chart2.render(); // Update an existing dataPoint
+  
+  var chart3 = new CanvasJS.Chart("chartContainer3",
+    {backgroundColor: "rgb(255,255,255)",
+      title:{
+      text: "NO2-Sensor Line Chart",  
+      fontColor: "black"
+      },
+      axisX:{
+        title: "Timeline",
+        gridThickness: 2
+    },
+    axisY: {
+        title: "NO2"
+    },
+      data: [
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "NO2",
+        dataPoints: [
+        { x: 10, y:0}
+      
+        ]
+      }       
+      ]
+    });
+
+    chart3.render();
+    //chart.options.data[0].dataPoints.push({x:9,y: temp});
+    chart3.options.data[0].dataPoints[0].y = temp; 
+    chart3.render(); // Update an existing dataPoint
+  }
+        var gatewayId=getItem();
+       $('#leftmenu .menuitem #head a').html("Device Id :"+ gatewayId);
+       
+       function goToViewer()
+       {  
+           window.localStorage.setItem('gateway',gatewayId);
+           window.location.href="analytics.html";
+
+       }
+  </script>
+
+  <script type="text/javascript" src="js/canvasjs.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.17/vue.js"></script>
+
+
+<div data-include="footer"></div>
+</body>
+
+</html>

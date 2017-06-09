@@ -110,7 +110,9 @@ function callMethod()
   var taskName=$('#form #myForm1 #2').val();
   var startTime =$('#form #myForm1 #3').val();
   var maxExecutionTime=$('#form #myForm1 #4').val();
-  var devices =window.localStorage.getItem('devicesForScheduling');
+  var devices =(window.localStorage.getItem('devicesForScheduling'));
+  devices=JSON.parse(devices);
+  console.log(devices);
     $.ajax({
   method: 'POST',
   url: '/api/deviceSchedule/v1.0/scheduleJob',

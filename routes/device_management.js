@@ -12,13 +12,84 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+var fs = require('fs'); 
 var Registry = require('azure-iothub').Registry;
 var Client = require('azure-iothub').Client;
-var connectionString = 'HostName=caaqms-gateway-hub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=HTqgcjys0HIuyy1mQjICa3OIolsCE1jMub5C+3isFRY=';
+
+var wholeConfigData = fs.readFileSync('./routes/config.txt');
+var parsedConfigData = JSON.parse(wholeConfigData);
+
+var HostName = parsedConfigData.HostName;
+var SharedAccessKeyName = parsedConfigData.SharedAccessKeyName;
+var SharedAccessKey = parsedConfigData.SharedAccessKey;
+
+var connectionString = 'HostName='+HostName+';SharedAccessKeyName='+SharedAccessKeyName+';SharedAccessKey='+SharedAccessKey;
+
 var registry = Registry.fromConnectionString(connectionString);
 var client = Client.fromConnectionString(connectionString);
 var express = require('express');
 var router = express.Router();
+
+// get device related info...
+
+router.get('/hostNameDevicePrimaryKey/:deviceId', function(req,res,next){ 
+	var deviceId = req.params.deviceId;
+	registry.get(deviceId, function (err, dev) {
+		if (err){
+			
+			log.debug(err);
+			res.json({status: "error", results: "error: "+err });
+		}else {
+			var devicePrimaryKey = dev.authentication.symmetricKey.primaryKey;
+			log.debug("devicePrimaryKey: "+devicePrimaryKey);
+			
+			var hostNameDevicePrimaryKey = {};
+			hostNameDevicePrimaryKey = {"hostName" : HostName, "devicePrimaryKey": devicePrimaryKey};
+			log.debug(JSON.stringify(hostNameDevicePrimaryKey));
+			
+			res.json({status: "OK", results: hostNameDevicePrimaryKey});
+      
+		}
+	});
+
+})
+
+//create a new device...
+
+router.post('/createDevice/:deviceId', function(req,res,next){ 
+
+	var uniqueDeviceId = req.params.deviceId;
+	registry.create({deviceId: uniqueDeviceId}, function (err, dev) {
+		
+		if (err){
+			log.debug(err);
+			res.json({status: "error", results: "error: "+err });
+		}else {
+			log.debug(uniqueDeviceId);
+			res.json({status: "OK", results: "device created with Id: "+uniqueDeviceId});
+		}
+	});
+
+})
+
+//delete an existing device...
+
+router.delete('/deleteDevice/:deviceId', function(req,res,next){ 
+
+	var uniqueDeviceId = req.params.deviceId;
+	registry.delete(uniqueDeviceId, function(err) {
+		
+		if (err){
+			log.debug("error: "+err);
+			res.json({status: "error", results: "error: "+err });
+		}else {
+			log.debug(uniqueDeviceId);
+			res.json({status: "OK", results: "device deleted with Id: "+uniqueDeviceId});
+		}
+	});
+})
+
+// fetch config from device twin for all existing devices in iot-hub...
 
 router.get('/deviceId', function(req, res, next) {
 	log.debug("get request");
@@ -33,10 +104,17 @@ router.get('/deviceId', function(req, res, next) {
 			results.forEach(function(twin) {
 				var systemStatusInfo = {};
 				systemStatusInfo = twin.properties.reported.SystemStatus;
+				
 				if( systemStatusInfo != undefined){
 					systemStatusInfo.gatewayId = twin.deviceId;
 					log.debug("systeminfo: "+JSON.stringify(systemStatusInfo));
 					deviceInfoArray.push(systemStatusInfo);
+				}else{
+					
+					log.debug((twin.deviceId));
+					var deviceId = {}
+					deviceId.gatewayId = twin.deviceId;
+					deviceInfoArray.push(deviceId);
 				}
 			});
 			res.json({status: "OK", results: deviceInfoArray});
@@ -47,6 +125,8 @@ router.get('/deviceId', function(req, res, next) {
 	};
 	query.nextAsTwin(onResults);
 });
+
+// fetch system config from device twin for particular devices in iot-hub...
 
 router.get('/wholeDeviceTwinConfig/:deviceId', function(req, res, next) {
 	
@@ -76,6 +156,8 @@ router.get('/wholeDeviceTwinConfig/:deviceId', function(req, res, next) {
 	};
 	query.nextAsTwin(onResults);
 });
+
+//send command to gateway form azure-app....
 
 router.post('/sendCommandToGateway', function(req, res, next) {
 	
@@ -138,6 +220,7 @@ router.post('/sendCommandToGateway', function(req, res, next) {
 	}
 
 })
+//update desired twin property for particular device or devices...
 
 router.post('/updateDesiredTwinProperty', function(req, res, next) {
 	

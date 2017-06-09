@@ -1,0 +1,6 @@
+{
+	"HostName": "caaqms-gateway-hub.azure-devices.net",
+	"SharedAccessKeyName": "iothubowner",
+	"SharedAccessKey": "HTqgcjys0HIuyy1mQjICa3OIolsCE1jMub5C+3isFRY="
+	
+}

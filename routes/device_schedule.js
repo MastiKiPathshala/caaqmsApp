@@ -7,17 +7,31 @@
  *
  * @author: Saurabh Singh
  *
- * @date: 31 May 2017 First version of web app back-end code
+ * @date: 15 May 2017 First version of web app back-end code
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
+var fs = require('fs');
+var wholeConfigData = fs.readFileSync('./routes/config.txt');
+var parsedConfigData = JSON.parse(wholeConfigData);
+
+var HostName = parsedConfigData.HostName;
+var SharedAccessKeyName = parsedConfigData.SharedAccessKeyName;
+var SharedAccessKey = parsedConfigData.SharedAccessKey;
+
+var connectionString = 'HostName='+HostName+';SharedAccessKeyName='+SharedAccessKeyName+';SharedAccessKey='+SharedAccessKey;
+ 
 var uuid = require('uuid');
 var JobClient = require('azure-iothub').JobClient;
-var connectionString = 'HostName=caaqms-gateway-hub.azure-devices.net;SharedAccessKeyName=iothubowner;SharedAccessKey=HTqgcjys0HIuyy1mQjICa3OIolsCE1jMub5C+3isFRY=';
-var startTime = new Date();
+//var startTime = new Date();
 
 var jobClient = JobClient.fromConnectionString(connectionString);
+
+var Registry = require('azure-iothub').Registry;
+var Client = require('azure-iothub').Client;
+var registry = Registry.fromConnectionString(connectionString);
+
 var express = require('express');
 var router = express.Router();
 
@@ -30,9 +44,12 @@ router.post('/scheduleJob', function(req, res, next) {
 	var responseTimeoutInSeconds = req.body.responseTimeoutInSeconds;
 	var maxExecutionTimeInSeconds = req.body.maxExecutionTimeInSeconds;
 	
-	//var startTime = req.body.startTime;
+	var time = req.body.time;
+	var startTime = new Date(time);
+
 	var parseDeviceId = JSON.parse(deviceId);
 	var deviceIdList = parseDeviceId.id;
+	
 	var countNoOfScheduledJobs = 0;
 	var countNoOfFailedScheduledJobs = 0;
 	var listOfJobId = [];
@@ -101,12 +118,8 @@ router.post('/scheduleJob', function(req, res, next) {
 		});
 		
 	}
-	
-	for(var list in deviceIdList){
 		
-		log.debug("device list: "+deviceIdList[list]);	
-		startJobSchedulingOnDevice(deviceIdList[list]);
-	}
+	startJobSchedulingOnDevice(deviceIdList);
 })
 
 
@@ -120,6 +133,9 @@ router.post('/scheduleTwinUpdate', function(req, res, next) {
 	var maxExecutionTimeInSeconds = req.body.maxExecutionTimeInSeconds;
 	
 	//var startTime = req.body.startTime;
+	var time = req.body.time;
+	var startTime = new Date(time);
+	
 	var parseDeviceId = JSON.parse(deviceId);
 	var deviceIdList = parseDeviceId.id;
 	
@@ -197,62 +213,52 @@ router.post('/scheduleTwinUpdate', function(req, res, next) {
 		
 	}
 	
-	for(var list in deviceIdList){
-		
-		log.debug("device list: "+deviceIdList[list]);
-		startTwinSchedulingOnDevice(deviceIdList[list]);
-	}
+	
+	startTwinSchedulingOnDevice(deviceIdList);
+	
 })
 
 router.post('/currentJobStatus', function(req, res, next) {
+	
+	log.debug("get request for currentJobStatus");
+	var days = req.body.totalDays;
+	var parseDays = JSON.parse(days);
+	
+	var requiredLastDays = parseDays.days;
+	var daysInInt = parseInt(requiredLastDays);
+	var scheduledJobList = [];
+	var requiredTime = daysInInt*24*60*60*1000;
+	
+    var currentTime = new Date();
+    var timeInMilliSeconds = currentTime.getTime();
+	
+    var requiredDate = new Date(timeInMilliSeconds-requiredTime);
+    var utcRequiredTime = requiredDate.toISOString();
+	
+	log.debug("utcRequiredTime: "+utcRequiredTime);
+	
+	var query = registry.createQuery("SELECT * FROM devices.jobs WHERE devices.jobs.startTimeUtc > '"+utcRequiredTime+"'");
+	
+	var onResults = function(err, results) {
+	
+		if (err) {
+			log.debug('Failed to fetch the results: ' + err.message);
+		} else {
 
-	var jobId = req.body.jobId;
-	var parseJobId = JSON.parse(jobId);
-	var jobIdList = parseJobId.id;
-	
-	var countNoOfScheduledJobsStatus = 0;
-	var countNoOfFailedScheduledJobs = 0;
-	var listOfJobId = [];
-	var jobStatusArray = [];
-	log.debug(jobIdList);
-	
-	
-	function monitorJob (jobId, callback) {
-	
-		jobClient.getJob(jobId, function(err, result) {
-			if (err) {
-				log.error('Could not get job status: ' + err.message);
-			} else {
-				log.debug('Job: ' + jobId + ' - status: ' + result.status);
-				callback(null, result);
+			results.forEach(function(twin) {
+				log.debug(JSON.stringify(twin));
+				scheduledJobList.push(twin);
+				//log.debug(twin.jobId +" :status- " +twin.status +" "+ twin.startTimeUtc);
+			});
+			res.json({status: "OK", results: scheduledJobList});
+			if (query.hasMoreResults) {
+				query.nextAsTwin(onResults);
 			}
-		})
-	}	
+		}
+	};
+	query.nextAsTwin(onResults);
 	
-	var startJobSchedulingOnDevice = function(uniqueJobId) {
-	
-		monitorJob(uniqueJobId, function(err, result) {
-			if (err) {
-				log.error('Could not monitor device method job: ' + err.message);
-			} else {
-				log.debug(JSON.stringify(result, null, 2));
-				jobStatusArray.push(result);
-				//io.emit('update',{action:'update', status:' job with jobId: '+ methodJobId +' scheduled'});
-				countNoOfScheduledJobsStatus ++;
-				if(countNoOfScheduledJobsStatus == (jobIdList.length)){
-						
-					res.json({status: "OK", results: jobStatusArray});
-				}
-			}
-		});
-		
-	}
-	
-	for(var list in jobIdList){
-		
-		log.debug("device list: "+jobIdList[list]);	
-		startJobSchedulingOnDevice(jobIdList[list]);
-	}
+
 })
 
 router.post('/cancelScheduledJob', function(req, res, next) {

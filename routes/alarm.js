@@ -17,11 +17,12 @@ var router = express.Router();
 var uuid = require('uuid');
 var azure = require('azure-storage');
 
-var blobService = azure.createBlobService("tanstor","KS4Q+Fe5C+bzLxuCymZV61dMkvbiDQuwqmkiaUAA23agTyI69ijoBsfATM96cMiwytAXlAHcmFuCJUqKgafe+Q==");
+var blobService = azure.createBlobService("caaqmsstorageaccount","lwcNzI+KSdd9QcAMtCTm6CbyEr7RM3Q9H10eld1/ETA78l5bQZTJL1AY79khQBbEJCY1JbUyYo8wTVxPEK6LMw==");
 var fs = require('fs');
 var moment = require('moment-timezone');
 var date = require('date-and-time');
-var containerName = 'rpi-blob-container';
+var containerName = 'caaqms-container';
+var alarmRuleBlob = 'alarmBlob/alarm-deviceRule-blob.json';
 
 router.get('/getRule', function(req,res,next) { 
 	
@@ -61,12 +62,12 @@ router.get('/getRule', function(req,res,next) {
 })
 
 router.post('/setRule', function(req,res,next) {
-	//log.debug("post request initiated with : ");
-	//res.json({status: "OK", results: "hello.."});
+
 	var deviceId = req.body.deviceId;
 	var dataType = req.body.dataType;
 	var operator = req.body.operator;
-	var threshold = req.body.threshold;
+	var rawThreshold = req.body.threshold;
+	var threshold = parseFloat(rawThreshold);
 	var ruleOutput = req.body.ruleOutput;
 	var ruleId = uuid.v4();
 	log.debug("post request initiated with : "+ "deviceId: "+deviceId+ " ruleOutput: "+ruleOutput);
@@ -75,22 +76,31 @@ router.post('/setRule', function(req,res,next) {
 	var wholeData = " ";
 	var splitData = [];
 	
-	blobService.getBlobToText('rpi-blob-container', 'my-awesome-text-blob3',function(err, blobContent, blob) {
+	blobService.getBlobToText(containerName, alarmRuleBlob,function(err, blobContent, blob) {
         if (err) {
             log.error("Couldn't download blob %s");
             log.error(err);
 			var data = JSON.stringify({"deviceId":deviceId,"dataType":dataType,"operator":operator,"threshold":threshold,"ruleOutput":ruleOutput,"ruleId":ruleId});
 			var ruleData = data;
 			log.debug("data needed to be added in blob: "+ruleData);
-			blobService.createBlockBlobFromText('rpi-blob-container','my-awesome-text-blob3',ruleData,function(error, result, response){
-				if(error){
-					log.debug("Couldn't upload string");
-					log.error(error);
+			blobService.getBlobProperties(containerName,alarmRuleBlob,function(err, properties, status) {
+				if (status.isSuccessful) {
+					// Blob exists
+					res.json({status: "error", results: "blob already exists..error in downloading blob"});
 				} else {
-					log.debug('String uploaded successfully');
-					res.json({status: "OK", results: "String uploaded successfully.."});
+					// Blob doesn't exist
+					blobService.createBlockBlobFromText(containerName,alarmRuleBlob,ruleData,function(error, result, response){
+						if(error){
+							log.debug("Couldn't upload string");
+							log.error(error);
+						} else {
+							log.debug('String uploaded successfully');
+							res.json({status: "OK", results: "String uploaded successfully.."});
+						}
+					})
 				}
-			})
+			});
+			
         } else {
 			
             log.debug("Sucessfully downloaded blob:");
@@ -111,11 +121,12 @@ router.post('/setRule', function(req,res,next) {
 				var singleRow = splitData[i];
 				
 				var parseData = JSON.parse(singleRow);
-				var id = parseData.gatewayid;
+				var id = parseData.deviceId;
+				var ruleDataType = parseData.dataType ;
 				
-				if(id.indexOf(deviceId) > -1){
+				if(id.indexOf(deviceId) > -1 && ruleDataType.indexOf(dataType) > -1){
 					
-					//var data = JSON.stringify({"gatewayid":deviceId,"latitude":62.96476533300000,"longitude":82.727356833,"qualityscore":528.411913332500006});
+					//var data = JSON.stringify({"deviceId":deviceId,"latitude":62.96476533300000,"longitude":82.727356833,"qualityscore":528.411913332500006});
 					var data = JSON.stringify({"deviceId":deviceId, "dataType":dataType, "operator":operator, "threshold":threshold, "ruleOutput":ruleOutput,"ruleId":ruleId});
 					wholeData += data+"\n"; 
 					
@@ -135,7 +146,7 @@ router.post('/setRule', function(req,res,next) {
 			
 			log.debug("data needed to be added in blob: "+wholeData);
 			
-			blobService.createBlockBlobFromText('rpi-blob-container','my-awesome-text-blob3',wholeData,function(error, result, response){
+			blobService.createBlockBlobFromText(containerName,alarmRuleBlob,wholeData,function(error, result, response){
 				
 				if(error){
 					

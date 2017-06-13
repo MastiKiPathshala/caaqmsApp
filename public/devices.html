@@ -120,24 +120,27 @@ div p
 <!--Table-->
 <div class="container" style="margin-top:5%;margin-left:0%;position:absolute; width:95%">
   <h2 class="entypto-arrows-ccw" style="display:inline">All Devices<a onclick="refresh()">
-  <span class="entypo-arrows-ccw" style="font-size: 30px;margin-left:2%"></span></a>&emsp;&emsp;  </h2><button onclick="jobSchedule()" style="margin-left:40%">JOB SCHEDULER</button>&ensp; <button onclick="addDevice()">ADD DEVICE</button>&nbsp;<input type="text" name="deviceId" value="YourDeviceName" id ="newDevice">
+  <span class="entypo-arrows-ccw" style="font-size: 30px;margin-left:2%"></span></a>&emsp;&emsp;  </h2><button onclick="jobSchedule()" style="margin-left:40%">JOB SCHEDULER</button>&ensp; <button onclick="getValue()">ADD DEVICE</button>
+
     <table id="table" class="table table-bordered table-hover table-responsive" width="100%" style="background-color:white;overflow-x:scroll">
     <col width="">
     <col width="">
-    <col width="15%">
+    <col width="20%">
     <col width="13%">
     <col width="18%">
+    <col width="28%">
     <col width="25%">
-    <col width="25%">
+    <col width="8%">
       <thead class="thead-inverse">
         <tr>
-          <th></th>
+          <th orderable="false"></th>
           <th height="10px">STATUS</th>
           <th>DEVICE ID</th>
           <th>MANUFACTURER</th>
           <th>HARDWARE VERSION</th>
           <th>SOFTWARE VERSION</th>
           <th>LAST REBOOT TIME</th>
+          <th>LOCATION</th>
         </tr>
       </thead>
   
@@ -151,9 +154,49 @@ div p
 </div>
 
 <script type="text/javascript">
-function addDevice()
-{   var deviceName =$('#newDevice').val();
-   alert(deviceName);
+function getValue(){
+               var deviceName = prompt("Enter Device Name : ", "New Device");
+                addDevice(deviceName);
+                var location = prompt("Enter Device Location : ", "Location");
+                addDeviceLocation(location,deviceName);
+
+            }
+
+function addDeviceLocation(locationx,deviceName)
+{   
+  var devices=[];
+  devices.push(deviceName);
+
+  var patch = {};
+  patch.tags={};
+  patch.tags['location']=locationx;
+
+    $.ajax({
+  method: 'POST',
+  url: '/api/deviceManagement/v1.0/updateDesiredTwinProperty',
+  data :{
+   deviceid : JSON.stringify({ id: devices }),
+   twinPatchData : JSON.stringify(patch)
+   
+  }
+ }).done(function(data) {
+
+  if  (data.status === "OK") {
+   console.log(data.results);
+   window.open('devices.html', '_parent');
+   
+  } else {
+   alert(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+  console.log (data);
+ });
+
+}
+function addDevice(retVal)
+{   var deviceName =retVal;
 	$.ajax({
   method: 'POST',
   url: '/api/deviceManagement/v1.0/createDevice/'+deviceName,
@@ -173,44 +216,56 @@ function addDevice()
     });
 }
 function jobSchedule()
-{
+{ 
+  alert("Check Devices");
   openNav();
   $('.row .col-sm-11 #mySidenav').html('<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>');
-  var html1 ="<p>&ensp;&nbsp;Jobs</p><div class='box'><a><span id='twin' style='font-size:25px'>Edit Device Twin</span></a><br/><a><span id='job' style='font-size:25px'>Invoke Method</span></a></div>";
+  var html1 ="<p>&ensp;&nbsp;Jobs</p><div class='box'><a><span id='twin1' style='font-size:25px'>Edit Device Twin</span></a><br/><a><span id='job' style='font-size:25px'>Invoke Method</span></a></div>";
   $('.row .col-sm-11 #mySidenav').append(html1);
   
-  var deviceId,devicesForScheduling=[];
-  window.localStorage.removeItem('devicesForScheduling');
-  
-  if($('.container #table :checkbox:checked').length > 0)
-  { 
-      $('.container #table :checkbox:checked').each(function () {
-        deviceId=$('.container #table :checkbox:checked').attr("name");
-        devicesForScheduling.push(deviceId);
-    });
+}
 
-    window.localStorage.setItem('devicesForScheduling',JSON.stringify(devicesForScheduling));
-    alert(devicesForScheduling);
+function getCheckboxes()
+{
+  var deviceId,devicesForScheduling=[];
+var boxes = $('.container #table :checkbox');
+
+if($('.container #table :checkbox:checked').length > 0)
+  {
+    window.localStorage.removeItem('devicesForScheduling');
+for(var i in boxes) {
+  
+  if(boxes[i].checked) {
+    devicesForScheduling.push(boxes[i].value);
+  }
+
+}
+ window.localStorage.setItem('devicesForScheduling',JSON.stringify(devicesForScheduling));
+alert("Selected Devices :" +devicesForScheduling);
 }
 else
-{ 
-  $('.container #table :checkbox:unchecked').each(function () {
-        deviceId=$('.container #table :checkbox').attr("name");
-        devicesForScheduling.push(deviceId);
+{  
+  for(var i in boxes) {
+    if(boxes[i].checked==false) {
+    
+    devicesForScheduling.push(boxes[i].value);
+  }
 
-    });
-  window.localStorage.setItem('devicesForScheduling',JSON.stringify(devicesForScheduling));
-  alert(devicesForScheduling);
 }
+ window.localStorage.setItem('devicesForScheduling',JSON.stringify(devicesForScheduling));
+//alert(devicesForScheduling);
 
- 
+
 }
-
+}
 $(document).on("click", "#job", function(){
+   getCheckboxes();
   window.open('scheduleMethod.html', '_parent');
 
 });
-$(document).on("click", "#twin", function(){
+
+$(document).on("click", "#twin1", function(){
+  getCheckboxes();
   window.open('scheduleTwin.html', '_parent');
 
 });
@@ -260,7 +315,7 @@ var GetWholeTwinConfig = function ()
 { 
   openNav();
 
-  $('.row .col-sm-11 #mySidenav').html('<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a><a href="#"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Device Details </a><div id="details"><a> Disable Device</a><span id="addRule" style="font-size:25px"><a>Add Rule</a></span><a href="">Add/Delete Sensors</a><span id="methods" style="font-size:25px"><a >Execute Remote Command<br/></span></a><span id="removeDevice" style="font-size:25px"><a href="">Remove Device</a></span></div><a>Device Twin</a><div id="twin" ><a id="downloadAnchorElem" style="font-size:15px;margin-left:80%">Download</a><a href="#" style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Tags </a><span id="editTags" style="font-size:25px"><a style="font-size:15px;margin-left:90%;display:inline" >Edit</a></span><div id="tags" class="box"></div><a href="#"  style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Desired Properties </a><span id="editDesired" style="font-size:25px"><a style="font-size:15px;margin-left:90%;display:inline" >Edit</a></span><div id="desired" class="box"></div><a href="#"  style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Reported Properties</a><div id="reported" class="box"></div></div><a href="#" ><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Device Properties</a><div id="properties" class="box"></div>');
+  $('.row .col-sm-11 #mySidenav').html('<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a><a href="#"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Device Details </a><div id="details"><a> Disable Device</a><span id="addRule" style="font-size:25px"><a>Add Rule</a></span><a href="">Add/Delete Sensors</a><span id="methods" style="font-size:25px"><a >Execute Remote Command<br/></span></a><span id="removeDevice" style="font-size:25px"><a href="">Remove Device</a></span></div><a><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Device Twin</a><div id="twin" ><a id="downloadAnchorElem" style="font-size:15px;margin-left:80%">Download</a><a href="#" style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Tags </a><span id="editTags" style="font-size:25px"><a style="font-size:15px;margin-left:90%;display:inline" >Edit</a></span><div id="tags" class="box"></div><a href="#"  style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Desired Properties </a><span id="editDesired" style="font-size:25px"><a style="font-size:15px;margin-left:90%;display:inline" >Edit</a></span><div id="desired" class="box"></div><a href="#"  style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Reported Properties</a><div id="reported" class="box"></div></div><a href="#" ><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Device Properties</a><div id="properties" class="box"></div>');
 
  var deviceId = window.localStorage.getItem('deviceIdForMethod');
     $.ajax({
@@ -383,28 +438,32 @@ function fillTable(){
       }).done(function(data) {
 
     if (data.status === "OK") { 
+      var tb = document.getElementById('table');
+    while(tb.rows.length > 1) {
+      tb.deleteRow(1);
+    }
       
       for(var i = 0; i < data.results.length; i++){
             //var x=JSON.parse(data.results[i]);
-            if(data.results[i].reboot==undefined)
-            {
+            
             var row='<tr>',col;
-                col = '<td ><label><input type="checkbox" name='+data.results[i].gatewayId+' ></label></td>'+'<td >'+data.results[i].status+'</td>'+'<td >'+data.results[i].gatewayId+'</td>'+'<td >'+data.results[i].manufacturer+'</td>'+'<td >'+data.results[i].hardwareVersion+'</td>'+'<td >'+data.results[i].softwareVersion+'</td>'+'<td >'+data.results[i].reboot+'</td>';
+                col = '<td ><label><input type="checkbox" value='+data.results[i].gatewayId+'></label></td>'+'<td >'+data.results[i].status+'\n('+data.results[i].connectionState+')'+'</td>'+'<td >'+data.results[i].gatewayId+'</td>'+'<td >'+data.results[i].manufacturer+'</td>'+'<td >'+data.results[i].hardwareVersion+'</td>'+'<td >'+data.results[i].softwareVersion+'</td>'+'<td >'+data.results[i].lastBootup+'</td>'+'<td >'+data.results[i].location+'</td>';
               row += col+'</tr>';
           $('.row .col-sm-11 .container #table').append(row);
           console.log(data.results[i]);
           
-    }
-    else{
+    
+    /*else{
     	var row='<tr>',col;
                 col = '<td ><label><input type="checkbox" name='+data.results[i].gatewayId+' ></label></td>'+'<td >'+data.results[i].status+'</td>'+'<td >'+data.results[i].gatewayId+'</td>'+'<td >'+data.results[i].manufacturer+'</td>'+'<td >'+data.results[i].hardwareVersion+'</td>'+'<td >'+data.results[i].softwareVersion+'</td>'+'<td >'+data.results[i].reboot.lastReboot+'</td>';
               row += col+'</tr>';
           $('.row .col-sm-11 .container #table').append(row);
           console.log(data.results[i]);
 
-      }
+      }*/
   }addRowHandlers();
-      $('.row .col-sm-11 .container #table').DataTable();
+      $('.row .col-sm-11 .container #table').DataTable({columnDefs: [ { orderable: false, targets: [0] }],order: [[ 2, 'asc' ]]}
+);
     }
     else{ 
         console.log(data.message);

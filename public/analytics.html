@@ -51,8 +51,8 @@
         <div id="second" style="font-size: 15px; margin-left: 40px; margin-top: -30px; display; inline;"></div>
         <div id="day" style="font-size: 17px; margin-top: 10px;"></div>
     </div>
-  </div>
-  <span id="head"></span>
+  </div><br/><br/><br/>
+  <span id="head"></span><br/><br/>
   <br/>
   <p class="title">Dashboard</p>
   <div class="hline title_underline"></div>
@@ -259,7 +259,7 @@
                 $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
                 $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
               }
-          else if(window.localStorage.getItem(key1)=='yellow')
+          else if(window.localStorage.getItem(key1)=='red')
           {		$('#arc_container .arc_reactor .case_container .e7 #temperature').css({"background": "url(images/temperature3.png)","background-position":"50% 36% "});
           		 $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
                 $('.scroll #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
@@ -291,11 +291,18 @@
                 $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
                 $('.scroll  #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
             }
-        else{
+        else if(window.localStorage.getItem(key2)=='red'){
              $('#2 #arc_container .arc_reactor .case_container .e7 #humidity').css({"background": "url(images/humidity3.png)","background-position":"50% 36% "});
               $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
                 $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
                 $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+           }
+           else
+           {
+            $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #2 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+
            }
 
 
@@ -316,12 +323,19 @@
                 $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
                 $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
               }
-        else
+        else  if(window.localStorage.getItem(key3)=='red')
         {
               $('#3 #arc_container .arc_reactor .case_container .e7 #so2').css({"background": "url(images/so23.png)","background-position":"50% 36% "});
                $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
                 $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
                 $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+              }
+              else
+              {
+                $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #3 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+
               }
 
 
@@ -344,10 +358,16 @@
              // $('.scroll #arc_container .arc_reactor .case_container .e7 #no2').prop('title','no2');
         }
 
-        else
+        else if(window.localStorage.getItem(key4)=='red')
         {
               $('#4 #arc_container .arc_reactor .case_container .e7 #no2').css({"background": "url(images/no23.png)","background-position":"50% 36% "});
                $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
+                $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
+                $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
+        }
+        else
+        {
+          $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3').removeClass("e5_1");
                 $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3').removeClass("e5_2");
                 $('.scroll #4 #arc_container .arc_reactor .case_container .e7 .semi_arc_3 .semi_arc_3 .semi_arc_3').removeClass("e5_3");
         }

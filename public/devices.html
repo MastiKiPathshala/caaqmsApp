@@ -44,7 +44,7 @@
     height: auto;
     border-style: solid;
     border-width: 1px;
-    font-size: 10px;
+    font-size: 8px;
     padding: 8px 8px 8px;
     margin: 8px 8px 8px 25px ;
 }
@@ -81,6 +81,10 @@ div p
  
 
 }
+#properties
+{
+	font-size: 12px;
+}
 
 @media screen and (max-height: 450px) {
   .sidenav {padding-top: 15px;}
@@ -116,7 +120,7 @@ div p
 <!--Table-->
 <div class="container" style="margin-top:5%;margin-left:0%;position:absolute; width:95%">
   <h2 class="entypto-arrows-ccw" style="display:inline">All Devices<a onclick="refresh()">
-  <span class="entypo-arrows-ccw" style="font-size: 30px;margin-left:2%"></span></a>&emsp; <button onclick="jobSchedule()">JOB SCHEDULER</button></h2>
+  <span class="entypo-arrows-ccw" style="font-size: 30px;margin-left:2%"></span></a>&emsp;&emsp;  </h2><button onclick="jobSchedule()" style="margin-left:40%">JOB SCHEDULER</button>&ensp; <button onclick="addDevice()">ADD DEVICE</button>&nbsp;<input type="text" name="deviceId" value="YourDeviceName" id ="newDevice">
     <table id="table" class="table table-bordered table-hover table-responsive" width="100%" style="background-color:white;overflow-x:scroll">
     <col width="">
     <col width="">
@@ -147,11 +151,32 @@ div p
 </div>
 
 <script type="text/javascript">
+function addDevice()
+{   var deviceName =$('#newDevice').val();
+   alert(deviceName);
+	$.ajax({
+  method: 'POST',
+  url: '/api/deviceManagement/v1.0/createDevice/'+deviceName,
+ }).done(function(data) {
+
+  if (data.status === "OK") {
+   console.log(data.results);
+   refresh();
+   
+  } else {
+   console.log(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+      console.log (data);
+    });
+}
 function jobSchedule()
 {
   openNav();
   $('.row .col-sm-11 #mySidenav').html('<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>');
-  var html1 ="<p>&ensp;&nbsp;Jobs</p><div class='box'><a onclick=''>Edit Device Twin</a><br/><a><span id='job' style='font-size:25px'>Invoke Method</span></a></div>";
+  var html1 ="<p>&ensp;&nbsp;Jobs</p><div class='box'><a><span id='twin' style='font-size:25px'>Edit Device Twin</span></a><br/><a><span id='job' style='font-size:25px'>Invoke Method</span></a></div>";
   $('.row .col-sm-11 #mySidenav').append(html1);
   
   var deviceId,devicesForScheduling=[];
@@ -165,10 +190,11 @@ function jobSchedule()
     });
 
     window.localStorage.setItem('devicesForScheduling',JSON.stringify(devicesForScheduling));
+    alert(devicesForScheduling);
 }
 else
 { 
-  $('.container #table :checkbox').each(function () {
+  $('.container #table :checkbox:unchecked').each(function () {
         deviceId=$('.container #table :checkbox').attr("name");
         devicesForScheduling.push(deviceId);
 
@@ -182,6 +208,10 @@ else
 
 $(document).on("click", "#job", function(){
   window.open('scheduleMethod.html', '_parent');
+
+});
+$(document).on("click", "#twin", function(){
+  window.open('scheduleTwin.html', '_parent');
 
 });
 
@@ -205,13 +235,34 @@ $(document).on("click", "#job", function(){
   window.open("addRule.html", "_parent");
 
 });
+  $(document).on("click", "#removeDevice", function(){
+
+   var deviceId = window.localStorage.getItem('deviceIdForMethod');
+   $.ajax({
+  method: 'DELETE',
+  url: '/api/deviceManagement/v1.0/deleteDevice/'+deviceId,
+ }).done(function(data) {
+
+  if (data.status === "OK") {
+   console.log(data.results);
+   
+  } else {
+   console.log(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+      console.log (data);
+    });
+
+});
 var GetWholeTwinConfig = function () 
 { 
   openNav();
 
-  $('.row .col-sm-11 #mySidenav').append('<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a><a href="#"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Device Details </a><div id="details"><a> Disable Device</a><span id="addRule" style="font-size:25px"><a>Add Rule</a></span><a href="">Commands</a><span id="methods" style="font-size:25px"><a >Methods<br/></span></a><a href="">Remove Device</a></div><a>Device Twin</a><div id="twin" ><a id="downloadAnchorElem" style="font-size:15px;margin-left:80%">Download</a><a href="#" style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Tags </a><span id="editTags" style="font-size:25px"><a style="font-size:15px;margin-left:90%;display:inline" >Edit</a></span><div id="tags" class="box"></div><a href="#"  style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Desired Properties </a><span id="editDesired" style="font-size:25px"><a style="font-size:15px;margin-left:90%;display:inline" >Edit</a></span><div id="desired" class="box"></div><a href="#"  style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Reported Properties</a><div id="reported" class="box"></div></div><a href="#" ><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Device Properties</a><div id="properties" class="box"></div><a href="#" ><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Recent Job</a><div class="box"></div>');
+  $('.row .col-sm-11 #mySidenav').html('<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a><a href="#"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Device Details </a><div id="details"><a> Disable Device</a><span id="addRule" style="font-size:25px"><a>Add Rule</a></span><a href="">Add/Delete Sensors</a><span id="methods" style="font-size:25px"><a >Execute Remote Command<br/></span></a><span id="removeDevice" style="font-size:25px"><a href="">Remove Device</a></span></div><a>Device Twin</a><div id="twin" ><a id="downloadAnchorElem" style="font-size:15px;margin-left:80%">Download</a><a href="#" style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Tags </a><span id="editTags" style="font-size:25px"><a style="font-size:15px;margin-left:90%;display:inline" >Edit</a></span><div id="tags" class="box"></div><a href="#"  style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Desired Properties </a><span id="editDesired" style="font-size:25px"><a style="font-size:15px;margin-left:90%;display:inline" >Edit</a></span><div id="desired" class="box"></div><a href="#"  style="font-size:15px;padding-left:15px"><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true" style="font-size:15px"></span>Reported Properties</a><div id="reported" class="box"></div></div><a href="#" ><span id="glyph" class="glyphicon glyphicon-triangle-right" aria-hidden="true"></span>Device Properties</a><div id="properties" class="box"></div>');
 
- var deviceId = 'BLR-CAAQMS-LAB-1';
+ var deviceId = window.localStorage.getItem('deviceIdForMethod');
     $.ajax({
   method: 'GET',
   url: '/api/deviceManagement/v1.0/wholeDeviceTwinConfig/'+deviceId,
@@ -260,9 +311,47 @@ var GetWholeTwinConfig = function ()
   console.log (data);
   
  });
+ $('.row .col-sm-11 #mySidenav #properties').append('<p>DEVICE ID</p><input type="text" name="deviceId" value="" id ="p1" ><input id="copy_btn1" type="button" value="copy"><br><p>HOSTNAME</p><input type="text" name="hostname" value="" id ="p2" ><input id="copy_btn2" type="button" value="copy"><br><p>KEY</p><input type="text" name="hostname" value="" id ="p3" ><input id="copy_btn3" type="button" value="copy">');
+ //$('.row .col-sm-11 #mySidenav #properties $p1').val('deviceId');
+ $.ajax({
+  method: 'GET',
+  url: '/api/deviceManagement/v1.0/hostNameDevicePrimaryKey/'+deviceId,
+ }).done(function(data) {
+
+  if (data.status === "OK") {
+   console.log(data.results);
+   $('.row .col-sm-11 #mySidenav #properties #p1').val(deviceId);
+	$('.row .col-sm-11 #mySidenav #properties #p2').val(data.results.hostName);
+	$('.row .col-sm-11 #mySidenav #properties #p3').val(data.results.devicePrimaryKey);
+   
+  } else { 
+   console(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+  console.log (data);
+  
+ });
+
+
 }
 
-  
+//var copyBtn = $('.row .col-sm-11 #mySidenav #properties #copy_btn1');
+ $(document).on("click", "#copy_btn1", function(){
+  $('.row .col-sm-11 #mySidenav #properties #p1').val().select();
+  //id.select();
+  document.execCommand('copy','false',null); // or 'cut'
+});
+
+
+/*copyBtn.addEventListener('click', function () {
+  var id = document.querySelector('#p1');
+  id.select();
+  document.execCommand('copy'); // or 'cut'
+}, false);
+*/
+
 function openNav() {
     document.getElementById("mySidenav").style.width = "30%";
     document.getElementById("table").style.marginRight = "30%";
@@ -297,14 +386,24 @@ function fillTable(){
       
       for(var i = 0; i < data.results.length; i++){
             //var x=JSON.parse(data.results[i]);
+            if(data.results[i].reboot==undefined)
+            {
             var row='<tr>',col;
-                col = '<td ><label><input type="checkbox" name='+data.results[i].gatewayId+' ></label></td>'+'<td >'+data.results[i].status+'</td>'+'<td >'+data.results[i].gatewayId+'</td>'+'<td >'+data.results[i].manufacturer+'</td>'+'<td >'+data.results[i].hardwareVersion+'</td>'+'<td >'+data.results[i].softwareVersion+'</td>'+'<td >'+data.results[i].reboot.lastReboot+'</td>';
+                col = '<td ><label><input type="checkbox" name='+data.results[i].gatewayId+' ></label></td>'+'<td >'+data.results[i].status+'</td>'+'<td >'+data.results[i].gatewayId+'</td>'+'<td >'+data.results[i].manufacturer+'</td>'+'<td >'+data.results[i].hardwareVersion+'</td>'+'<td >'+data.results[i].softwareVersion+'</td>'+'<td >'+data.results[i].reboot+'</td>';
               row += col+'</tr>';
           $('.row .col-sm-11 .container #table').append(row);
           console.log(data.results[i]);
           
-    
-      }addRowHandlers();
+    }
+    else{
+    	var row='<tr>',col;
+                col = '<td ><label><input type="checkbox" name='+data.results[i].gatewayId+' ></label></td>'+'<td >'+data.results[i].status+'</td>'+'<td >'+data.results[i].gatewayId+'</td>'+'<td >'+data.results[i].manufacturer+'</td>'+'<td >'+data.results[i].hardwareVersion+'</td>'+'<td >'+data.results[i].softwareVersion+'</td>'+'<td >'+data.results[i].reboot.lastReboot+'</td>';
+              row += col+'</tr>';
+          $('.row .col-sm-11 .container #table').append(row);
+          console.log(data.results[i]);
+
+      }
+  }addRowHandlers();
       $('.row .col-sm-11 .container #table').DataTable();
     }
     else{ 
@@ -320,7 +419,8 @@ function addRowHandlers() {
       for (i = 1; i < rows.length; i++) {
             rows[i].onclick = function(){ 
               return function(){
-               var id = this.cells[i].innerHTML;
+               var id = this.cells[2].innerHTML;
+               
                window.localStorage.setItem('deviceIdForMethod',id);
                //alert(id);
                GetWholeTwinConfig();

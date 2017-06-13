@@ -59,7 +59,10 @@ router.get('/hostNameDevicePrimaryKey/:deviceId', function(req,res,next){
 router.post('/createDevice/:deviceId', function(req,res,next){ 
 
 	var uniqueDeviceId = req.params.deviceId;
-	registry.create({deviceId: uniqueDeviceId}, function (err, dev) {
+	var device = {
+		deviceId: uniqueDeviceId,
+	};
+	registry.create(device, function (err, dev) {
 		
 		if (err){
 			log.debug(err);
@@ -94,6 +97,7 @@ router.delete('/deleteDevice/:deviceId', function(req,res,next){
 router.get('/deviceId', function(req, res, next) {
 	log.debug("get request");
 	var deviceInfoArray = [];
+	var currentDeviceCount = 0;
 	var query = registry.createQuery('SELECT * FROM devices');
 	var onResults = function(err, results) {
 	
@@ -101,23 +105,43 @@ router.get('/deviceId', function(req, res, next) {
 			log.error('Failed to fetch the results: ' + err.message);
 		} else {
 
+			var totalDeviceCount = results.length;
+			log.debug (totalDeviceCount);
+
 			results.forEach(function(twin) {
-				var systemStatusInfo = {};
-				systemStatusInfo = twin.properties.reported.SystemStatus;
-				
-				if( systemStatusInfo != undefined){
-					systemStatusInfo.gatewayId = twin.deviceId;
-					log.debug("systeminfo: "+JSON.stringify(systemStatusInfo));
-					deviceInfoArray.push(systemStatusInfo);
-				}else{
-					
-					log.debug((twin.deviceId));
-					var deviceId = {}
-					deviceId.gatewayId = twin.deviceId;
-					deviceInfoArray.push(deviceId);
+
+				if (twin.properties.reported.SystemStatus === undefined) {
+					var deviceStatusInfo = {};
+					deviceStatusInfo.gatewayId = twin.deviceId;
+					deviceStatusInfo.location = twin.tags.location;
+				} else {
+					var deviceStatusInfo = {};
+					deviceStatusInfo = twin.properties.reported.SystemStatus;
+					deviceStatusInfo.gatewayId = twin.deviceId;
+					deviceStatusInfo.location = twin.tags.location;
 				}
+
+				registry.get(twin.deviceId, function (err, dev) {
+
+				   currentDeviceCount ++;
+					if (err) {
+						log.error('Failed to get device state for ' + twin.deviceId + ' : ' + err.message);
+						log.debug (JSON.stringify (deviceStatusInfo));
+						deviceInfoArray.push(deviceStatusInfo);
+						if (currentDeviceCount == totalDeviceCount) {
+							res.json({status: "OK", results: deviceInfoArray});
+						}
+					} else {
+						deviceStatusInfo.status = dev.status;
+						deviceStatusInfo.connectionState = dev.connectionState;
+						log.debug (JSON.stringify (deviceStatusInfo));
+						deviceInfoArray.push(deviceStatusInfo);
+						if (currentDeviceCount == totalDeviceCount) {
+							res.json({status: "OK", results: deviceInfoArray});
+						}
+					}
+				});
 			});
-			res.json({status: "OK", results: deviceInfoArray});
 			if (query.hasMoreResults) {
 				query.nextAsTwin(onResults);
 			}
@@ -255,4 +279,4 @@ router.post('/updateDesiredTwinProperty', function(req, res, next) {
 		UpdateDesireTwinProperty(deviceIdList[list]);
 	}
 })
-module.exports = router; 
+module.exports = router;

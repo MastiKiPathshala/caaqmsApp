@@ -72,7 +72,6 @@ router.post('/createDevice/:deviceId', function(req,res,next){
 			res.json({status: "OK", results: "device created with Id: "+uniqueDeviceId});
 		}
 	});
-
 })
 
 //delete an existing device...
@@ -83,11 +82,31 @@ router.delete('/deleteDevice/:deviceId', function(req,res,next){
 	registry.delete(uniqueDeviceId, function(err) {
 		
 		if (err){
-			log.debug("error: "+err);
+			log.debug("Device {" + uniqueDeviceId + ") delete failed : " + err);
 			res.json({status: "error", results: "error: "+err });
 		}else {
-			log.debug(uniqueDeviceId);
+			log.debug(Device {" + uniqueDeviceId + ") deleted : " + uniqueDeviceId);
 			res.json({status: "OK", results: "device deleted with Id: "+uniqueDeviceId});
+		}
+	});
+})
+
+//Update an IoT device...
+
+router.post('/updateDevice/:deviceId', function(req,res,next){
+
+	var device = {
+		deviceId: req.params.deviceId,
+		status: req.body.deviceStatus
+	};
+	registry.update (device, function (err, dev) {
+
+		if (err){
+			log.debug("Device {" + device.deviceId + ") update failed : " + err);
+			res.json({status: "error", results: "error: "+err });
+		}else {
+			log.debug("Device {" + device.deviceId + ") updated : " + JSON.stringify (dev));
+			res.json({status: "OK", results: "device created with Id: "+uniqueDeviceId});
 		}
 	});
 })

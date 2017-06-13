@@ -183,7 +183,7 @@ var locationInit = function ()
 
 			marker.addListener('click', function() {
 			    //alert(this.getTitle());
-				window.localStorage.removeItem("'"+gatewayId+"temperature'");
+				window.localStorage.removeItem(gatewayId+"temperature");
 				window.localStorage.removeItem("'"+gatewayId+"so2'");
 				window.localStorage.removeItem("'"+gatewayId+"no2'");
 				window.localStorage.removeItem("'"+gatewayId+"so2'");

@@ -64,7 +64,7 @@ router.get('/getRules', function(req,res,next) {
 	})
 })
 
-router.get('/getRule/:deviceId, function(req,res,next) {
+router.get('/getRule/:deviceId', function(req,res,next) {
 
 	var wholeAlertRuleData = [];
 	var reqStatus = "OK";
@@ -104,7 +104,7 @@ router.get('/getRule/:deviceId, function(req,res,next) {
 		log.debug('GET response for gatewayLocations : status = ' + reqStatus);
 		}
 	});
-}
+})
 
 router.post('/setRule', function(req,res,next) {
 
@@ -212,7 +212,7 @@ router.post('/setRule', function(req,res,next) {
 
 router.post('/deleteRule', function(req,res,next) {
 	res.json({status: "OK", results: "String uploaded successfully.."});
-}
+})
 
 router.put('/getalerts', function(req, res, next) {
 	

@@ -85,7 +85,7 @@ router.delete('/deleteDevice/:deviceId', function(req,res,next){
 			log.debug("Device {" + uniqueDeviceId + ") delete failed : " + err);
 			res.json({status: "error", results: "error: "+err });
 		}else {
-			log.debug(Device {" + uniqueDeviceId + ") deleted : " + uniqueDeviceId);
+			log.debug("Device {" + uniqueDeviceId + ") deleted : " + uniqueDeviceId);
 			res.json({status: "OK", results: "device deleted with Id: "+uniqueDeviceId});
 		}
 	});
@@ -106,7 +106,7 @@ router.post('/updateDevice/:deviceId', function(req,res,next){
 			res.json({status: "error", results: "error: "+err });
 		}else {
 			log.debug("Device {" + device.deviceId + ") updated : " + JSON.stringify (dev));
-			res.json({status: "OK", results: "device created with Id: "+uniqueDeviceId});
+			res.json({status: "OK", results: "device created with Id: "+device.deviceId});
 		}
 	});
 })

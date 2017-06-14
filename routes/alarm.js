@@ -66,9 +66,12 @@ router.post('/setRule', function(req,res,next) {
 	var deviceId = req.body.deviceId;
 	var dataType = req.body.dataType;
 	var operator = req.body.operator;
-	var rawThreshold = req.body.threshold;
-	var threshold = parseFloat(rawThreshold);
-	var ruleOutput = req.body.ruleOutput;
+	var yRawThreshold = req.body.yellowThreshold;
+	var rRawThreshold = req.body.redThreshold;
+	var yThreshold = parseFloat(yRawThreshold);
+	var rThreshold = parseFloat(rRawThreshold);
+	//var ruleOutput = req.body.ruleOutput;
+	var ruleOutput = req.body.alertActionId;
 	var ruleId = uuid.v4();
 	log.debug("post request initiated with : "+ "deviceId: "+deviceId+ " ruleOutput: "+ruleOutput);
 	
@@ -76,11 +79,11 @@ router.post('/setRule', function(req,res,next) {
 	var wholeData = " ";
 	var splitData = [];
 	
-	blobService.getBlobToText(containerName, alarmRuleBlob,function(err, blobContent, blob) {
+	blobService.getBlobToText(containerName, alarmRuleBlob, function(err, blobContent, blob) {
         if (err) {
             log.error("Couldn't download blob %s");
             log.error(err);
-			var data = JSON.stringify({"deviceId":deviceId,"dataType":dataType,"operator":operator,"threshold":threshold,"ruleOutput":ruleOutput,"ruleId":ruleId});
+			var data = JSON.stringify({"deviceId":deviceId,"dataType":dataType,"operator":operator,"yThreshold":yThreshold,"rThreshold":rThreshold,"ruleOutput":ruleOutput,"ruleId":ruleId});
 			var ruleData = data;
 			log.debug("data needed to be added in blob: "+ruleData);
 			blobService.getBlobProperties(containerName,alarmRuleBlob,function(err, properties, status) {
@@ -125,9 +128,7 @@ router.post('/setRule', function(req,res,next) {
 				var ruleDataType = parseData.dataType ;
 				
 				if(id.indexOf(deviceId) > -1 && ruleDataType.indexOf(dataType) > -1){
-					
-					//var data = JSON.stringify({"deviceId":deviceId,"latitude":62.96476533300000,"longitude":82.727356833,"qualityscore":528.411913332500006});
-					var data = JSON.stringify({"deviceId":deviceId, "dataType":dataType, "operator":operator, "threshold":threshold, "ruleOutput":ruleOutput,"ruleId":ruleId});
+					var data = JSON.stringify({"deviceId":deviceId, "dataType":dataType, "operator":operator, "yThreshold":yThreshold, "rThreshold":rThreshold, "ruleOutput":ruleOutput,"ruleId":ruleId});
 					wholeData += data+"\n"; 
 					
 				}else{
@@ -139,7 +140,7 @@ router.post('/setRule', function(req,res,next) {
 			}
 			log.debug("countNoOfRowsInBlob: "+countNoOfRowsInBlob + " "+"splitData.length: "+splitData.length);
 			if(countNoOfRowsInBlob == splitData.length){
-				var data = JSON.stringify({"deviceId":deviceId, "dataType":dataType, "operator":operator, "threshold":threshold, "ruleOutput":ruleOutput,"ruleId":ruleId});
+				var data = JSON.stringify({"deviceId":deviceId, "dataType":dataType, "operator":operator, "yThreshold":yThreshold, "rThreshold":rThreshold, "ruleOutput":ruleOutput,"ruleId":ruleId});
 				wholeData += data+"\n";
 				
 			}

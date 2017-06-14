@@ -24,16 +24,18 @@ var date = require('date-and-time');
 var containerName = 'caaqms-container';
 var alarmRuleBlob = 'alarmBlob/alarm-deviceRule-blob.json';
 
-router.get('/getRule', function(req,res,next) { 
+router.get('/getRules', function(req,res,next) {
 	
 	var wholeAlertRuleData = [];
-	var dataType = "xyz";
 	var reqStatus = "OK";
-	//log.debug('GET request for Temperature : ' + req);
 	
-	//GetFinalDataFromFile(dataType,res,function(fileData){
 	blobService.getBlobToText(containerName, alarmRuleBlob, function(err, fileData, blob) {
 	
+        if (err) {
+            log.error("Couldn't download blob %s");
+			res.json({status: "error", results: "Alert Rule data not found"});
+		} else {
+
 		var splitData = fileData.toString().split("\n");
 		var numberOfRowsInFile = splitData.length;
 		log.debug("splitData: "+splitData);
@@ -53,14 +55,56 @@ router.get('/getRule', function(req,res,next) {
 			wholeAlertRuleData.push(parseData);
 					
 		}
-		
+
 		log.debug("WHOLEDATA OF ALERT RULES: "+JSON.stringify(wholeAlertRuleData));
-		
+
 		res.json({status: reqStatus, results: wholeAlertRuleData});
 		log.debug('GET response for gatewayLocations : status = ' + reqStatus);
+		}
 	})
-	
 })
+
+router.get('/getRule/:deviceId, function(req,res,next) {
+
+	var wholeAlertRuleData = [];
+	var reqStatus = "OK";
+	var gatewayId = req.params.deviceId;
+	
+	blobService.getBlobToText(containerName, alarmRuleBlob, function(err, fileData, blob) {
+	
+        if (err) {
+            log.error("Couldn't download blob %s");
+			res.json({status: "error", results: "Alert Rule data not found"});
+		} else {
+
+		var splitData = fileData.toString().split("\n");
+		var numberOfRowsInFile = splitData.length;
+		log.debug("splitData: "+splitData);
+		
+		var wholeAlertDataFromBlob = [];
+		
+		for(var i in splitData){
+			if(splitData[i]){
+				wholeAlertDataFromBlob.push(splitData[i]);
+			}
+		}
+        for(var i in wholeAlertDataFromBlob){
+					
+			var individualDataFromBlob = wholeAlertDataFromBlob[i];
+			var parseData = JSON.parse(individualDataFromBlob);
+			if (parseData.deviceId == gatewayId) {
+				log.debug("ParseDATA" +JSON.stringify(parseData));
+				wholeAlertRuleData.push(parseData);
+			}
+		}
+
+		log.debug("WHOLEDATA OF ALERT RULES: "+JSON.stringify(wholeAlertRuleData));
+
+		res.json({status: reqStatus, results: wholeAlertRuleData});
+		log.debug('GET response for gatewayLocations : status = ' + reqStatus);
+		}
+	});
+}
 
 router.post('/setRule', function(req,res,next) {
 
@@ -165,6 +209,10 @@ router.post('/setRule', function(req,res,next) {
     })
 	
 })
+
+router.post('/deleteRule', function(req,res,next) {
+	res.json({status: "OK", results: "String uploaded successfully.."});
+}
 
 router.put('/getalerts', function(req, res, next) {
 	

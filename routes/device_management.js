@@ -36,19 +36,19 @@ router.get('/hostNameDevicePrimaryKey/:deviceId', function(req,res,next){
 	var deviceId = req.params.deviceId;
 	registry.get(deviceId, function (err, dev) {
 		if (err){
-			
+
 			log.debug(err);
 			res.json({status: "error", results: "error: "+err });
 		}else {
 			var devicePrimaryKey = dev.authentication.symmetricKey.primaryKey;
 			log.debug("devicePrimaryKey: "+devicePrimaryKey);
-			
+
 			var hostNameDevicePrimaryKey = {};
 			hostNameDevicePrimaryKey = {"hostName" : HostName, "devicePrimaryKey": devicePrimaryKey};
 			log.debug(JSON.stringify(hostNameDevicePrimaryKey));
-			
+
 			res.json({status: "OK", results: hostNameDevicePrimaryKey});
-      
+
 		}
 	});
 
@@ -63,7 +63,7 @@ router.post('/createDevice/:deviceId', function(req,res,next){
 		deviceId: uniqueDeviceId,
 	};
 	registry.create(device, function (err, dev) {
-		
+
 		if (err){
 			log.debug(err);
 			res.json({status: "error", results: "error: "+err });
@@ -80,7 +80,7 @@ router.delete('/deleteDevice/:deviceId', function(req,res,next){
 
 	var uniqueDeviceId = req.params.deviceId;
 	registry.delete(uniqueDeviceId, function(err) {
-		
+
 		if (err){
 			log.debug("Device {" + uniqueDeviceId + ") delete failed : " + err);
 			res.json({status: "error", results: "error: "+err });
@@ -119,7 +119,7 @@ router.get('/deviceId', function(req, res, next) {
 	var currentDeviceCount = 0;
 	var query = registry.createQuery('SELECT * FROM devices');
 	var onResults = function(err, results) {
-	
+
 		if (err) {
 			log.error('Failed to fetch the results: ' + err.message);
 		} else {
@@ -172,23 +172,23 @@ router.get('/deviceId', function(req, res, next) {
 // fetch system config from device twin for particular devices in iot-hub...
 
 router.get('/wholeDeviceTwinConfig/:deviceId', function(req, res, next) {
-	
+
 	var deviceUniqueId = req.params.deviceId;
 	log.debug("get request: "+deviceUniqueId);
 	var twinConfigArray = [];
-	
+
 	var query = registry.createQuery("SELECT * FROM devices WHERE deviceId = '"+deviceUniqueId+"'",100);
 
 	var onResults = function(err, results) {
-	
+
 		if (err) {
 			log.error('Failed to fetch the results: ' + err.message);
 		} else {
 
 			results.forEach(function(twin) {
-				
+
 				twinConfigArray.push(twin);
-				
+
 				log.debug("wholeDeviceTwinConfig: "+JSON.stringify(twin));
 			});
 			res.json({status: "OK", results: twinConfigArray});
@@ -203,28 +203,27 @@ router.get('/wholeDeviceTwinConfig/:deviceId', function(req, res, next) {
 //send command to gateway form azure-app....
 
 router.post('/sendCommandToGateway', function(req, res, next) {
-	
+
 	var deviceId = req.body.deviceid;
 	var methodName = req.body.taskname;
 	var payload = req.body.payload;
 	var timeoutInSeconds = req.body.timeoutInSeconds;
-	
+
 	var parseDeviceId = JSON.parse(deviceId);
 	var deviceIdList = parseDeviceId.id;
-	
+
 	log.debug(deviceIdList+" "+methodName+" "+payload+" "+timeoutInSeconds);
 	var methodParams = {
-		
+
 		methodName: methodName,
 		payload: payload,
 		timeoutInSeconds: timeoutInSeconds
 	}
-	
+
 	var startCommandExecutionOnDevice = function(uniqueDeviceId,twin) {
-		
-		
+
 		log.debug("uniqueDeviceId "+uniqueDeviceId);
-		
+
 		client.invokeDeviceMethod(uniqueDeviceId, methodParams, function(err, result) {
 			if (err) { 
 				log.error("Direct method error: "+err.message);

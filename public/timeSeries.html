@@ -73,6 +73,19 @@ var deviceId=getItem();
         gridThickness: 2
     },
     axisY: [{
+      stripLines:[
+      {                
+        startValue:31,
+        endValue:32,                
+        color:"red"                
+      },
+      {                
+        startValue:12,
+        endValue:13,                
+        color:"yellow"                
+      }
+      ]},
+      {
         title: "Temperature",
         lineColor: "green",
     },{
@@ -87,37 +100,6 @@ var deviceId=getItem();
         showInLegend: true,
         legendText: "Temperature",
         dataPoints: [
-      { x: 200, y: 6 },
-      { x: 300, y: 50 },
-      { x: 400, y: 5 },
-      { x: 500, y: 71 },
-      { x: 601, y: 1 }
-      
-        ]
-      },
-      {        
-        type: "line",
-        showInLegend: true,
-        legendText: "threshold",
-        dataPoints: [
-      { x: 200, y: 6 },
-      { x: 300, y: 24 },
-      { x: 400, y: 38},
-      { x: 500, y: 87 },
-      { x: 601, y: 1 }
-      
-        ]
-      },
-      {        
-        type: "line",
-        showInLegend: true,
-        legendText: "threshold",
-        dataPoints: [
-        { x: 200, y: 6 },
-      { x: 300, y: 54 },
-      { x: 400, y: 21 },
-      { x: 500, y: 35 },
-      { x: 601, y: 89 }
       
         ]
       }
@@ -144,6 +126,19 @@ var deviceId=getItem();
         gridThickness: 2
     },
     axisY: [{
+      stripLines:[
+      {                
+        startValue:31,
+        endValue:32,                
+        color:"red"                
+      },
+      {                
+        startValue:12,
+        endValue:13,                
+        color:"yellow"                
+      }
+      ]},
+      {
         title: "Humidity",
         lineColor: "green",
     },{
@@ -159,22 +154,6 @@ var deviceId=getItem();
         legendText: "Humidity",
         dataPoints: [
         
-        ]
-      },
-      {        
-        type: "line",
-        showInLegend: true,
-        legendText: "threshold",
-        dataPoints: [
-        
-        ]
-      },
-      {        
-        type: "line",
-        showInLegend: true,
-        legendText: "threshold",
-        dataPoints: [
-      
         ]
       }
 
@@ -200,8 +179,21 @@ var deviceId=getItem();
         gridThickness: 2
     },
     axisY: [{
+      stripLines:[
+      {                
+        startValue:31,
+        endValue:32,                
+        color:"red"                
+      },
+      {                
+        startValue:12,
+        endValue:13,                
+        color:"yellow"                
+      }
+      ]},
+      {
         title: "SO2",
-    lineColor: "green",
+      lineColor: "green",
     },{
       lineColor: "rgb(255,255,255)",
     },
@@ -216,29 +208,12 @@ var deviceId=getItem();
         dataPoints: [
 
         ]
-      },
-      {        
-        type: "line",
-        showInLegend: true,
-        legendText: "threshold",
-        dataPoints: [
-
-        ]
-      },
-      {        
-        type: "line",
-        showInLegend: true,
-        legendText: "threshold",
-        dataPoints: [
-        ]
       }       
       ]
     });
 
     so2_chart.render();
-    //chart.options.data[0].dataPoints.push({x:9,y: temp});
-    //so2_chart.options.data[0].dataPoints[0].y = temp; 
-// Update an existing dataPoint
+
   
   var no2_chart = new CanvasJS.Chart("chartContainer3",
     {
@@ -253,6 +228,18 @@ var deviceId=getItem();
         gridThickness: 2
     },
     axisY: [{
+      stripLines:[
+      {                
+        startValue:31,
+        endValue:32,                
+        color:"red"                
+      },
+      {                
+        startValue:12,
+        endValue:13,                
+        color:"yellow"                
+      }
+      ]},{
         title: "NO2",
     lineColor: "green",
     },{
@@ -269,43 +256,15 @@ var deviceId=getItem();
         dataPoints: [
       
         ]
-      } ,
-      {        
-        type: "line",
-        showInLegend: true,
-        legendText: "threshold",
-        dataPoints: [
-      
-        ]
-      },
-      {        
-        type: "line",
-        showInLegend: true,
-        legendText: "threshold",
-        dataPoints: [
-
-      
-        ]
-      }      
+      }       
       ]
     });
 
     no2_chart.render();
-    //chart.options.data[0].dataPoints.push({x:9,y: temp});
-   // no2_chart.options.data[0].dataPoints[0].y = temp; 
-// Update an existing dataPoint
-callAjax();
-
-  }
-  function callAjax(argument) {
 
     $.ajax({
   method: 'GET',
-  url: '/api/sensorData/v1.0/threshold',
-  data :{
-   deviceid : deviceId
-   
-  }
+  url: '/api/alerts/v1.0/getRule/'+deviceId
  }).done(function(data) {
 
   if  (data.status === "OK") {
@@ -314,23 +273,31 @@ callAjax();
     {
       if(data.results[i].dataType=='temperature')
       { 
-          temp_chart.options.data[1].dataPoints.push({x:9,y: temp});
-          temp_chart.options.data[2].dataPoints.push({x:9,y: temp});
+          temp_chart.options.axisY[0].stripLines[0].startValue=data.results[i].rThreshold;
+          temp_chart.options.axisY[0].stripLines[0].endValue=data.results[i].rThreshold+1;
+          temp_chart.options.axisY[0].stripLines[1].startValue=data.results[i].yThreshold;
+          temp_chart.options.axisY[0].stripLines[1].endValue=data.results[i].yThreshold+1;
       }
       if(data.results[i].dataType=='humidity')
       {
-        humid_chart.options.data[1].dataPoints.push({x:9,y: temp});
-        humid_chart.options.data[2].dataPoints.push({x:9,y: temp});
+          humid_chart.options.axisY[0].stripLines[0].startValue=data.results[i].rThreshold;
+          humid_chart.options.axisY[0].stripLines[0].endValue=data.results[i].rThreshold+1;
+          humid_chart.options.axisY[0].stripLines[1].startValue=data.results[i].yThreshold;
+          humid_chart.options.axisY[0].stripLines[1].endValue=data.results[i].yThreshold+1;
       }
       if(data.results[i].dataType=='so2')
       {
-        so2_chart.options.data[1].dataPoints.push({x:9,y: temp});
-        so2_chart.options.data[2].dataPoints.push({x:9,y: temp});
+          so2_chart.options.axisY[0].stripLines[0].startValue=data.results[i].rThreshold;
+          so2_chart.options.axisY[0].stripLines[0].endValue=data.results[i].rThreshold+1;
+          so2_chart.options.axisY[0].stripLines[1].startValue=data.results[i].yThreshold;
+          so2_chart.options.axisY[0].stripLines[1].endValue=data.results[i].yThreshold+1;
       }
       if(data.results[i].dataType=='no2')
       {
-        no2_chart.options.data[1].dataPoints.push({x:9,y: temp});
-        no2_chart.options.data[2].dataPoints.push({x:9,y: temp});
+          no2_chart.options.axisY[0].stripLines[0].startValue=data.results[i].rThreshold;
+          no2_chart.options.axisY[0].stripLines[0].endValue=data.results[i].rThreshold+1;
+          no2_chart.options.axisY[0].stripLines[1].startValue=data.results[i].yThreshold;
+          no2_chart.options.axisY[0].stripLines[1].endValue=data.results[i].yThreshold+1;
       }
     }
       temp_chart.render();
@@ -355,10 +322,10 @@ callAjax();
 
   if  (data.status === "OK") {
     console.log(data.results);
-    for(var i in data.results)
+    for(var i in data.results.temp)
     {
       
-          temp_chart.options.data[0].dataPoints.push({x:data.results[i].time,y: data.results[i].temperature});
+          temp_chart.options.data[0].dataPoints.push({x:data.results.temp[i],y: data.results.temp[i]});
     
     }
     temp_chart.render(); 
@@ -443,7 +410,7 @@ callAjax();
   
 }
        
- function goToViewer()
+     function goToViewer()
        {  
            window.localStorage.setItem('gateway',deviceId);
            window.location.href="analytics.html";

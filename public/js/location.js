@@ -133,7 +133,7 @@ var locationInit = function ()
 			}
 		} else {
 			
-			gatewayLocation = { gatewayId: "b8:27:eb:94:7c:9d" ,lat:12.963778 , lng: 77.712111 ,quality: 30};
+			gatewayLocation = { gatewayId: "BLR-CAAQMS-LAB-1" ,lat:12.963778 , lng: 77.712111 ,quality: 30};
 			locationSet.push (gatewayLocation);
 			console.log(data.results);
 		}

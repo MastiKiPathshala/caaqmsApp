@@ -29,51 +29,24 @@
 
 <body >
 
-<div data-include="header">
-	
-</div>
+<div data-include="header"></div>
 
+ <div class="row">
+  <div class="col-sm-1">
+   <!-- Sidebar -->
+    <div data-include="sidebar"></div>
+  </div>
 
-<!-- Left Menu -->
-<div id="leftmenu">
-  <div id="date_time">
-    <div id="date" class="semi_arc e4">
-      <div class="semi_arc_2 e4_1">
-        <div class="counterspin4"></div>
-      </div>
-        <div id ="date1" style="font-size: 40px; margin-top: 25px;"></div>
-        <div id ="month" style="font-size: 25px;"></div>
-    </div>
-    
-    <div id="time" class="arc e1">
-        <div id="hour" style="font-size: 23px; margin-left: -10px; margin-top: 23px;"></div>
-        <div id="second" style="font-size: 15px; margin-left: 40px; margin-top: -30px; display; inline;"></div>
-        <div id="day" style="font-size: 17px; margin-top: 10px;"></div>
-    </div>
-  </div><br/><br/><br/>
-  <span id="head"></span><br/><br/>
-  <br/>
-  <p class="title">Dashboard</p>
-  <div class="hline title_underline"></div>
+   <div class="col-sm-11">
+   <p id="head" style="font-size: 20px;position:absolute;margin-top:80px;margin-left:50%"></p>
 
-  <span class="menuitem entypo-map" style="font-size: 30px;margin-left: 10px;">
-    <p id="cpu" class="caption" style="font-size: 20px;"><a href="#" onClick="window.open('index.html', '_parent')" >Gateway Locations</a></p>
-  </span>
-  
-  <span class="menuitem entypo-chart-line" style="font-size: 30px; margin-left: 10px;">
-    <p id="cpu" class="caption" style="font-size: 20px;"><a href="#" onClick="window.open('timeSeries.html', '_parent')">Trend Data</a></p>
-  </span> <br/>
-  
-</div>
+    <button onclick="window.open('timeSeries.html', '_parent')" style="font-size: 20px;position:absolute;margin-top:100px;margin-left:50%">Trend Data</button>
 
-
-
-<div class="scroll">
 
 <!-- Arc Reactor -->
 <div id="1">
 <div id="arc_container"  >
-    <div class="arc_reactor" style="position:absolute;left:900px; top:250px">
+    <div class="arc_reactor" style="position:absolute;margin-top:50px;margin-left:15px">
       <div class="case_container" >
         <div class="e7">
           <div class="semi_arc_3 e5_1" >
@@ -105,7 +78,7 @@
 <!-- Arc Reactor -->
 <div id="3">
 <div id="arc_container"  >
-    <div class="arc_reactor" style="position:absolute;left:500px; top:250px">
+    <div class="arc_reactor" style="position:absolute;margin-top:50px;margin-left:310px">
       <div class="case_container" >
         <div class="e7">
           <div class="semi_arc_3 e5_1" >
@@ -136,7 +109,7 @@
 <!-- Arc Reactor -->
 <div id="2">
 <div id="arc_container"  >
-    <div class="arc_reactor" style="position:absolute;left:500px; top:570px">
+    <div class="arc_reactor" style="position:absolute;margin-top:350px;margin-left:15px">
       <div class="case_container" >
         <div class="e7">
           <div class="semi_arc_3 e5_1" >
@@ -167,7 +140,7 @@
 <!-- Arc Reactor -->
 <div id="4">
 <div id="arc_container"  >
-    <div class="arc_reactor" style="position:absolute;left:900px; top:570px">
+    <div class="arc_reactor" style="position:absolute;margin-top:350px;margin-left:310px">
       <div class="case_container" >
         <div class="e7">
           <div class="semi_arc_3 e5_1" >
@@ -199,17 +172,7 @@
 <!-- Particles -->
 <!-- Left Menu Particles -->
 
-
-
-<div id="particle1_3"></div>
-<div id="particle2"><br/><br/></div>
-<div id="particle3" class="vline"/>
-<div id="particle4" class="vline"/>
-<div id="particle5" class="vline"/>
-<div id="particle6" class="vline"/>
-<div id="particle7" class="vline"/>
-<div id="particle8" class="vline"/>
-<div id="particle9" class="vline" style="margin-left:230px" />
+</div>
 
 
 <div data-include="footer"></div>
@@ -226,7 +189,7 @@
       
       
        var gatewayId=getItem();
-       $('#leftmenu #head').html("   Device Id :"+ gatewayId);
+       $('#head').html("   Device Id :"+ gatewayId);
        var gateways =window.localStorage.getItem('gateways');
         gateways=JSON.parse(gateways);
      	  console.log(gateways[0]);

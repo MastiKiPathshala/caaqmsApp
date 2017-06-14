@@ -29,51 +29,41 @@
 <body>
 <div data-include="header"></div>
 
-  <div id="leftmenu" style="margin-top:100px">
-    <p class="title"></p>
-      <div class="hline title_underline"></div>
-
- 
-     <span class="menuitem entypo-mobile" style="font-size: 30px; margin-left: 10px;">
-      <p id="head" class="caption" style="font-size: 20px;"><a href="#" onClick="goToViewer()">ID</a></p>
-      </span> <br/>
+      <p id="head" class="caption" style="font-size: 30px;margin-left: 10px;position:absolute;margin-top:50px"><a href="#" onClick="goToViewer()">ID</a></p>
       
-</div>
+
 
 <!--Charts-->
-<div id="chartContainer" style="height: 300px; width:500px;top:30px;left:300px;position:absolute;margin-top:30px"></div>
-<div id="chartContainer1" style="height: 300px; width:500px;top:380px;left:300px;position:absolute;"></div>
-<div id="chartContainer2" style="height: 300px; width:500px;top:30px;left:810px;position:absolute;margin-top:30px"></div>
-<div id="chartContainer3" style="height: 300px; width:500px;top:380px;left:810px;position:absolute;"></div>
+<div id="chartContainer" style="height: 300px; width:600px;top:80px;left:10px;position:absolute;margin-top:30px"></div>
+<div id="chartContainer1" style="height: 300px; width:600px;top:430px;left:10px;position:absolute;margin-bottom:30px"></div>
+<div id="chartContainer2" style="height: 300px; width:600px;top:80px;left:620px;position:absolute;margin-top:30px"></div>
+<div id="chartContainer3" style="height: 300px; width:600px;top:430px;left:620px;position:absolute;margin-bottom:30px"></div>
   
 
-  <!-- Left Menu Particles -->
 
-
-<div id="particle1_3"></div>
-<div id="particle2"><br/><br/></div>
-<div id="particle3" class="vline"/>
-<div id="particle4" class="vline"/>
-<div id="particle5" class="vline"/>
-<div id="particle6" class="vline"/>
-<div id="particle7" class="vline"/>
-<div id="particle8" class="vline"/>
-<div id="particle9" class="vline" style="margin-left:230px" />
 
 <script type="text/javascript">
+var deviceId=getItem();
   window.onload = function () {
+    
 
+     
+    $('#head a').html("Device Id :"+ deviceId);
+    
      var gatewayId=getItem();
      var key =gatewayId+"temperature_dashboard";
      var temp =window.localStorage.getItem(key);
-       temp=parseFloat(temp);
-       console.log(temp);
+     temp=parseFloat(temp);
+     console.log(temp);
+     CanvasJS.addColorSet("Shades",["green","red","yellow"]);
 
     //chart.options.data[0].dataPoints.push({y: temp}); // Add a new dataPoint to dataPoints array
  
 
-    var chart = new CanvasJS.Chart("chartContainer",
-    { backgroundColor: "rgb(255,255,255)",
+    var temp_chart= new CanvasJS.Chart("chartContainer",
+    { 
+      colorSet: "Shades",
+      backgroundColor: "rgb(255,255,255)",
       title:{
       text: "Temperature-Sensor Line Chart",  
       fontColor: "black"  
@@ -82,30 +72,69 @@
         title: "Timeline",
         gridThickness: 2
     },
-    axisY: {
-        title: "Temperature"
+    axisY: [{
+        title: "Temperature",
+        lineColor: "green",
+    },{
+      lineColor: "rgb(255,255,255)",
     },
+    {
+      lineColor: "rgb(255,255,255)",
+    }],
       data: [
       {        
         type: "line",
         showInLegend: true,
         legendText: "Temperature",
         dataPoints: [
-        { x: 10, y:0}
+      { x: 200, y: 6 },
+      { x: 300, y: 50 },
+      { x: 400, y: 5 },
+      { x: 500, y: 71 },
+      { x: 601, y: 1 }
       
         ]
-      }       
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "threshold",
+        dataPoints: [
+      { x: 200, y: 6 },
+      { x: 300, y: 24 },
+      { x: 400, y: 38},
+      { x: 500, y: 87 },
+      { x: 601, y: 1 }
+      
+        ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "threshold",
+        dataPoints: [
+        { x: 200, y: 6 },
+      { x: 300, y: 54 },
+      { x: 400, y: 21 },
+      { x: 500, y: 35 },
+      { x: 601, y: 89 }
+      
+        ]
+      }
+
       ]
     });
 
-    chart.render();
+    temp_chart.render();
     //chart.options.data[0].dataPoints.push({x:9,y: temp});
-    chart.options.data[0].dataPoints[0].y = temp; 
-    chart.render(); // Update an existing dataPoint
+    //temp_chart.options.data[0].dataPoints[0].y = temp; 
+   // Update an existing dataPoint
   
 
-  var chart1 = new CanvasJS.Chart("chartContainer1",
-    {backgroundColor: "rgb(255,255,255)",
+  var humid_chart = new CanvasJS.Chart("chartContainer1",
+    {
+      colorSet: "Shades",
+      backgroundColor: "rgb(255,255,255)",
       title:{
       text: "Humidity-Sensor Line Chart",  
       fontColor: "black"  
@@ -114,30 +143,54 @@
         title: "Timeline",
         gridThickness: 2
     },
-    axisY: {
-        title: "Humidity"
+    axisY: [{
+        title: "Humidity",
+        lineColor: "green",
+    },{
+      lineColor: "rgb(255,255,255)",
     },
+    {
+      lineColor: "rgb(255,255,255)",
+    }],
       data: [
       {        
         type: "line",
         showInLegend: true,
         legendText: "Humidity",
         dataPoints: [
-        { x: 10, y:0}
+        
+        ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "threshold",
+        dataPoints: [
+        
+        ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "threshold",
+        dataPoints: [
       
         ]
-      }       
+      }
+
       ]
     });
 
-    chart1.render();
+    humid_chart.render();
     //chart.options.data[0].dataPoints.push({x:9,y: temp});
-    chart1.options.data[0].dataPoints[0].y = temp; 
-    chart1.render(); // Update an existing dataPoint
+    //humid_chart.options.data[0].dataPoints[0].y = temp; 
+ // Update an existing dataPoint
     
 
-    var chart2 = new CanvasJS.Chart("chartContainer2",
-    {backgroundColor: "rgb(255,255,255)",
+    var so2_chart = new CanvasJS.Chart("chartContainer2",
+    {
+      colorSet: "Shades",
+      backgroundColor: "rgb(255,255,255)",
       title:{
       text: "SO2-Sensor Line Chart",  
       fontColor: "black"  
@@ -146,29 +199,51 @@
         title: "Timeline",
         gridThickness: 2
     },
-    axisY: {
-        title: "SO2"
+    axisY: [{
+        title: "SO2",
+    lineColor: "green",
+    },{
+      lineColor: "rgb(255,255,255)",
     },
+    {
+      lineColor: "rgb(255,255,255)",
+    }],
       data: [
       {        
         type: "line",
         showInLegend: true,
         legendText: "SO2",
         dataPoints: [
-        { x: 10, y:0}
-      
+
+        ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "threshold",
+        dataPoints: [
+
+        ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "threshold",
+        dataPoints: [
         ]
       }       
       ]
     });
 
-    chart2.render();
+    so2_chart.render();
     //chart.options.data[0].dataPoints.push({x:9,y: temp});
-    chart2.options.data[0].dataPoints[0].y = temp; 
-    chart2.render(); // Update an existing dataPoint
+    //so2_chart.options.data[0].dataPoints[0].y = temp; 
+// Update an existing dataPoint
   
-  var chart3 = new CanvasJS.Chart("chartContainer3",
-    {backgroundColor: "rgb(255,255,255)",
+  var no2_chart = new CanvasJS.Chart("chartContainer3",
+    {
+      colorSet: "Shades",
+      backgroundColor: "rgb(255,255,255)",
       title:{
       text: "NO2-Sensor Line Chart",  
       fontColor: "black"
@@ -177,33 +252,200 @@
         title: "Timeline",
         gridThickness: 2
     },
-    axisY: {
-        title: "NO2"
+    axisY: [{
+        title: "NO2",
+    lineColor: "green",
+    },{
+      lineColor: "rgb(255,255,255)",
     },
+    {
+      lineColor: "rgb(255,255,255)",
+    }],
       data: [
       {        
         type: "line",
         showInLegend: true,
         legendText: "NO2",
         dataPoints: [
-        { x: 10, y:0}
       
         ]
-      }       
+      } ,
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "threshold",
+        dataPoints: [
+      
+        ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "threshold",
+        dataPoints: [
+
+      
+        ]
+      }      
       ]
     });
 
-    chart3.render();
+    no2_chart.render();
     //chart.options.data[0].dataPoints.push({x:9,y: temp});
-    chart3.options.data[0].dataPoints[0].y = temp; 
-    chart3.render(); // Update an existing dataPoint
+   // no2_chart.options.data[0].dataPoints[0].y = temp; 
+// Update an existing dataPoint
+callAjax();
+
   }
-        var gatewayId=getItem();
-       $('#leftmenu .menuitem #head a').html("Device Id :"+ gatewayId);
+  function callAjax(argument) {
+
+    $.ajax({
+  method: 'GET',
+  url: '/api/sensorData/v1.0/threshold',
+  data :{
+   deviceid : deviceId
+   
+  }
+ }).done(function(data) {
+
+  if  (data.status === "OK") {
+   console.log(data.results);
+    for(var i in data.results)
+    {
+      if(data.results[i].dataType=='temperature')
+      { 
+          temp_chart.options.data[1].dataPoints.push({x:9,y: temp});
+          temp_chart.options.data[2].dataPoints.push({x:9,y: temp});
+      }
+      if(data.results[i].dataType=='humidity')
+      {
+        humid_chart.options.data[1].dataPoints.push({x:9,y: temp});
+        humid_chart.options.data[2].dataPoints.push({x:9,y: temp});
+      }
+      if(data.results[i].dataType=='so2')
+      {
+        so2_chart.options.data[1].dataPoints.push({x:9,y: temp});
+        so2_chart.options.data[2].dataPoints.push({x:9,y: temp});
+      }
+      if(data.results[i].dataType=='no2')
+      {
+        no2_chart.options.data[1].dataPoints.push({x:9,y: temp});
+        no2_chart.options.data[2].dataPoints.push({x:9,y: temp});
+      }
+    }
+      temp_chart.render();
+      humid_chart.render();
+      so2_chart.render();
+      no2_chart.render();
+    
+  } else {
+   alert(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+  console.log (data);
+ });
+
+
+ $.ajax({
+  method: 'GET',
+  url: '/api/sensorData/v1.0/temperature/'+deviceId
+ }).done(function(data) {
+
+  if  (data.status === "OK") {
+    console.log(data.results);
+    for(var i in data.results)
+    {
+      
+          temp_chart.options.data[0].dataPoints.push({x:data.results[i].time,y: data.results[i].temperature});
+    
+    }
+    temp_chart.render(); 
+    
+  } else {
+   //alert(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+  console.log (data);
+ });
+ $.ajax({
+  method: 'GET',
+  url: '/api/sensorData/v1.0/humidity/'+deviceId
+ }).done(function(data) {
+
+  if  (data.status === "OK") {
+    console.log(data.results);
+    for(var i in data.results)
+    {
+      
+          humid_chart.options.data[0].dataPoints.push({x:data.results[i].time,y: data.results[i].humidity});
+    
+    }
+    humid_chart.render(); 
+    
+  } else {
+   //alert(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+  console.log (data);
+ });
+ $.ajax({
+  method: 'GET',
+  url: '/api/sensorData/v1.0/so2/'+deviceId
+ }).done(function(data) {
+
+  if  (data.status === "OK") {
+    console.log(data.results);
+    for(var i in data.results)
+    {
+      
+          so2_chart.options.data[0].dataPoints.push({x:data.results[i].time,y: data.results[i].so2});
+    
+    }
+    so2_chart.render(); 
+    
+  } else {
+   //alert(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+  console.log (data);
+ });
+ $.ajax({
+  method: 'GET',
+  url: '/api/sensorData/v1.0/no2/'+deviceId
+ }).done(function(data) {
+
+  if  (data.status === "OK") {
+    console.log(data.results);
+    for(var i in data.results)
+    {
+      
+          no2_chart.options.data[0].dataPoints.push({x:data.results[i].time,y: data.results[i].no2});
+    
+    }
+    no2_chart.render(); 
+    
+  } else {
+   //alert(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+  console.log (data);
+ });
+  
+}
        
-       function goToViewer()
+ function goToViewer()
        {  
-           window.localStorage.setItem('gateway',gatewayId);
+           window.localStorage.setItem('gateway',deviceId);
            window.location.href="analytics.html";
 
        }

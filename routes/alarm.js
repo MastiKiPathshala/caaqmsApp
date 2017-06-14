@@ -31,7 +31,8 @@ router.get('/getRule', function(req,res,next) {
 	var reqStatus = "OK";
 	//log.debug('GET request for Temperature : ' + req);
 	
-	GetFinalDataFromFile(dataType,res,function(fileData){
+	//GetFinalDataFromFile(dataType,res,function(fileData){
+	blobService.getBlobToText(containerName, alarmRuleBlob, function(err, fileData, blob) {
 	
 		var splitData = fileData.toString().split("\n");
 		var numberOfRowsInFile = splitData.length;
@@ -247,7 +248,7 @@ router.put('/getalerts', function(req, res, next) {
 
 var GetFinalDataFromFile = function (dataType,res,callback) {
 	var blobNameMismatchCounter = 0;
-	GetRequiredBlobNames(dataType,function(reqBlobName){
+	GetTelematicsMetadataBlobNames (dataType,function(reqBlobName){
 		
 		log.debug("required BlobName: "+reqBlobName);
 	
@@ -303,7 +304,7 @@ var GetFinalDataFromFile = function (dataType,res,callback) {
 	})
 }
 
-var GetRequiredBlobNames = function (dataType,callback) {
+var GetTelematicsMetadataBlobNames = function (dataType,callback) {
 	
 	var date = require('date-and-time');
 	var now = new Date();
@@ -320,11 +321,8 @@ var GetRequiredBlobNames = function (dataType,callback) {
 	var getHour = getDateHour[1].split(":");
 	var hour = getHour[0];
 
-	//var requiredBlobName = dataType+"-metadata-batch"+"/"+year+"/"+month+"/"+date+"/"+hour;
-	//var requiredBlobName = dataType+"/"+year+"/"+month+"/"+"25"+"12";
-	var requiredBlobName = 'my-awesome-text-blob3';
+	var requiredBlobName = dataType+"-metadata-batch"+"/"+year+"/"+month+"/"+date+"/"+hour;
 	callback(requiredBlobName);
-
 }
 
 var GetBlobNames = function (callback) {
@@ -351,12 +349,10 @@ var FetchBlobData = function (blobName,fileName,callback) {
 		if (!error) {
 		
 			var data = fs.readFile('/tmp/'+fileName,function(err,data){
-			//var data = fs.readFile('temperature1.txt',function(err,data){
 
 				var fss = require('extfs');
  
 				var empty = fss.isEmptySync('/tmp/'+fileName);
-				//var empty = fss.isEmptySync('temperature1.txt');;
 					console.log(empty);
 									
 				if(err){

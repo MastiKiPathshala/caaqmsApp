@@ -21,7 +21,8 @@
   <script src="js/location.js"></script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prefixfree/1.0.7/prefixfree.min.js"></script>
-  <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+  <!script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"><!/script>
+  <script src="js/dataTables.js"></script>
   <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
 
   <script src="https://rawgit.com/kimmobrunfeldt/progressbar.js/1.0.0/dist/progressbar.js"></script>
@@ -35,6 +36,7 @@
 				position: absolute;
       	margin-top:5% ;
         min-height:350px;
+        max-height :380px;
 			}
 		    html, body {
         height: 100%;
@@ -48,6 +50,7 @@
 			    width: 48%;
 				  min-width: 40%;
           min-height:350px;
+          max-height :380px;
    				overflow-y: scroll;
   				scroll-behavior: smooth;
   				position: relative;
@@ -58,6 +61,7 @@
   				width: 100%;
   				min-width: 90%;
   				height: 34%;
+          max-height: 380px;
 				}
 				#container1 , #container2 ,#container3,#container4,#container5,#container6 {
   				width: 104%;
@@ -97,12 +101,12 @@
  	 <table id="table" class="table table-bordered table-hover table-responsive" width="98%">
     	<thead class="thead-inverse">
       	<tr>
-        	<th>gatewayId</th>
-        	<th>time</th>
-        	<th>dataType</th>
-        	<th>Alarm Description</th>
-        	<th>qualityScore</th>
-        	<th>sensorId</th>
+        	<th>DEVICE ID</th>
+        	<th>TIME</th>
+        	<th>DATA TYPE</th>
+        	<th>RULE OUTPUT</th>
+        	<th>READING</th>
+        	<th>RULE ID</th>
      	 </tr>
     	</thead>
   
@@ -168,7 +172,7 @@ $.ajax({
       for(var i = 0; i < data.results.length; i++){
             //var x=JSON.parse(data.results[i]);
             var row='<tr>',col;
-            col = '<td>'+data.results[i].gatewayid+'</td>'+'<td>'+data.results[i].time+'</td>'+'<td>'+data.results[i].dataType+'</td>'+'<td>'+data.results[i].alarmDescription+'</td>'+'<td>'+data.results[i].qualityscore+'</td>'+'<td>'+data.results[i].sensorid+'</td>';
+            col = '<td>'+data.results[i].deviceid+'</td>'+'<td>'+data.results[i].time+'</td>'+'<td>'+data.results[i].datatype+'</td>'+'<td>'+data.results[i].ruleoutput+'</td>'+'<td>'+data.results[i].reading+'</td>'+'<td>'+data.results[i].ruleid+'</td>';
          	 row += col+'</tr>';
           	$('.container #table').append(row);
         	console.log(data.results[i]);

@@ -44,7 +44,7 @@
 <!--Table-->
 <div class="container" style="margin-top:5%;margin-left:5%;position:absolute; width:80%">
   <h2 class="entypto-arrows-ccw" style="display:inline">Rules<a onclick="refresh()">
-  <span class="entypo-arrows-ccw" style="font-size: 30px;margin-left:2%"></span></a> </h2>
+  <span class="entypo-arrows-ccw" style="font-size: 30px;margin-left:2%"></span></a> </h2><button onclick="window.open('addRule.html', '_parent');" style="margin-left:40%">ADD RULE</button>&ensp; <button onclick="deleteRule()">DELETE RULE</button>
     <table id="table" class="table table-bordered table-hover table-responsive" width="100%" style="background-color:white;overflow-x:scroll">
     <col width="">
     <col width="30%">
@@ -55,12 +55,14 @@
     <col width="15%">
       <thead class="thead-inverse">
         <tr>
+          <th></th>
           <th height="10px">STATUS</th>
           <th>RULE ID</th>
           <th>DEVICE ID</th>
           <th>DATA FIELD</th>
           <th>OPERATOR </th>
-          <th>THRESHOLD</th>
+          <th>RED THRESHOLD</th>
+          <th>YELLOW THRESHOLD</th>
           <th>RULE OUTPUT</th>
         </tr>
       </thead>
@@ -75,6 +77,45 @@
 </div>
 <div data-include="footer"></div>
 <script type="text/javascript">
+
+function deleteRule()
+{
+  var devicesForDeleteRule=[];
+    var boxes = $('.container #table :checkbox');
+
+    for(var i in boxes) {
+      if(boxes[i].checked) {
+    
+       devicesForDeleteRule.push(boxes[i].value);
+     }
+
+    }
+    $.ajax({
+  
+  method: 'GET',
+  url: '/api/alerts/v1.0/deleteRule',
+  data :
+  {
+    deviceId : devicesForDeleteRule
+  }
+  
+ }).done(function(data) {
+
+  if (data.status === "OK") {
+    
+  } 
+  else {
+   alert(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+  console.log (data);
+ });
+    alert(devicesForDeleteRule);
+
+}
+
 window.onload=function()
 {
 $.ajax({
@@ -88,7 +129,7 @@ $.ajax({
     for(var i = 0; i < data.results.length; i++){
             //var x=JSON.parse(data.results[i]);
             var row='<tr>',col;
-                col = '<td >'+data.results[i].status+'</td>'+'<td >'+data.results[i].ruleId+'</td>'+'<td >'+data.results[i].deviceId+'</td>'+'<td >'+data.results[i].dataType+'</td>'+'<td >'+data.results[i].operator+'</td>'+'<td >'+data.results[i].threshold+'</td>'+'<td >'+data.results[i].ruleOutput+'</td>';
+                col = '<td ><label><input type="checkbox" value='+data.results[i].ruleId+'></label></td>'+'<td >'+data.results[i].status+'</td>'+'<td >'+data.results[i].ruleId+'</td>'+'<td >'+data.results[i].deviceId+'</td>'+'<td >'+data.results[i].dataType+'</td>'+'<td >'+data.results[i].operator+'</td>'+'<td >'+data.results[i].rThreshold+'</td>'+'<td >'+data.results[i].yThreshold+'</td><td >'+data.results[i].ruleOutput+'</td>';
               row += col+'</tr>';
           $('.row .col-sm-11 .container #table').append(row);
         console.log(data.results[i]);

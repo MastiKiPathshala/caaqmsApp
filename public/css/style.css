@@ -98,33 +98,7 @@ header{
     margin-left :5%;
   }
 }
-/* Left Menu */
-#leftmenu {
-  position: absolute;
-  float: left;
-  margin-left: 50px;
-  width: 210px;
-}
 
-#date_time {
-  margin-top: 70px;
-  margin-left: 30px;
-  width: 200px;
-  height: 200px;
-}
-
-#time {
-  margin-left: 110px;
-  position: fixed;
-  background: rgba(80,80,80,0.8);
-  line-height: 0;
-}
-
-#date {
-  position: fixed;
-  margin-top: 40px;
-  background: rgba(80,80,80,0.8);
-}
 
 .title {
   font-size: 30px;
@@ -178,30 +152,6 @@ header{
   cursor: pointer;
 }
 .app_icon:hover { color: rgba(0,0,0,1); }
-
-
-
-/* Right Menu */
-#rightmenu {
-  float: right;
-  margin-right: 20px;
-  width: 300px;
-}
-
-#note_input {
-  color: rgba(0,0,0,0.6);
-  padding: 5px;
-  border-style: none;
-  background: transparent;
-  resize: none;
-  transition: 0.3s;
-  width: calc(100% - 15px);
-}
-#note_input:hover {
-  color: rgba(0,0,0,1);
-  transition: 0.3s;
-}
-
 
 
 /* Taskbar */
@@ -365,133 +315,91 @@ z-index: 100;
 .marks li:nth-child(59) {transform:rotate(354deg) translateY(125px)}
 .marks li:nth-child(60) {transform:rotate(360deg) translateY(125px)}
 
-/* Particles / Unique Elements */
-.vline {
-  width: 0;
-  height: 200px;
-  float: left;
-  border-left: 1px solid rgba(0,0,0,0.3);
-}
 
-.hline {
-  width: 200px;
-  height: 0;
-  border-bottom: 1px solid rgba(0,0,0,0.3);
-}
-
-#particle1 {
-  position: absolute;
-  margin-left: 260px;
-  color: rgba(0,0,0,0.3);
-  margin-top: 410px;
-}
-
-#particle1_1 {
-  position: absolute;
-  margin-left: 255px;
-  color: rgba(0,0,0,0.3);
-  margin-top: 480px;
-}
-
-#particle1_2 {
-  position: absolute;
-  margin-left: 275px;
-  color: rgba(0,0,0,0.3);
-  margin-top: 580px;
-}
-
-#particle1_3 {
-  position: absolute;
-  color: rgba(0,0,0,0.3);
+.loader {
+  color: #004080;
   font-size: 90px;
-  margin-left: 190px;
-  margin-top: 730px;
-  transform: rotate(90deg);
-  z-index: -1;
-}
-
-#particle2 {
-  position: absolute;
-  margin-left: 20px;
-  margin-top: 20px;
-   border-color: rgba(0,0,0,0.15);
-}
-
-#particle3 {
-  position:absolute;
-  height: 240px;
-  margin-left: 40px;
-   border-color: rgba(0,0,0,0.15);
-}
-
-#particle4 {
-  position: absolute;
-  height: 240px;
-  margin-top: 200px;
-  margin-left: -10px;
-   border-color: rgba(0,0,0,0.15);
-}
-
-#particle5 {
-  position: absolute;
-  height: 290px;
-  margin-top: -90px;
-  margin-left: 230px;
-  border-color: rgba(0,0,0,0.15);
-}
-
-#particle6 {
-  position: absolute;
-  height: 290px;
-  margin-top: 5px;
-  margin-left: 3px;
-  border-color: rgba(0,0,0,0.2);
-}
-
-#particle7 {
-  position: absolute;
-  height: 290px;
-  margin-top: 5px;
-  margin-left: 3px;
-  border-color: rgba(0,0,0,0.15);
-}
-
-#particle8 {
-  position: absolute;
-  height: 500px;
-  margin-left: -232px;
-  margin-top: 280px;
-  border-color: rgba(0,0,0,0.15);
-}
-
-#particle9 {
-  position: absolute;
-  height: 320px;
-  margin-left: 3px;
-  border-color: rgba(0,0,0,0.2);
-}
-
-/* Right Menu Particles */
-#particle10 {
-
-  width: 100px;
-  border-color: rgba(0,0,0,0.5);
-  border-bottom: 1px solid rgba(0,0,0,0.3);
-}
-
-#particle11 {
-  left: 20px;
-  top:10px;
-  position: absolute;
-   width: 500px;
-  height: 500px;
+  text-indent: -9999em;
+  overflow: hidden;
+  width: 1em;
+  height: 1em;
   border-radius: 50%;
-
+  margin: 72px auto;
+  position: relative;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+  animation: load6 1.7s infinite ease, round 1.7s infinite ease;
 }
-
-#particle12 {
-  float: left;
-  height: 352px;
-  margin-top: -40px;
-  border-color: rgba(0,0,0,0.5);
+@-webkit-keyframes load6 {
+  0% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  5%,
+  95% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  10%,
+  59% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+  }
+  20% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+  }
+  38% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+  }
+  100% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+}
+@keyframes load6 {
+  0% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  5%,
+  95% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  10%,
+  59% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+  }
+  20% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+  }
+  38% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+  }
+  100% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+}
+@-webkit-keyframes round {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes round {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+.circle{
+  width: 20px;
+  height: 20px;
+  border:2px solid rgba(1,0,0,0.3);
+  border-radius: 50%;
+  background-color:rgba(1,0,0,0.6);
 }

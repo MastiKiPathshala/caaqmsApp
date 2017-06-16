@@ -11,17 +11,18 @@
  *
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
- */
+ *
+ *************************************************************************/
 var express = require('express');
 var router = express.Router();
 
 var azure = require('azure-storage');
 
-var blobService = azure.createBlobService("tanstor","KS4Q+Fe5C+bzLxuCymZV61dMkvbiDQuwqmkiaUAA23agTyI69ijoBsfATM96cMiwytAXlAHcmFuCJUqKgafe+Q==");
+var blobService = azure.createBlobService("caaqmsstorageaccount","lwcNzI+KSdd9QcAMtCTm6CbyEr7RM3Q9H10eld1/ETA78l5bQZTJL1AY79khQBbEJCY1JbUyYo8wTVxPEK6LMw==");
 var fs = require('fs');
 var moment = require('moment-timezone');
 var date = require('date-and-time');
-var containerName = 'rpi-blob-container';
+var containerName = 'caaqms-container';
 
 /* GET list of unique SIG and their latest locations */
 router.get('/gatewayLocations', function(req, res, next) {
@@ -53,12 +54,12 @@ router.get('/gatewayLocations', function(req, res, next) {
 			var lastData = splitData[i];
 			var parseData = JSON.parse(lastData);
 				
-			log.debug("GatewayId: "+parseData.gatewayid +" latitude: "+parseData.latitude + " longitude: "+parseData.longitude+ " qualityScore: "+parseData.qualityscore);
+			log.debug("GatewayId: "+parseData.deviceid +" latitude: "+parseData.latitude + " longitude: "+parseData.longitude+ " qualityScore: "+parseData.qualityscore);
 				
 			var latitude = parseFloat(parseData.latitude);
 			var longitude = parseFloat(parseData.longitude);
 			var qualityscore = parseFloat(parseData.qualityscore);
-			var gatewayId = parseData.gatewayid;
+			var gatewayId = parseData.deviceid;
 						
 			gatewayLocation.lat[i] = latitude; 
 			gatewayLocation.lng[i] = longitude; 
@@ -74,19 +75,14 @@ router.get('/gatewayLocations', function(req, res, next) {
 							
 	})
 });
-//var flag = true;
+
 /* GET temperature data*/
 router.get('/temperature/:gatewayId', function(req, res, next) {
 	
-	//var dataType = req.params.temperature;
 	var dataType = "temperature";
-	log.debug("data type: "+dataType);
 	var gatewayUniqueId = req.params.gatewayId;
-	log.debug("gatewayUniqueId : "+gatewayUniqueId);
 	
-	var tempSensor = {};
-	tempSensor.temp = [];
-	tempSensor.airQuality = [];
+	var tempSensor = [];
 	
 	var countGatewayId = 0;
 	var countMatchedGatewayId = 0;
@@ -104,18 +100,19 @@ router.get('/temperature/:gatewayId', function(req, res, next) {
 			var lastData = splitData[i];
 			var parseData = JSON.parse(lastData);
 				
-			log.debug("GatewayId: "+parseData.gatewayid + " Temperature: "+parseData.temperature+ " qualityScore: "+parseData.qualityscore);
-			var gatewayId = parseData.gatewayid;
+			log.debug("GatewayId: "+parseData.deviceid + " Temperature: "+parseData.averagetemperature+ " qualityScore: "+parseData.qualityscore);
+			var gatewayId = parseData.deviceid;
 						
 			if ( gatewayId == gatewayUniqueId ) {
-				
-				var temperature = parseFloat(parseData.temperature);
-						
-				var qualityscore = parseFloat(parseData.qualityscore);
-						
-				tempSensor.temp[countMatchedGatewayId] = temperature; 
- 
-				tempSensor.airQuality[countMatchedGatewayId] = qualityscore;
+				temperatureData = {
+					avgTemperature : parseFloat(parseData.averagetemperature),
+					maxTemperature : parseFloat(parseData.maxtemperature),
+					minTemperature : parseFloat(parseData.minimumtemperature),
+					qualityScore : parseFloat(parseData.qualityscore),
+					qualityColour : "green",
+					time : parseData.time
+				}
+				tempSensor.push (temperatureData);
 				countMatchedGatewayId++
 							
 			}else {
@@ -134,7 +131,6 @@ router.get('/temperature/:gatewayId', function(req, res, next) {
 			return;
 		}
 	})
-	
 });
 
 
@@ -168,9 +164,9 @@ router.get('/humidity/:gatewayId', function(req, res, next) {
 			var lastData = splitData[i];
 			var parseData = JSON.parse(lastData);
 					
-			log.debug("GatewayId: "+parseData.gatewayid + " Humidity: "+parseData.humidity+ " qualityScore: "+parseData.qualityscore);
+			log.debug("GatewayId: "+parseData.deviceid + " Humidity: "+parseData.humidity+ " qualityScore: "+parseData.qualityscore);
 						
-			var gatewayId = parseData.gatewayid;
+			var gatewayId = parseData.deviceid;
 						
 			if ( gatewayId == gatewayUniqueId ) {
 						
@@ -233,9 +229,9 @@ router.get('/so2/:gatewayId', function(req, res, next) {
 			var lastData = splitData[i];
 			var parseData = JSON.parse(lastData);
 				
-			log.debug("GatewayId: "+parseData.gatewayid + " So2: "+parseData.so2+ " qualityScore: "+parseData.qualityscore);
+			log.debug("GatewayId: "+parseData.deviceid + " So2: "+parseData.so2+ " qualityScore: "+parseData.qualityscore);
 						
-			var gatewayId = parseData.gatewayid;
+			var gatewayId = parseData.deviceid;
 						
 			if ( gatewayId == gatewayUniqueId ) {
 				
@@ -296,8 +292,8 @@ router.get('/no2/:gatewayId', function(req, res, next) {
 			var lastData = splitData[i];
 			var parseData = JSON.parse(lastData);
 				
-			log.debug("GatewayId: "+parseData.gatewayid + " No2: "+parseData.no2+ " qualityScore: "+parseData.qualityscore);
-			var gatewayId = parseData.gatewayid;
+			log.debug("GatewayId: "+parseData.deviceid + " No2: "+parseData.no2+ " qualityScore: "+parseData.qualityscore);
+			var gatewayId = parseData.deviceid;
 						
 			if ( gatewayId == gatewayUniqueId ) {
 				
@@ -328,6 +324,65 @@ router.get('/no2/:gatewayId', function(req, res, next) {
 		}
 	})
 			
+});
+
+router.get('/kpiData/:dataType', function(req, res, next) {
+	var deviceCount = 0;
+	var kpiData = [];
+	var query = registry.createQuery('SELECT * FROM devices');
+	var onResults = function(err, results) {
+		if (err) {
+			log.error('Failed to fetch the results: ' + err.message);
+			log.debug("Data Type: " + req.params.dataType + ", KPI data : " + JSON.stringify(kpiData));
+			res.json({status: "OK", results: kpiData});
+		} else {
+			totalDeviceCount = results.length;
+
+			results.forEach(function(twin) {
+				deviceCount ++;
+				deviceDetails = {
+					deviceId : twin.deviceId,
+					qualityScore : 0.0,
+					qualityColour : "grey",
+					time : "1970-01-01T09:05:00.0000000Z"
+				};
+				kpiData.push (deviceDetails);
+			});
+			GetFinalDataFromFile(req.params.dataType, res, function(fileData){
+
+				var data = fileData;
+				var splitData = data.toString().split("\n");
+				var numberOfRowsInFile = splitData.length;
+
+				for(var i =0;i<numberOfRowsInFile; i++){
+
+					var lastData = splitData[i];
+					log.debug (lastData);
+					var parseData = JSON.parse(lastData);
+					for (count = 0; count < totalDeviceCount; count ++) {
+						//log.debug ("Blob : " + parseData.deviceid + ", Device : " + kpiData[count].deviceId);
+						if (kpiData[count].deviceId === parseData.deviceid) {
+							//log.debug ("Device Id matched between Blob and kpiData : " + parseData.deviceid );
+							if (kpiData[count].time < parseData.time) {
+								//log.debug ("More recent data available : " + parseData.deviceid + ", " + parseData.time);
+								// This row is later than the stored one, overwrite it
+								kpiData[count].qualityScore = parseFloat(parseData.qualityscore);
+								//kpiData[count].qualityColour = parseData.qualitycolour;
+								kpiData[count].qualityColour = "green";
+								kpiData[count].time = parseData.time;
+							};
+						}
+					}
+				}
+				log.debug (JSON.stringify(kpiData));
+				if (deviceCount == totalDeviceCount) {
+					log.debug("Data Type: " + req.params.dataType + ", KPI data : " + JSON.stringify(kpiData));
+					res.json({status: "OK", results: kpiData});
+				}
+			});
+		}
+	};
+	query.nextAsTwin(onResults);
 });
 
 //common functions for all sensor data type...
@@ -407,8 +462,7 @@ var GetRequiredBlobNames = function (dataType,callback) {
 	var getHour = getDateHour[1].split(":");
 	var hour = getHour[0];
 
-	var requiredBlobName = dataType+"-metadata-batch"+"/"+year+"/"+month+"/"+date+"/"+hour;
-	//var requiredBlobName = dataType+"/"+year+"/"+month+"/"+"25"+"12";
+	var requiredBlobName = "telemetry-"+dataType+"-metaData"+"/"+year+"/"+month+"/"+date+"/"+hour;
 	
 	callback(requiredBlobName);
 

@@ -24,8 +24,9 @@
   <!script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"><!/script>
   <script src="js/dataTables.js"></script>
   <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+  <script src="js/amcharts.js"></script>
+  <script src="https://www.amcharts.com/lib/3/pie.js"></script>
 
-  <script src="https://rawgit.com/kimmobrunfeldt/progressbar.js/1.0.0/dist/progressbar.js"></script>
 
 		<style>
 			#map { 
@@ -61,13 +62,11 @@
   				width: 100%;
   				min-width: 90%;
   				height: 34%;
-          max-height: 380px;
+          max-height: 300px;
+          padding: 0;
 				}
-				#container1 , #container2 ,#container3,#container4,#container5,#container6 {
-  				width: 104%;
-  				height: 52%;
-				}
-
+				
+        
 		</style>
 
 		  <script type="text/javascript">
@@ -82,6 +81,7 @@
   </script>
 	</head>
 	<body>
+  <script src="js/index.js"></script>
 	<div data-include="header"></div>
       <div class="row">
   <div class="col-sm-1">
@@ -91,15 +91,16 @@
 
    <div class="col-sm-11">
  
-		<div class="container w3-panel w3-card-2 w3-light-grey" id="map"></div>
+		<div class="container w3-panel w3-card-2 w3-light-grey" id="map"><div class="loader">Loading...</div></div>
 		
 
 <div class="container view-block tablet-view w3-panel w3-card-2 w3-light-grey">
    <!--Table-->
   <h3>Alert List</h3>
   <scroll-container>
+  <div class="loader" id="myLoader"></div>
  	 <table id="table" class="table table-bordered table-hover table-responsive" width="98%">
-    	<thead class="thead-inverse">
+    	<thead class="thead-inverse" >
       	<tr>
         	<th>DEVICE ID</th>
         	<th>TIME</th>
@@ -111,6 +112,7 @@
     	</thead>
   
     	<tbody>
+     
     	</tbody>
   	</table>
   </scroll-container>
@@ -118,36 +120,30 @@
 
 <div class="container1 w3-panel w3-card-2 w3-light-grey" >
 	<div class="row">
-		<h3 style="margin-left:20px"> Key Performance Indicators</h3>
-        <div class="col-sm-2 ">
-        <h4> Overall Efficiency</h4>
-            <div class="well w3-light-grey " id="container1">
+		<h3 style="margin-left:10px"> Key Performance Indicators</h3>
+        <div class="col-sm-3 ">
+        <h4> Temperature</h4>
+            <div class="well w3-light-grey " id="containerTemp" style="width:100%; height:200px; margin: 0 auto">
+            <div class="loader">Loading...</div>
             </div>
         </div>
 
-        <div class="col-sm-2">
-        <h4> Availability</h4>
-            <div class="well w3-light-grey" id="container2">
+        <div class="col-sm-3">
+        <h4>Humidity</h4>
+            <div class="well w3-light-grey" id="containerHumid" style="width:100%; height:200px; margin: 0 auto">
+            <div class="loader">Loading...</div>
             </div>
         </div>
-        <div class="col-sm-2">
-        <h4> Performance</h4>
-            <div class="well w3-light-grey" id="container3">
+        <div class="col-sm-3">
+        <h4> So2</h4>
+            <div class="well w3-light-grey" id="containerSo2" style="width:100%; height:200px; margin: 0 auto">
+            <div class="loader">Loading...</div>
             </div>
         </div>
-        <div class="col-sm-2 ">
-        <h4> Quality</h4>
-            <div class="well w3-light-grey" id="container4">
-            </div>
-        </div>
-        <div class="col-sm-2">
-        <h4> Units per Hour</h4>
-            <div class="well w3-light-grey" id="container5">
-            </div>
-        </div>
-        <div class="col-sm-2">
-        <h4> kWh per Hour</h4>
-            <div class="well w3-light-grey" id="container6">
+        <div class="col-sm-3 ">
+        <h4> No2</h4>
+            <div class="well w3-light-grey" id="containerNo2" style="width:100%; height:200px; margin: 0 auto">
+            <div class="loader">Loading...</div>
             </div>
         </div>
     </div>
@@ -158,7 +154,9 @@
 <script>
 
 $(document).ready(function() {
+
 		
+
 $.ajax({
     method: 'PUT',
     url: '/api/alerts/v1.0/getalerts',
@@ -166,6 +164,7 @@ $.ajax({
 
     
   }).done(function(data) {
+  	$('#myLoader').removeClass('loader');
 
     if (data.status === "OK") { 
       
@@ -187,206 +186,9 @@ $.ajax({
 }).fail(function(data) {
     console.log (data);
 });
+// Initializing locations of all SecurIoT Gateways 
+locationInit();
 });
-   
- var bar = new ProgressBar.SemiCircle(container1, {
-  strokeWidth: 12,
-  color: '#FFEA82',
-  trailColor: '#000',
-  trailWidth: 12,
-  easing: 'easeInOut',
-  duration: 1400,
-  svgStyle: null,
-  text: {
-    value: '',
-    alignToBottom: true
-  },
-  from: {color: '#FFEA82'},
-  to: {color: '#ED6A5A'},
-  // Set default step function for all animate calls
-  step: (state, bar) => {
-    bar.path.setAttribute('stroke', state.color);
-    var value = Math.round(bar.value() * 100);
-    if (value === 0) {
-      bar.setText('');
-    } else {
-      bar.setText(value+"%");
-    }
-
-    bar.text.style.color = '#000';
-  }
-});
-bar.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-bar.text.style.fontSize = '3rem';
-
-bar.animate(0.4);  // Number from 0.0 to 1.0
-
-var bar2 = new ProgressBar.SemiCircle(container2, {
-  strokeWidth: 12,
-  color: '#FFEA82',
-  trailColor: '#000',
-  trailWidth: 12,
-  easing: 'easeInOut',
-  duration: 1400,
-  svgStyle: null,
-  text: {
-    value: '',
-    alignToBottom: true
-  },
-  from: {color: '#EEEA82'},
-  to: {color: '#0c4402'},
-  // Set default step function for all animate calls
-  step: (state, bar2) => {
-    bar2.path.setAttribute('stroke', state.color);
-    var value = Math.round(bar2.value() * 100);
-    if (value === 0) {
-      bar2.setText('');
-    } else {
-      bar2.setText(value+"%");
-    }
-
-    bar2.text.style.color = '#000';
-  }
-});
-bar2.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-bar2.text.style.fontSize = '3rem';
-
-bar2.animate(0.8); 
-
-var bar3 = new ProgressBar.SemiCircle(container3, {
-  strokeWidth: 12,
-  color: '#FFEA82',
-  trailColor: '#000',
-  trailWidth: 12,
-  easing: 'easeInOut',
-  duration: 1400,
-  svgStyle: null,
-  text: {
-    value: '',
-    alignToBottom: true
-  },
-  from: {color: '#FFEA82'},
-  to: {color: '#ED6A5A'},
-  // Set default step function for all animate calls
-  step: (state, bar3) => {
-    bar3.path.setAttribute('stroke', state.color);
-    var value = bar3.value() * 100;
-    if (value === 0) {
-      bar3.setText('');
-    } else {
-      bar3.setText(value+"%");
-    }
-
-    bar3.text.style.color = '#000';
-  }
-});
-bar3.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-bar3.text.style.fontSize = '3rem';
-
-bar3.animate(0.421);  // Number from 0.0 to 1.0
-
-var bar4 = new ProgressBar.SemiCircle(container4, {
-  strokeWidth: 12,
-  color: '#FFEA82',
-  trailColor: '#000',
-  trailWidth: 12,
-  easing: 'easeInOut',
-  duration: 1400,
-  svgStyle: null,
-  text: {
-    value: '',
-    alignToBottom: true
-  },
-  from: {color: '#EEEA82'},
-  to: {color: '#0c4402'},
-  // Set default step function for all animate calls
-  step: (state, bar4) => {
-    bar4.path.setAttribute('stroke', state.color);
-    var value = bar4.value() * 100;
-    if (value === 0) {
-      bar4.setText('');
-    } else {
-      bar4.setText(value+"%");
-    }
-
-    bar4.text.style.color = '#000';
-  }
-});
-bar4.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-bar4.text.style.fontSize = '3rem';
-
-bar4.animate(0.793); 
-
-var bar5 = new ProgressBar.SemiCircle(container5, {
-  strokeWidth: 12,
-  color: '#FFEA82',
-  trailColor: '#000',
-  trailWidth: 12,
-  easing: 'easeInOut',
-  duration: 1400,
-  svgStyle: null,
-  text: {
-    value: '',
-    alignToBottom: true
-  },
-  from: {color: '#FFEA82'},
-  to: {color: '#0c4402'},
-  // Set default step function for all animate calls
-  step: (state, bar5) => {
-    bar5.path.setAttribute('stroke', state.color);
-    var value = Math.round(bar5.value() * 100);
-    if (value === 0) {
-      bar5.setText('');
-    } else {
-      bar5.setText(value+"%");
-    }
-
-    bar5.text.style.color = '#000';
-  }
-});
-bar5.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-bar5.text.style.fontSize = '3rem';
-
-bar5.animate(0.825);  // Number from 0.0 to 1.0
-
-var bar6= new ProgressBar.SemiCircle(container6, {
-  strokeWidth: 12,
-  color: '#FFEA82',
-  trailColor: '#000',
-  trailWidth: 12,
-  easing: 'easeInOut',
-  duration: 1400,
-  svgStyle: null,
-  text: {
-    value: '',
-    alignToBottom: true
-  },
-  from: {color: '#EEEA82'},
-  to: {color: '#0c4402'},
-  // Set default step function for all animate calls
-  step: (state, bar6) => {
-    bar6.path.setAttribute('stroke', state.color);
-    var value = Math.round(bar6.value() * 100);
-    if (value === 0) {
-      bar6.setText('');
-    } else {
-      bar6.setText(value+"%");
-    }
-
-    bar6.text.style.color = '#000';
-  }
-});
-bar6.text.style.fontFamily = '"Raleway", Helvetica, sans-serif';
-bar6.text.style.fontSize = '3rem';
-
-bar6.animate(0.742); 
-	
-
-	$(document).ready(function() {
-	// Initializing locations of all SecurIoT Gateways 
-				locationInit();
-				
-			})
 		</script>
 		<div data-include="footer"></div>
 	</body>

@@ -10,7 +10,7 @@
   
    <link rel="stylesheet" type="text/css" href="http://weloveiconfonts.com/api/?family=entypo"/>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-  <link rel='stylesheet prefetch' href='css/cjbzr.css'/>
+ 
   <link rel='stylesheet prefetch' type="text/css" href="css/style.css"/>
   <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
   <script type="text/javascript" src="js/location.js"></script>
@@ -51,11 +51,8 @@ var deviceId=getItem();
     $('#head a').html("Device Id :"+ deviceId);
     
      var gatewayId=getItem();
-     var key =gatewayId+"temperature_dashboard";
-     var temp =window.localStorage.getItem(key);
-     temp=parseFloat(temp);
-     console.log(temp);
-     CanvasJS.addColorSet("Shades",["green","red","yellow"]);
+
+     CanvasJS.addColorSet("Shades",["green","blue","pink"]);
 
     //chart.options.data[0].dataPoints.push({y: temp}); // Add a new dataPoint to dataPoints array
  
@@ -70,7 +67,9 @@ var deviceId=getItem();
       },
       axisX:{
         title: "Timeline",
-        gridThickness: 2
+        valueFormatString: "DD-MMM HH:mm" ,
+         labelAngle: -50,
+         gridThickness: 1
     },
     axisY: [{
       stripLines:[
@@ -102,6 +101,22 @@ var deviceId=getItem();
         dataPoints: [
       
         ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "MaxTemperature",
+        dataPoints: [
+      
+        ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "MinTemperature",
+        dataPoints: [
+      
+        ]
       }
 
       ]
@@ -123,7 +138,9 @@ var deviceId=getItem();
       },
       axisX:{
         title: "Timeline",
-        gridThickness: 2
+         valueFormatString: "DD-MMM HH:mm" ,
+         labelAngle: -50,
+         gridThickness: 1
     },
     axisY: [{
       stripLines:[
@@ -155,6 +172,22 @@ var deviceId=getItem();
         dataPoints: [
         
         ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "MaxHumidity",
+        dataPoints: [
+        
+        ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "MinHumidity",
+        dataPoints: [
+        
+        ]
       }
 
       ]
@@ -175,8 +208,10 @@ var deviceId=getItem();
       fontColor: "black"  
       },
       axisX:{
-        title: "Timeline",
-        gridThickness: 2
+        title: "Timeline", 
+        valueFormatString: "DD-MMM HH:mm" ,
+         labelAngle: -50,
+        gridThickness: 1
     },
     axisY: [{
       stripLines:[
@@ -208,6 +243,22 @@ var deviceId=getItem();
         dataPoints: [
 
         ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "MaxSO2",
+        dataPoints: [
+
+        ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "MinSO2",
+        dataPoints: [
+
+        ]
       }       
       ]
     });
@@ -225,7 +276,9 @@ var deviceId=getItem();
       },
       axisX:{
         title: "Timeline",
-        gridThickness: 2
+         valueFormatString: "DD-MMM HH:mm" ,
+         labelAngle: -50,
+        gridThickness: 1
     },
     axisY: [{
       stripLines:[
@@ -256,6 +309,22 @@ var deviceId=getItem();
         dataPoints: [
       
         ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "MaxNO2",
+        dataPoints: [
+      
+        ]
+      },
+      {        
+        type: "line",
+        showInLegend: true,
+        legendText: "MinNO2",
+        dataPoints: [
+      
+        ]
       }       
       ]
     });
@@ -273,30 +342,30 @@ var deviceId=getItem();
     {
       if(data.results[i].dataType=='temperature')
       { 
-          temp_chart.options.axisY[0].stripLines[0].startValue=data.results[i].rThreshold;
+          temp_chart.options.axisY[0].stripLines[0].startValue=data.results[i].rThreshold-1;
           temp_chart.options.axisY[0].stripLines[0].endValue=data.results[i].rThreshold+1;
-          temp_chart.options.axisY[0].stripLines[1].startValue=data.results[i].yThreshold;
+          temp_chart.options.axisY[0].stripLines[1].startValue=data.results[i].yThreshold-1;
           temp_chart.options.axisY[0].stripLines[1].endValue=data.results[i].yThreshold+1;
       }
       if(data.results[i].dataType=='humidity')
       {
-          humid_chart.options.axisY[0].stripLines[0].startValue=data.results[i].rThreshold;
+          humid_chart.options.axisY[0].stripLines[0].startValue=data.results[i].rThreshold-1;
           humid_chart.options.axisY[0].stripLines[0].endValue=data.results[i].rThreshold+1;
-          humid_chart.options.axisY[0].stripLines[1].startValue=data.results[i].yThreshold;
+          humid_chart.options.axisY[0].stripLines[1].startValue=data.results[i].yThreshold-1;
           humid_chart.options.axisY[0].stripLines[1].endValue=data.results[i].yThreshold+1;
       }
       if(data.results[i].dataType=='so2')
       {
-          so2_chart.options.axisY[0].stripLines[0].startValue=data.results[i].rThreshold;
+          so2_chart.options.axisY[0].stripLines[0].startValue=data.results[i].rThreshold-1;
           so2_chart.options.axisY[0].stripLines[0].endValue=data.results[i].rThreshold+1;
-          so2_chart.options.axisY[0].stripLines[1].startValue=data.results[i].yThreshold;
+          so2_chart.options.axisY[0].stripLines[1].startValue=data.results[i].yThreshold-1;
           so2_chart.options.axisY[0].stripLines[1].endValue=data.results[i].yThreshold+1;
       }
       if(data.results[i].dataType=='no2')
       {
-          no2_chart.options.axisY[0].stripLines[0].startValue=data.results[i].rThreshold;
+          no2_chart.options.axisY[0].stripLines[0].startValue=data.results[i].rThreshold-1;
           no2_chart.options.axisY[0].stripLines[0].endValue=data.results[i].rThreshold+1;
-          no2_chart.options.axisY[0].stripLines[1].startValue=data.results[i].yThreshold;
+          no2_chart.options.axisY[0].stripLines[1].startValue=data.results[i].yThreshold-1;
           no2_chart.options.axisY[0].stripLines[1].endValue=data.results[i].yThreshold+1;
       }
     }
@@ -322,11 +391,13 @@ var deviceId=getItem();
 
   if  (data.status === "OK") {
     console.log(data.results);
-    for(var i in data.results.temp)
+    for(var i in data.results)
     {
-      
-          temp_chart.options.data[0].dataPoints.push({x:data.results.temp[i],y: data.results.temp[i]});
-    
+      	 
+          temp_chart.options.data[0].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].avgTemperature});
+          temp_chart.options.data[1].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].maxTemperature});
+          temp_chart.options.data[2].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].minTemperature});
+    	  console.log(data.results[i].avgTemperature);
     }
     temp_chart.render(); 
     
@@ -347,8 +418,10 @@ var deviceId=getItem();
     console.log(data.results);
     for(var i in data.results)
     {
-      
-          humid_chart.options.data[0].dataPoints.push({x:data.results[i].time,y: data.results[i].humidity});
+         
+          humid_chart.options.data[0].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].avgHumidity});
+          humid_chart.options.data[1].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].maxHumidity});
+          humid_chart.options.data[2].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].minHumidity});
     
     }
     humid_chart.render(); 
@@ -371,7 +444,10 @@ var deviceId=getItem();
     for(var i in data.results)
     {
       
-          so2_chart.options.data[0].dataPoints.push({x:data.results[i].time,y: data.results[i].so2});
+          
+          so2_chart.options.data[0].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].avgSo2});
+          so2_chart.options.data[1].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].maxSo2});
+          so2_chart.options.data[2].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].minSo2});
     
     }
     so2_chart.render(); 
@@ -394,7 +470,9 @@ var deviceId=getItem();
     for(var i in data.results)
     {
       
-          no2_chart.options.data[0].dataPoints.push({x:data.results[i].time,y: data.results[i].no2});
+          no2_chart.options.data[0].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].avgNo2});
+          no2_chart.options.data[1].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].maxNo2});
+          no2_chart.options.data[2].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].minNo2});
     
     }
     no2_chart.render(); 

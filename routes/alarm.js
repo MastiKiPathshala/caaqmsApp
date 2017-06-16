@@ -296,54 +296,54 @@ router.put('/getalerts', function(req, res, next) {
 
 var GetFinalDataFromFile = function (dataType,res,callback) {
 	var blobNameMismatchCounter = 0;
-	GetTelematicsMetadataBlobNames (dataType,function(reqBlobName){
-		
+	GetAlarmBlobDirectory (dataType,function(reqBlobName){
+
 		log.debug("required BlobName: "+reqBlobName);
-	
+
 		GetBlobNames(function(wholeDataForblobName){
-		    
+
 			var blobNameData = wholeDataForblobName;
-			
+
 			if( blobNameData == "error" ){
-				
+
 				res.json({status: "error", results: "Couldn't list blobs for container : read ECONNRESET"});
-				
+
 			}else {
-				
+
 				for(var i = 0;i< blobNameData.length;i++){
-			
+
 					var blobName = blobNameData[i].name;
 					var fileName = dataType+".txt"
 					//log.debug(blobName);
 					if(blobName.indexOf(reqBlobName) > -1){
-					
+
 						log.debug("blob Name: "+blobName);
-				
+
 						FetchBlobData(blobName,fileName,function(fileData){
-						
+
 							log.debug("output of file : "+fileName);
-						
+
 							if(fileData == "error"){
-							
+
 								log.debug("error in reding file");
 								res.json({status: "error", results: "error in reding file: "+fileName});
 							}else{
-						
+
 								callback(fileData);
 							}
 						});
 					}else{
-						
+
 						blobNameMismatchCounter ++;
-						
+
 						log.trace("error in matching blob name: "+" blobNameMismatchCounter: "+blobNameMismatchCounter+" wholeDataForblobName.length: "+wholeDataForblobName.length);
 						var noOfBlobs = wholeDataForblobName.length
-						
+
 						if( blobNameMismatchCounter == noOfBlobs) {
-						
+
 							log.debug("error in matching blob name");
 							res.json({status: "error", results: "blob not found in the container: "+containerName});
-							
+
 						}
 					}
 				}
@@ -352,7 +352,7 @@ var GetFinalDataFromFile = function (dataType,res,callback) {
 	})
 }
 
-var GetTelematicsMetadataBlobNames = function (dataType,callback) {
+var GetAlarmBlobDirectory = function (dataType,callback) {
 	
 	var date = require('date-and-time');
 	var now = new Date();
@@ -369,16 +369,16 @@ var GetTelematicsMetadataBlobNames = function (dataType,callback) {
 	var getHour = getDateHour[1].split(":");
 	var hour = getHour[0];
 
-	var requiredBlobName = dataType+"-metadata-batch"+"/"+year+"/"+month+"/"+date+"/"+hour;
-	callback(requiredBlobName);
+	var alarmBlobDirectory = "alarmOutput"+"/"+year+"/"+month+"/"+date+"/"+hour;
+	callback(alarmBlobDirectory);
 }
 
 var GetBlobNames = function (callback) {
-	
+
 	blobService.listBlobsSegmented(containerName, null, function(err, result) {
-		
+
 		if (err) {
-		
+
 			log.debug("Couldn't list blobs for container: ", containerName);
 			log.error(err);
 			callback("error");
@@ -391,39 +391,39 @@ var GetBlobNames = function (callback) {
 	});	
 }
 var FetchBlobData = function (blobName,fileName,callback) {
-	
+
 	blobService.getBlobToStream(containerName, blobName, fs.createWriteStream('/tmp/'+fileName), function(error, result, response) {
-		
+
 		if (!error) {
-		
+
 			var data = fs.readFile('/tmp/'+fileName,function(err,data){
 
 				var fss = require('extfs');
- 
+
 				var empty = fss.isEmptySync('/tmp/'+fileName);
 					console.log(empty);
-									
+
 				if(err){
-					
+
 					log.debug("error while reading file: "+err);
 					callback("error");
-					
+
 				}else {
-					
+
 					if(empty === true){
-						
+
 						log.debug("Error: file empty");
 						callback("error");
-						
+
 					}else {
-						
+
 						callback(data);
 					}	
 				}
 			})
-			
+
 		}else{
-			
+
 			log.debug(error);
 		}
 	})

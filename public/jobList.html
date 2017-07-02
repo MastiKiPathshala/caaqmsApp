@@ -107,7 +107,13 @@ $.ajax({
     for(var i = 0; i < data.results.length; i++){
             //var x=JSON.parse(data.results[i]);
             var row='<tr>',col;
+            if(data.results[i].status=='running'){
                 col = '<td >'+data.results[i].jobId+'</td>'+'<td >'+data.results[i].jobType+'</td>'+'<td >'+data.results[i].status+'</td>'+'<td >'+data.results[i].startTimeUtc+'</td>'+'<td >'+data.results[i].endTimeUtc+'</td>'+'<td >'+data.results[i].createdDateTimeUtc+'</td>'+'<td >'+data.results[i].lastUpdatedDateTimeUtc+'</td>'+'<td >'+data.results[i].deviceId+'</td>'+'<td><button onclick="" id="'+data.results[i].jobId+'">Cancel Job</buttons></td>';
+              }
+              else
+              {
+                col = '<td >'+data.results[i].jobId+'</td>'+'<td >'+data.results[i].jobType+'</td>'+'<td >'+data.results[i].status+'</td>'+'<td >'+data.results[i].startTimeUtc+'</td>'+'<td >'+data.results[i].endTimeUtc+'</td>'+'<td >'+data.results[i].createdDateTimeUtc+'</td>'+'<td >'+data.results[i].lastUpdatedDateTimeUtc+'</td>'+'<td >'+data.results[i].deviceId+'</td>';
+              }
               row += col+'</tr>';
           $('.row .col-sm-11 .container #table').append(row);
         console.log(data.results[i]);

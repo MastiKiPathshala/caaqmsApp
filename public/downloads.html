@@ -28,6 +28,12 @@
   });
 
   </script>
+  <style type="text/css">
+    .disappear
+    {
+        display: none;
+    }
+  </style>
 </head>
 
 <body >
@@ -40,13 +46,13 @@
   </div>
 
 <div class="col-sm-11">
-<form action="javascript:getTable()">
+<form action="javascript:startDownload()">
     <div class="form-group" id="myForm"><span class="menuitem" style="font-size: 18px;display: inline; margin-left: 2px; margin-top:6%"></span>
       <label for="sel1" >Duration</label>
       <select class="form-control" id="sel1" style="width:80px;display: inline;">
        <option>1hour</option>
        <option>6hours</option>
-      <option selected="selected">7</option>
+      <option selected="selected">1day</option>
       <option>7days</option>
       <option>30days</option>
       <option>90days</option>
@@ -84,9 +90,12 @@
     <col width="15%">
       <thead class="thead-inverse">
         <tr>
-          
+          <th> DEVICE ID </th>
           <th>JOB ID</th>
           <th>STATUS</th>
+          <th>DATATYPE</th>
+          <th>DURATION</th>
+          <th>TYPE</th>
           <th></th>
         </tr>
       </thead>
@@ -111,7 +120,7 @@ window.onload=function () {
       if (data.status === "OK") {
       for(var i = 0; i < data.results.length; i++){
             //var x=JSON.parse(data.results[i]);
-              var  op = '<option>'+data.results[i].gatewayId+'</option>';
+          var  op = '<option>'+data.results[i].gatewayId+'</option>';
           $('#myForm #sel2').append(op);
           console.log(data.results[i]);
           
@@ -125,39 +134,86 @@ window.onload=function () {
       console.log (data);
     });
 
+refresh();
 };
+var id;
+    function addRowHandlers() {
+    var rows = document.getElementById("table").rows;
+      for (i = 1; i < rows.length; i++) {
+            rows[i].onclick = function(){ 
+              return function(){
+                id = this.cells[1].innerHTML;
+                
+                $('.'+id).eq(0).toggleClass('disappear');
+                $('.'+id).eq(1).toggleClass('disappear');
+                
+               console.log(id);
+               
 
-function getTable()
+        };
+    }
+        (rows[i]);
+    }
+}
+
+function startDownload()
 { 
-  var days = $('#myForm #sel1 :selected').val();
-  /*var deviceId = $('#myForm #sel2 :selected').val();
-  var sensorId = $('#myForm #sel3 :selected').val();
-  var dataType = $('#myForm #sel4 :selected').val();*/
+  var days     = $('#myForm #sel1 :selected').val();
+  var deviceId = $('#myForm #sel2 :selected').val();
+  var type     = $('#myForm #sel3 :selected').val();
+  var dataType = $('#myForm #sel4 :selected').val();
   
 $.ajax({
   method: 'POST',
-  url: '/api/deviceSchedule/v1.0/currentJobStatus',
+  url: '/api/downloadData/v1.0/downloadData',
   data :{
-   totalDays : JSON.stringify({ days: days }),
-   /*deviceId  : deviceId,
-   sensorId  : sensorId,
-   dataType  : dataType*/
+   totalDays : days ,
+   deviceId  : deviceId,
+   type      : type,
+   dataType  : dataType
    
   }
  }).done(function(data) {
 
   if (data.status === "OK") {
+    
+        console.log(data.results);
+        refresh();
+  } 
+  else {
+   alert(data.results);
+   
+  }
+  
+ }).fail(function(data) {
+  console.log (data);
+ });
+
+}
+
+
+function refresh()
+{
+
+$.ajax({
+  method: 'GET',
+  url: '/api/downloadData/v1.0/getJobList',
+
+ }).done(function(data) {
+
+  if (data.status === "OK") {
+    $('.row .col-sm-11 .container #table tbody').empty();
     for(var i = 0; i < data.results.length; i++){
             //var x=JSON.parse(data.results[i]);
             var row='<tr>',col;
-            if(data.results[i].status=='failed')
+            if(data.results[i].status.trim()=='success')
             
                 {
-                  col = '<td >'+data.results[i].jobId+'</td><td>'+data.results[i].status+'</td>'+'<td><button onclick="callDownload()" class="'+data.results[i].jobId+'">Download</button><br><br><button onclick="callScp()" class="'+data.results[i].jobId+'">Send via scp</button><br><input type="text" class="'+data.results[i].jobId+'" style="display:none"/><button onclick="callScp1()" class="'+data.results[i].jobId+'" style="display:none">Submit</button></td>';
+                  col ='<td >'+data.results[i].deviceId+'</td><td >'+data.results[i].jobId+'</td><td>'+data.results[i].status+'</td>'+'<td >'+data.results[i].dataType+'</td><td >'+data.results[i].duration+'</td><td >'+data.results[i].type+'</td><td><a onClick="callDownload()" class="'+data.results[i].jobId+' disappear">Download</a><br><br><button onclick="callScp()" class="'+data.results[i].jobId+' disappear">Send via scp</button><br><input type="text" class="'+data.results[i].jobId+'" style="display:none"/><button onclick="callScp1()" class="'+data.results[i].jobId+'" style="display:none">Submit</button></td>';
                 }
               else
               {
-                col = '<td >'+data.results[i].jobId+'</td><td>'+data.results[i].status+'</td>';
+                col = '<td >'+data.results[i].deviceId+'</td><td >'+data.results[i].jobId+'</td><td>'+data.results[i].status+'</td>'+'<td >'+data.results[i].dataType+'</td><td >'+data.results[i].duration+'</td><td >'+data.results[i].type+'</td><td></td>';
               }
 
               row += col+'</tr>';
@@ -182,12 +238,23 @@ $.ajax({
   {
     $.ajax({
   method: 'POST',
-  url: '/api/deviceSchedule/v1.0/downloads',
+  url: '/api/downloadData/v1.0/download',
+  data : {
+    jobId : id,
+    method : 'file'
+  }
   
  }).done(function(data) {
 
   if (data.status === "OK") {
-        console.log(data.results);
+
+    var dataStore = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data.results));
+    var dl = document.getElementsByClassName(id)[0];
+    console.log("Downloading for  : "+id);
+    dl.setAttribute("href", dataStore);
+    var name= new Date() +'_config.txt';
+    dl.setAttribute("download", name);
+        //console.log(data.results);
   } 
   else {
    alert(data.results);
@@ -211,38 +278,30 @@ $.ajax({
 
    }
 
-    var id;
-    function addRowHandlers() {
-    var rows = document.getElementById("table").rows;
-      for (i = 1; i < rows.length; i++) {
-            rows[i].onclick = function(){ 
-              return function(){
-                id = this.cells[0].innerHTML;
-               //alert(id+" "+status);
-               
-
-        };
-    }
-        (rows[i]);
-    }
-}
+    
 
   function callScp1()
   {  
     var url = document.getElementsByClassName(id)[2].value;
-    alert(x);
 
      $.ajax({
   method: 'POST',
-  url: '/api/deviceSchedule/v1.0/callScp',
+  url: '/api/downloadData/v1.0/download',
   data :{
-   url : url,
+    jobId : id, 
+    method : 'scp', 
+    url : url
    
   }
  }).done(function(data) {
 
   if (data.status === "OK") {
-        console.log(data.results);
+        console.log('Submitted : '+data.results);
+        var button2 =document.getElementsByClassName(id)[2];
+      button2.style.display = 'none';
+      var button3 =document.getElementsByClassName(id)[3];
+      button3.style.display = 'none';
+
   } 
   else {
    alert(data.results);

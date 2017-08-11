@@ -27,6 +27,7 @@ log.setLevel('debug');
  */
 var http = require ('http');
 var app = require ('../app');
+var iotHub = require ('../routes/iothub_init');
 
 /*
  * Get port from environment and store in Express.
@@ -34,6 +35,12 @@ var app = require ('../app');
 
 var port = normalizePort(process.env.PORT || '80');
 app.set('port', port);
+
+/*
+ * Configure iotHub for CAAQMS 
+ */
+
+iotHub.configure ();
 
 /*
  * Create HTTP server.

@@ -1,6 +1,0 @@
-{
-	"HostName": "caaqms-iot-hub.azure-devices.net",
-	"SharedAccessKeyName": "iothubowner",
-	"SharedAccessKey": "4NlyFTsK0PmysUNgueBBP5+GIAQl3nAjXakYGmty9SA="
-	
-}

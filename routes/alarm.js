@@ -14,15 +14,8 @@
  ************************************************************************/
 var express = require('express');
 var router = express.Router();
-var uuid = require('uuid');
-var azure = require('azure-storage');
-
-var blobService = azure.createBlobService("caaqmsstorageaccount","lwcNzI+KSdd9QcAMtCTm6CbyEr7RM3Q9H10eld1/ETA78l5bQZTJL1AY79khQBbEJCY1JbUyYo8wTVxPEK6LMw==");
-var fs = require('fs');
 var moment = require('moment-timezone');
 var date = require('date-and-time');
-var containerName = 'caaqms-container';
-var alarmRuleBlob = 'alarmBlob/alarm-deviceRule-blob.json';
 
 router.get('/getRules', function(req,res,next) {
 	

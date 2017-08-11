@@ -12,26 +12,6 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-var fs = require('fs');
-var wholeConfigData = fs.readFileSync('./routes/config.txt');
-var parsedConfigData = JSON.parse(wholeConfigData);
-
-var HostName = parsedConfigData.HostName;
-var SharedAccessKeyName = parsedConfigData.SharedAccessKeyName;
-var SharedAccessKey = parsedConfigData.SharedAccessKey;
-
-var connectionString = 'HostName='+HostName+';SharedAccessKeyName='+SharedAccessKeyName+';SharedAccessKey='+SharedAccessKey;
- 
-var uuid = require('uuid');
-var JobClient = require('azure-iothub').JobClient;
-//var startTime = new Date();
-
-var jobClient = JobClient.fromConnectionString(connectionString);
-
-var Registry = require('azure-iothub').Registry;
-var Client = require('azure-iothub').Client;
-var registry = Registry.fromConnectionString(connectionString);
-
 var express = require('express');
 var router = express.Router();
 

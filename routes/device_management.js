@@ -12,21 +12,6 @@
  * This file is subject to the terms and conditions defined in
  * file 'LICENSE.txt', which is part of this source code package.
  */
-var fs = require('fs'); 
-var Registry = require('azure-iothub').Registry;
-var Client = require('azure-iothub').Client;
-
-var wholeConfigData = fs.readFileSync('./routes/config.txt');
-var parsedConfigData = JSON.parse(wholeConfigData);
-
-var HostName = parsedConfigData.HostName;
-var SharedAccessKeyName = parsedConfigData.SharedAccessKeyName;
-var SharedAccessKey = parsedConfigData.SharedAccessKey;
-
-var connectionString = 'HostName='+HostName+';SharedAccessKeyName='+SharedAccessKeyName+';SharedAccessKey='+SharedAccessKey;
-
-var registry = Registry.fromConnectionString(connectionString);
-var client = Client.fromConnectionString(connectionString);
 var express = require('express');
 var router = express.Router();
 
@@ -44,7 +29,7 @@ router.get('/hostNameDevicePrimaryKey/:deviceId', function(req,res,next){
 			log.debug("devicePrimaryKey: "+devicePrimaryKey);
 
 			var hostNameDevicePrimaryKey = {};
-			hostNameDevicePrimaryKey = {"hostName" : HostName, "devicePrimaryKey": devicePrimaryKey};
+			hostNameDevicePrimaryKey = {"hostName" : iotHubName, "devicePrimaryKey": devicePrimaryKey};
 			log.debug(JSON.stringify(hostNameDevicePrimaryKey));
 
 			res.json({status: "OK", results: hostNameDevicePrimaryKey});

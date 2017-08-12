@@ -21,7 +21,7 @@ var configure = function () {
 	uuid = require('uuid');
 
 	log.debug("iotHub initialization in progress");
-	caaqmsConfig = fs.readFileSync('./config.txt');
+	caaqmsConfig = fs.readFileSync('/root/github/caaqmsApp/config.txt');
 	parsedConfig = JSON.parse(caaqmsConfig);
 	/*
 	 * TODO : If config file is blank, then create IoTHub, Storage Account and populate config file

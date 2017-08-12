@@ -16,13 +16,8 @@
 var express = require('express');
 var router = express.Router();
 
-var azure = require('azure-storage');
-
-var blobService = azure.createBlobService("caaqmsstorageaccount","lwcNzI+KSdd9QcAMtCTm6CbyEr7RM3Q9H10eld1/ETA78l5bQZTJL1AY79khQBbEJCY1JbUyYo8wTVxPEK6LMw==");
-var fs = require('fs');
 var moment = require('moment-timezone');
 var date = require('date-and-time');
-var containerName = 'caaqms-container';
 
 /* GET list of unique SIG and their latest locations */
 router.get('/gatewayLocations', function(req, res, next) {

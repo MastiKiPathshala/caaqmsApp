@@ -30,6 +30,8 @@ var configure = function () {
 	log.debug("iotHub Config : " + JSON.stringify(iotHubConfig));
 	storageConfig = parsedConfig.Storage;
 	log.debug("Storage Config : " + JSON.stringify(storageConfig));
+	blobConfig = parsedConfig.Blob;
+	log.debug("Blob Config : " + JSON.stringify(blobConfig));
 
 	iotHubName = iotHubConfig.HostName;
 	SharedAccessKeyName = iotHubConfig.SharedAccessKeyName;
@@ -46,7 +48,14 @@ var configure = function () {
 	containerName = storageConfig.container;
 	blobService = Storage.createBlobService(storageAccount, storageAccessKey);
 
-	alarmRuleBlob = 'alarmBlob/alarm-deviceRule-blob.json';
+	blobService.createContainerIfNotExists(containerName, function(err) {
+		if (err) {
+			log.error ('Container creation error : ' + JSON.stringify (err));
+		} else {
+			log.debug ('Container ' + containerName + ' created');
+		}
+	})
+	alarmRuleBlob = blobConfig.alarmRule;
 
 	log.debug("iotHub initialized");
 }

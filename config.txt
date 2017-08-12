@@ -8,5 +8,9 @@
 		"account" : "caaqmsstorageaccount",
 		"container" : "caaqms-container",
 		"SharedAccessKey": "lwcNzI+KSdd9QcAMtCTm6CbyEr7RM3Q9H10eld1/ETA78l5bQZTJL1AY79khQBbEJCY1JbUyYo8wTVxPEK6LMw=="
+	},
+	"Blob": {
+		"alarmRule": "alarmBlob/alarm-deviceRule-blob.json",
+		"alarmData": "dddd"
 	}
 }

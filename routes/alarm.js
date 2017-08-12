@@ -223,7 +223,7 @@ router.put('/getalerts', function(req, res, next) {
 	var timeDuration = req.body.time;
 	//var sensorDataType = req.body.datatype;
 	var sensorDataType = req.body.dataType;
-    log.debug(gatewayUniqueId+" "+timeDuration+" "+sensorDataType);
+	log.debug(gatewayUniqueId+" "+timeDuration+" "+sensorDataType);
 	
 	var dataType = ["temperature","humidity","so2","no2","gps"];
 	log.debug("gatewayUniqueId : "+gatewayUniqueId);

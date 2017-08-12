@@ -1,8 +1,8 @@
 {
 	"IoTHub": {
-		"HostName": "testCaaqms.azure-devices.net",
-		"SharedAccessKeyName": "iothubowner",
-		"SharedAccessKey": "m8svBRMcWW1Mo761/63qyA6gqvzBKpPy+z09rQt/1Ro="
+		"ResourceGroup": "testCaaqmstelemetry",
+		"HostName": "testCaaqms",
+		"SharedAccessKeyName": "iothubowner"
 	},
 	"Storage": {
 		"account" : "caaqmsstorageaccount",

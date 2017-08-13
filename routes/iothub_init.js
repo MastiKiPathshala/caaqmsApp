@@ -19,20 +19,28 @@ var fs = require('fs');
 var Registry = require('azure-iothub').Registry;
 var Client = require('azure-iothub').Client;
 var JobClient = require('azure-iothub').JobClient;
+var msRestAzure = require('ms-rest-azure');
+var ResourceManagementClient = require('azure-arm-resource').ResourceManagementClient;
+var StorageManagementClient = require('azure-arm-storage');
 var Storage = require('azure-storage');
 uuid = require('uuid');
 var azureAccessToken;
 var azureAuthHeader;
 
-var AcquireOAuth2Token = function (callback) {
+var AcquireOAuth2Token = function (config, callback) {
 	/*
 	 *
 	 */
 	log.debug ("Acquiring OAuth2 token for initialization");
-	authUrl = "https://login.microsoftonline.com/cb76d069-a90e-4c19-92f4-89eb61d54f8e/oauth2/token";
+	clientId = config.ClientId;
+	clientSecret = config.ClientSecret;
+	tenantId = config.TenantId;
+	subscriptionId = config.SubscriptionId;
+	authUrl = "https://login.microsoftonline.com/"+tenantId+"/oauth2/token";
+	//authUrl = "https://login.microsoftonline.com/common/oauth2/token";
 	authForm = {
-		client_id: "09220503-e848-4fd6-9972-b25d0496491f",
-		client_secret:"fo/s/8qzFgKBYhdQSCgcoUsyhzeXtrRmYvt8YA7dhQw=",
+		client_id: clientId,
+		client_secret: clientSecret,
 		grant_type:"client_credentials",
 		resource: "https://management.azure.com/"
 	}
@@ -53,14 +61,22 @@ var AcquireOAuth2Token = function (callback) {
 		}
 		callback();
 	});
+	msRestAzure.loginWithServicePrincipalSecret(clientId, clientSecret, tenantId, function (err, credentials) {
+		if (err) {
+			return console.log(err);
+		}
+		log.debug ("Logged in with WebApp Service principal credential ");
+		resourceClient = new ResourceManagementClient(credentials, subscriptionId);
+		storageClient = new StorageManagementClient(credentials, subscriptionId);
+	});
 }
 
 var InitializeResourceGroup = function (config, callback) {
 	log.debug ("Initializing Resource Group");
-	resourceGroup = config.ResourceGroup;
-	reqUrl = "https://management.azure.com/subscriptions/f2992d72-a9ff-47e2-875d-7cfa4acaa857/resourcegroups/"+resourceGroup+"?api-version=2017-05-10";
+	resourceGroupName = config.ResourceGroup;
+	reqUrl = "https://management.azure.com/subscriptions/"+subscriptionId+"/resourcegroups/"+resourceGroupName+"?api-version=2017-05-10";
 	reqForm = {
-		"name": resourceGroup,
+		"name": resourceGroupName,
 		"location": "West US 2"
 	}
 	request.put ({url: reqUrl, headers: azureAuthHeader, json: reqForm}, function (error, response, body) {
@@ -82,7 +98,7 @@ var InitializeIoTHub = function (config, callback) {
 	log.debug ("Initializing IoTHub");
 
 	iotHubName = config.HostName;
-	reqUrl = "https://management.azure.com/subscriptions/f2992d72-a9ff-47e2-875d-7cfa4acaa857/resourceGroups/"+resourceGroup+"/providers/Microsoft.Devices/IotHubs/"+iotHubName+"?api-version=2017-01-19";
+	reqUrl = "https://management.azure.com/subscriptions/"+subscriptionId+"/resourceGroups/"+resourceGroupName+"/providers/Microsoft.Devices/IotHubs/"+iotHubName+"?api-version=2017-01-19";
 	reqForm = {
 		"name": iotHubName,
 		"location": "West US 2",
@@ -131,7 +147,7 @@ var InitializeIoTHub = function (config, callback) {
 var InitializeStreamAnalyticsJobs = function (callback) {
 
 	log.debug ("Initializing Stream Analytics jobs");
-	reqUrl = "https://management.azure.com/subscriptions/f2992d72-a9ff-47e2-875d-7cfa4acaa857/resourcegroups/"+resourceGroup+"/providers/Microsoft.StreamAnalytics/streamingjobs?$expand={Inputs}&api-version=2015-10-01";
+	reqUrl = "https://management.azure.com/subscriptions/f2992d72-a9ff-47e2-875d-7cfa4acaa857/resourcegroups/"+resourceGroupName+"/providers/Microsoft.StreamAnalytics/streamingjobs?$expand={Inputs}&api-version=2015-10-01";
 	request({url: reqUrl, headers: azureAuthHeader}, function (error, response, body) {
 		if (!error && response.statusCode == 200) {
 			log.debug ("Job List : " + JSON.stringify(body));
@@ -144,11 +160,35 @@ var InitializeStreamAnalyticsJobs = function (callback) {
 
 var InitializeStorageConfig = function (storageConfig, blobConfig, callback) {
 
-	log.debug ("Initializing Storage Config");
-	storageAccount = storageConfig.account;
-	storageAccessKey = storageConfig.SharedAccessKey;
+	log.debug ("Storage : Creating or updating Storage account");
+	storageAccountName = storageConfig.account;
 	containerName = storageConfig.container;
-	blobService = Storage.createBlobService(storageAccount, storageAccessKey);
+	var createParameters = {
+		location: "West US 2",
+		sku: {
+			name: "Standard_LRS"
+		},
+		kind: 'BlobStorage',
+		accessTier: "Hot"
+	};
+
+	storageClient.storageAccounts.create(resourceGroupName, storageAccountName, createParameters, function (err, result, request, response) {
+		if (err) {
+			log.error ("Storage Account creation failed : " +err);
+		}
+		storageClient.storageAccounts.listKeys(resourceGroupName, storageAccountName, function (err, result, request, response) {
+			if (err) {
+				log.error ("Storage Account list error  : " + err);
+			} else {
+				storageAccessKeys = result.keys;
+					sharedAccessKey = "";
+					for (var index in storageAccessKeys) {
+						if (storageAccessKeys[index].keyName == "key1"){
+							storageAccessKey = storageAccessKeys[index].value;
+						}
+					}
+			}
+	blobService = Storage.createBlobService(storageAccountName, storageAccessKey);
 
 	alarmRuleBlob = blobConfig.alarmRule;
 	blobService.createContainerIfNotExists(containerName, function(err) {
@@ -159,16 +199,21 @@ var InitializeStorageConfig = function (storageConfig, blobConfig, callback) {
 		}
 		callback();
 	});
+		});
+	});
+
 }
 
 var configure = function () {
 
 	log.debug("iotHub initialization in progress");
-	caaqmsConfig = fs.readFileSync('/root/github/caaqmsApp/config.txt');
+	caaqmsConfig = fs.readFileSync('/etc/caaqms/config.txt');
 	parsedConfig = JSON.parse(caaqmsConfig);
 	/*
 	 * TODO : If config file is blank, then create IoTHub, Storage Account and populate config file
 	 */
+	clientConfig = parsedConfig.Client;
+	//log.debug("App Client Config : " + JSON.stringify(clientConfig));
 	iotHubConfig = parsedConfig.IoTHub;
 	log.debug("iotHub Config : " + JSON.stringify(iotHubConfig));
 	storageConfig = parsedConfig.Storage;
@@ -181,7 +226,7 @@ var configure = function () {
 
 		function(callback) {
 
-			AcquireOAuth2Token(callback);
+			AcquireOAuth2Token(clientConfig, callback);
 		},
 		function(callback) {
 

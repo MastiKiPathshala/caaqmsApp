@@ -193,7 +193,7 @@ var InitializeStreamAnalyticsJobs = function (config, callback) {
 	callback();
 }
 
-var InitializeStorageConfig = function (storageConfig, blobConfig, callback) {
+var InitializeStorageConfig = function (storageConfig, callback) {
 
 	log.debug ("Storage : Creating or updating Storage account");
 	storageAccountName = storageConfig.account;
@@ -223,17 +223,17 @@ var InitializeStorageConfig = function (storageConfig, blobConfig, callback) {
 						}
 					}
 			}
-	blobService = Storage.createBlobService(storageAccountName, storageAccessKey);
+			blobService = Storage.createBlobService(storageAccountName, storageAccessKey);
 
-	alarmRuleBlob = blobConfig.alarmRule;
-	blobService.createContainerIfNotExists(containerName, function(err) {
-		if (err) {
-			log.error ('Container creation error : ' + JSON.stringify (err));
-		} else {
-			log.debug ('Container ' + containerName + ' created');
-		}
-		callback();
-	});
+			blobService.createContainerIfNotExists(containerName, function(err) {
+				if (err) {
+					log.error ('Container creation error : ' + JSON.stringify (err));
+				} else {
+					log.debug ('Container ' + containerName + ' created');
+				}
+				alarmRuleBlob = storageConfig.Blob.alarmRule;
+			});
+			callback();
 		});
 	});
 
@@ -253,8 +253,6 @@ var configure = function () {
 	log.debug("iotHub Config : " + JSON.stringify(iotHubConfig));
 	storageConfig = parsedConfig.Storage;
 	log.debug("Storage Config : " + JSON.stringify(storageConfig));
-	blobConfig = parsedConfig.Blob;
-	log.debug("Blob Config : " + JSON.stringify(blobConfig));
 	streamJobsConfig = parsedConfig.StreamJobs;
 	//log.debug("Stream Jobs Config : " + JSON.stringify(streamJobsConfig));
 
@@ -275,7 +273,7 @@ var configure = function () {
 		},
 		function(callback) {
 
-			InitializeStorageConfig (storageConfig, blobConfig, callback);
+			InitializeStorageConfig (storageConfig, callback);
 		},
 		function(callback) {
 

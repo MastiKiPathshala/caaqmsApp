@@ -12,11 +12,11 @@
 	},
 	"Storage": {
 		"account" : "testcaaqmsstore",
-		"container" : "caaqms-container"
-	},
-	"Blob": {
-		"alarmRule": "alarmBlob/alarm-deviceRule-blob.json",
-		"alarmData": "dddd"
+		"container" : "caaqms-container",
+		"Blob": {
+			"alarmRule": "alarmBlob/alarm-deviceRule-blob.json",
+			"alarmData": "alarmBlob/alarm-sensorData-blob.json"
+		}
 	},
 	"StreamJobs": [
 	{

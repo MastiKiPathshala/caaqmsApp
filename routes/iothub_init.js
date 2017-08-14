@@ -144,18 +144,48 @@ var InitializeIoTHub = function (config, callback) {
 	});
 }
 
-var InitializeStreamAnalyticsJobs = function (callback) {
+var InitializeStreamAnalyticsJobs = function (config, callback) {
 
 	log.debug ("Initializing Stream Analytics jobs");
-	reqUrl = "https://management.azure.com/subscriptions/f2992d72-a9ff-47e2-875d-7cfa4acaa857/resourcegroups/"+resourceGroupName+"/providers/Microsoft.StreamAnalytics/streamingjobs?$expand={Inputs}&api-version=2015-10-01";
-	request({url: reqUrl, headers: azureAuthHeader}, function (error, response, body) {
-		if (!error && response.statusCode == 200) {
-			log.debug ("Job List : " + JSON.stringify(body));
-		}else {
-			log.error ("Error : " + error + " body : " + body);
+	for (index in config) {
+		reqForm = {
+			"location":"West US 2",
+			"properties":{
+				"sku":{
+					"name":"standard"
+				},
+				"eventsOutOfOrderPolicy":"drop",
+				"eventsOutOfOrderMaxDelayInSeconds":10
+			}
 		}
-		callback();
-	});
+		reqForm.properties["inputs"] = config[index].inputs;
+		for (innerIndex in reqForm.properties.inputs) {
+			reqForm.properties.inputs[innerIndex].properties.datasource.properties.iotHubNamespace = iotHubName;
+			reqForm.properties.inputs[innerIndex].properties.datasource.properties.sharedAccessPolicyName = sharedAccessKeyName;
+			reqForm.properties.inputs[innerIndex].properties.datasource.properties.sharedAccessPolicyKey = sharedAccessKey;
+		}
+
+		reqForm.properties["transformation"] = config[index].transformation;
+
+		reqForm.properties["outputs"] = config[index].outputs;
+		for (innerIndex in reqForm.properties.inputs) {
+			reqForm.properties.outputs[innerIndex].properties.datasource.properties.storageAccounts[0].accountName = storageAccountName;
+			reqForm.properties.outputs[innerIndex].properties.datasource.properties.storageAccounts[0].accountKey = storageAccessKey;
+		}
+
+		streamJobName = config[index].JobName;
+		reqUrl = "https://management.azure.com/subscriptions/"+subscriptionId+"/resourcegroups/"+resourceGroupName+"/providers/Microsoft.StreamAnalytics/streamingjobs/"+streamJobName+"?api-version=2015-10-01";
+		//log.debug ("Stream Job : " + reqUrl + " Form : " + JSON.stringify(reqForm));
+
+		request.put ({url: reqUrl, headers: azureAuthHeader, json: reqForm}, function (error, response, body) {
+			if (!error && response.statusCode == 200) {
+				log.debug ("Stream Job List : " + JSON.stringify(body));
+			}else {
+				log.error ("Stream Job error : " + error + " body : " + JSON.stringify(body));
+			}
+		});
+	}
+	callback();
 }
 
 var InitializeStorageConfig = function (storageConfig, blobConfig, callback) {
@@ -181,7 +211,7 @@ var InitializeStorageConfig = function (storageConfig, blobConfig, callback) {
 				log.error ("Storage Account list error  : " + err);
 			} else {
 				storageAccessKeys = result.keys;
-					sharedAccessKey = "";
+					storageAccessKey = "";
 					for (var index in storageAccessKeys) {
 						if (storageAccessKeys[index].keyName == "key1"){
 							storageAccessKey = storageAccessKeys[index].value;
@@ -220,6 +250,8 @@ var configure = function () {
 	log.debug("Storage Config : " + JSON.stringify(storageConfig));
 	blobConfig = parsedConfig.Blob;
 	log.debug("Blob Config : " + JSON.stringify(blobConfig));
+	streamJobsConfig = parsedConfig.StreamJobs;
+	//log.debug("Stream Jobs Config : " + JSON.stringify(streamJobsConfig));
 
 
 	async.series([
@@ -242,7 +274,7 @@ var configure = function () {
 		},
 		function(callback) {
 
-			InitializeStreamAnalyticsJobs(callback);
+			InitializeStreamAnalyticsJobs(streamJobsConfig, callback);
 		}
 	]);
 }

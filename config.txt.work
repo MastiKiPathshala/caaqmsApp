@@ -1,0 +1,88 @@
+{
+	"Client": {
+		"ClientId":"09220503-e848-4fd6-9972-b25d0496491f",
+		"ClientSecret":"fo/s/8qzFgKBYhdQSCgcoUsyhzeXtrRmYvt8YA7dhQw=",
+		"TenantId":"cb76d069-a90e-4c19-92f4-89eb61d54f8e",
+		"SubscriptionId":"f2992d72-a9ff-47e2-875d-7cfa4acaa857"
+	},
+	"IoTHub": {
+		"ResourceGroup": "testCaaqmstelemetry",
+		"HostName": "testCaaqms",
+		"SharedAccessKeyName": "iothubowner"
+	},
+	"Storage": {
+		"account" : "testcaaqmsstore",
+		"container" : "caaqms-container"
+	},
+	"Blob": {
+		"alarmRule": "alarmBlob/alarm-deviceRule-blob.json",
+		"alarmData": "dddd"
+	},
+	"StreamJobs": [
+	{
+		"JobName": "caaqms-telemetry-job",
+		"inputs": [
+		{
+			"name":"MyIoTHubSource",
+			"properties":{
+				"type":"stream",
+				"serialization":{
+					"type":"JSON",
+					"properties":{
+						"encoding":"UTF8"
+					}
+				},
+				"datasource":{
+					"type":"Microsoft.Devices/IotHubs",
+					"properties":{
+						"iotHubNamespace":"",
+						"sharedAccessPolicyName":"",
+						"sharedAccessPolicyKey":"",
+						"consumerGroupName":"$Default"
+					}
+				}
+			}
+		}
+		],
+		"transformation": {
+			"name":"ProcessSampleData",
+			"properties": {
+				"query": "SELECT * FROM MyIoTHubSource"
+			}
+		},
+		"outputs": [
+		{
+			"name":"MyBlobSource",  
+			"properties":{    
+				"serialization":{    
+					"type":"JSON",  
+					"properties":{    
+						"format":"LineSeparated",  
+						"encoding":"UTF8"  
+					}  
+				},  
+				"datasource":{    
+					"type":"Microsoft.Storage/Blob",  
+					"properties":{    
+						"storageAccounts":[    
+						{
+							"accountName":"",  
+							"accountKey":""
+						}  
+						],  
+						"container":"samplecontainer",  
+						"pathPattern":"/telemetry-raw-data/NO2/{date}/{time}"
+					}  
+				}  
+			}  
+		}
+		]
+	},
+	{
+		"JobName": "caaqms-alarm-job",
+		"inputs": [],
+		"transformation": {},
+		"outputs": []
+	}
+	]
+}

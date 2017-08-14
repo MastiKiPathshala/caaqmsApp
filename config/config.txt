@@ -47,7 +47,6 @@
 		"transformation": {
 			"name":"ProcessSampleData",
 			"properties": {
-				"query": "SELECT * FROM MyIoTHubSource"
 			}
 		},
 		"outputs": [
@@ -81,7 +80,11 @@
 	{
 		"JobName": "caaqms-alarm-job",
 		"inputs": [],
-		"transformation": {},
+		"transformation": {
+			"name": "telemtrey-alarm-job",
+			"properties": {
+			}
+		},
 		"outputs": []
 	}
 	]

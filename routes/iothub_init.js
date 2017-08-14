@@ -148,6 +148,7 @@ var InitializeStreamAnalyticsJobs = function (config, callback) {
 
 	log.debug ("Initializing Stream Analytics jobs");
 	for (index in config) {
+		streamJobName = config[index].JobName;
 		reqForm = {
 			"location":"West US 2",
 			"properties":{
@@ -165,7 +166,12 @@ var InitializeStreamAnalyticsJobs = function (config, callback) {
 			reqForm.properties.inputs[innerIndex].properties.datasource.properties.sharedAccessPolicyKey = sharedAccessKey;
 		}
 
+		sqlQuery = fs.readFileSync ("/etc/caaqms/"+streamJobName+".query").toString();
 		reqForm.properties["transformation"] = config[index].transformation;
+		log.debug (JSON.stringify(reqForm.properties.transformation.properties));
+		reqForm.properties.transformation.properties = {
+			"query": sqlQuery
+		}
 
 		reqForm.properties["outputs"] = config[index].outputs;
 		for (innerIndex in reqForm.properties.inputs) {
@@ -173,7 +179,6 @@ var InitializeStreamAnalyticsJobs = function (config, callback) {
 			reqForm.properties.outputs[innerIndex].properties.datasource.properties.storageAccounts[0].accountKey = storageAccessKey;
 		}
 
-		streamJobName = config[index].JobName;
 		reqUrl = "https://management.azure.com/subscriptions/"+subscriptionId+"/resourcegroups/"+resourceGroupName+"/providers/Microsoft.StreamAnalytics/streamingjobs/"+streamJobName+"?api-version=2015-10-01";
 		//log.debug ("Stream Job : " + reqUrl + " Form : " + JSON.stringify(reqForm));
 

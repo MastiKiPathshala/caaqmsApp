@@ -1,0 +1,108 @@
+WITH 
+    [StreamData]
+AS (
+    SELECT
+        *
+    FROM [iotHubStream]
+    WHERE
+        [ObjectType] IS NULL -- Filter out device info and command responses
+) 
+
+SELECT
+    IoTHub.ConnectionDeviceId AS deviceId,
+    latitude,longitude,dataType,sensorId,
+    temperature,
+    humidity,so2,no2,qualityScore,time
+INTO
+    [telemetry-blob-raw-data]
+FROM
+    [StreamData]
+
+SELECT
+    System.Timestamp AS time,
+    IoTHub.ConnectionDeviceId AS deviceId,
+    AVG (humidity) AS [AverageHumidity],
+    MIN(humidity) AS [MinimumHumidity],
+    MAX(humidity) AS [MaxHumidity],
+    AVG (qualityScore) AS [qualityScore],
+    sensorId,
+    5.0 AS TimeframeMinutes 
+INTO
+    [telemetry-humidity-metaData]
+FROM [StreamData]
+WHERE
+    [humidity] IS NOT NULL AND [time] IS NOT NULL
+GROUP BY
+    IoTHub.ConnectionDeviceId,sensorId,
+    TumblingWindow (mi, 5)
+
+SELECT
+    System.Timestamp AS time,
+    IoTHub.ConnectionDeviceId AS deviceId,
+    AVG(temperature) AS [AverageTemperature],
+    MIN(temperature) AS [MinimumTemperature],
+    MAX(temperature) AS [MaxTemperature],
+    AVG (qualityScore) AS [qualityScore],
+    sensorId,
+    5.0 AS TimeframeMinutes 
+INTO
+    [telemetry-temperature-metaData]
+FROM [StreamData]
+WHERE
+    [temperature] IS NOT NULL
+GROUP BY
+    IoTHub.ConnectionDeviceId,sensorId,
+    TumblingWindow (mi, 5)
+    
+SELECT
+    System.Timestamp AS time,
+    IoTHub.ConnectionDeviceId AS deviceId,
+    AVG (so2) AS [AverageSo2],
+    MIN(so2) AS [MinimumSo2],
+    MAX(so2) AS [MaxSo2],
+    AVG (qualityScore) AS [qualityScore],
+    sensorId,
+    5.0 AS TimeframeMinutes 
+INTO
+    [telemetry-so2-metaData]
+FROM [StreamData]
+WHERE
+    [so2] IS NOT NULL
+GROUP BY
+    IoTHub.ConnectionDeviceId,sensorId,
+    TumblingWindow (mi, 5)
+
+SELECT
+    System.Timestamp AS time,
+    IoTHub.ConnectionDeviceId AS deviceId,
+    AVG (no2) AS [AverageNo2],
+    MIN(no2) AS [MinimumNo2],
+    MAX(no2) AS [MaxNo2],
+    AVG (qualityScore) AS [qualityScore],
+    sensorId,
+    5.0 AS TimeframeMinutes 
+INTO
+    [telemetry-no2-metaData]
+FROM [StreamData]
+WHERE
+    [no2] IS NOT NULL
+GROUP BY
+    IoTHub.ConnectionDeviceId,sensorId,
+    TumblingWindow (mi, 5)
+
+SELECT
+    System.Timestamp AS time,
+    IoTHub.ConnectionDeviceId AS deviceId,
+    AVG (latitude) AS [latitude],
+    AVG (longitude) AS [longitude],
+    AVG (qualityScore) AS [qualityScore],
+    sensorId,
+    5.0 AS TimeframeMinutes 
+INTO
+    [telemetry-gps-metaData]
+FROM [StreamData]
+WHERE
+    [latitude] IS NOT NULL
+GROUP BY
+    IoTHub.ConnectionDeviceId,sensorId,
+    TumblingWindow (mi, 60)

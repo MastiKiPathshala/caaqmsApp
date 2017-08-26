@@ -102,6 +102,33 @@
 					}
 				}
 			}
+		},
+		{
+			"name":"telemetry-gps-metadata",
+			"properties":{
+				"serialization":{
+					"type":"JSON",
+					"properties":{
+						"format":"LineSeparated",
+						"encoding":"UTF8"
+					}
+				},
+				"datasource":{
+					"type":"Microsoft.Storage/Blob",
+					"properties":{
+						"storageAccounts":[
+						{
+							"accountName":"",
+							"accountKey":""
+						}
+						],
+						"container":"caaqms-container",
+						"pathPattern":"telemetry/gps-metadata/{date}/{time}",
+						"dateFormat":"yyyy/MM/dd",
+						"timeFormat":"HH"
+					}
+				}
+			}
 		}
 		]
 	},
@@ -149,7 +176,7 @@
 						}
 						],
 						"container":"caaqms-container",
-						"pathPattern":"alarm/rul-data.json"
+						"pathPattern":"alarm/rule-data.json"
 					}
 				}
 			}

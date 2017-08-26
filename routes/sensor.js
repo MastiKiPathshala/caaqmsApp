@@ -134,19 +134,14 @@ router.get('/humidity/:gatewayId', function(req, res, next) {
 	
 	//var dataType = req.params.humidity;
 	var dataType = "humidity";
-	log.debug("data type: "+dataType);
 	var gatewayUniqueId = req.params.gatewayId;
-	log.debug("gatewayUniqueId : "+gatewayUniqueId);
+	log.debug('GET request for dataType : ' + dataType + ', gatewayUniqueId : ' + gatewayUniqueId);
 	
-	var humidSensor = {};
-	
-	humidSensor.humid = [];
-	humidSensor.airQuality = [];
+	var humidityMetaData = [];
 	
 	var countGatewayId = 0;
 	var countMatchedGatewayId = 0;
 	var reqStatus = "OK";
-	log.debug('GET request for humidity : ' + req);
 	
 	GetFinalDataFromFile(dataType,res,function(fileData){
 		
@@ -159,18 +154,21 @@ router.get('/humidity/:gatewayId', function(req, res, next) {
 			var lastData = splitData[i];
 			var parseData = JSON.parse(lastData);
 					
-			log.debug("GatewayId: "+parseData.deviceid + " Humidity: "+parseData.humidity+ " qualityScore: "+parseData.qualityscore);
+			//log.debug("GatewayId: "+parseData.deviceid + " Humidity: "+parseData.avghumidity+ " qualityScore: "+parseData.qualityscore);
 						
 			var gatewayId = parseData.deviceid;
 						
 			if ( gatewayId == gatewayUniqueId ) {
+
+				var humidityMetaDataPoint = {};
+				humidityMetaDataPoint.avgHumidity = parseFloat(parseData.avghumidity);
+				humidityMetaDataPoint.minHumidity = parseFloat(parseData.minhumidity);
+				humidityMetaDataPoint.maxHumidity = parseFloat(parseData.maxhumidity);
+				humidityMetaDataPoint.airQuality = parseFloat(parseData.qualityscore);
+				humidityMetaDataPoint.time = parseData.time;
 						
-				var humidity = parseFloat(parseData.humidity);
+				humidityMetaData.push (humidityMetaDataPoint);
 				
-				var qualityscore = parseFloat(parseData.qualityscore);
-						
-				humidSensor.humid[countMatchedGatewayId] = humidity; 
-				humidSensor.airQuality[countMatchedGatewayId] = qualityscore;
 				countMatchedGatewayId++;
 				
 			}else {
@@ -184,8 +182,8 @@ router.get('/humidity/:gatewayId', function(req, res, next) {
 			log.debug("required gateway not found in blob data");
 			res.json({status: "error", results: "required gateway not found in blob data "});
 		}else{
-			log.debug("HUMIDITY: "+JSON.stringify(humidSensor));
-			res.json({status: reqStatus, results: humidSensor});
+			log.debug("HUMIDITY: "+JSON.stringify(humidityMetaData));
+			res.json({status: reqStatus, results: humidityMetaData});
 				
 			log.debug('GET response for gatewayLocations : status = ' + reqStatus);
 			return;
@@ -402,7 +400,7 @@ var GetFinalDataFromFile = function (dataType,res,callback) {
 			
 					var blobName = blobNameData[i].name;
 					var fileName = dataType+".txt"
-					//log.debug(blobName);
+					log.debug(blobName);
 					if(blobName.indexOf(reqBlobName) > -1){
 					
 						log.debug("blob Name: "+blobName);
@@ -457,7 +455,7 @@ var GetRequiredBlobNames = function (dataType,callback) {
 	var getHour = getDateHour[1].split(":");
 	var hour = getHour[0];
 
-	var requiredBlobName = "telemetry-"+dataType+"-metaData"+"/"+year+"/"+month+"/"+date+"/"+hour;
+	var requiredBlobName = "telemetry/"+dataType+"-metadata"+"/"+year+"/"+month+"/"+date+"/"+hour;
 	
 	callback(requiredBlobName);
 

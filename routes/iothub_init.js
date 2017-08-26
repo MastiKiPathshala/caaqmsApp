@@ -15,7 +15,7 @@
 
 var async = require('async');
 var request = require('request');
-var fs = require('fs');
+fs = require('fs');
 var Registry = require('azure-iothub').Registry;
 var Client = require('azure-iothub').Client;
 var JobClient = require('azure-iothub').JobClient;

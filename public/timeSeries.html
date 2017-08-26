@@ -128,75 +128,70 @@ var deviceId=getItem();
    // Update an existing dataPoint
   
 
-  var humid_chart = new CanvasJS.Chart("chartContainer1",
-    {
-      colorSet: "Shades",
-      backgroundColor: "rgb(255,255,255)",
-      title:{
-      text: "Humidity-Sensor Line Chart",  
-      fontColor: "black"  
-      },
-      axisX:{
-        title: "Timeline",
-         valueFormatString: "DD-MMM HH:mm" ,
-         labelAngle: -50,
-         gridThickness: 1
-    },
-    axisY: [{
-      stripLines:[
-      {                
-        startValue:31,
-        endValue:32,                
-        color:"red"                
-      },
-      {                
-        startValue:12,
-        endValue:13,                
-        color:"yellow"                
-      }
-      ]},
-      {
-        title: "Humidity",
-        lineColor: "green",
-    },{
-      lineColor: "rgb(255,255,255)",
-    },
-    {
-      lineColor: "rgb(255,255,255)",
-    }],
-      data: [
-      {        
-        type: "line",
-        showInLegend: true,
-        legendText: "Humidity",
-        dataPoints: [
-        
-        ]
-      },
-      {        
-        type: "line",
-        showInLegend: true,
-        legendText: "MaxHumidity",
-        dataPoints: [
-        
-        ]
-      },
-      {        
-        type: "line",
-        showInLegend: true,
-        legendText: "MinHumidity",
-        dataPoints: [
-        
-        ]
-      }
-
-      ]
-    });
-
-    humid_chart.render();
-    //chart.options.data[0].dataPoints.push({x:9,y: temp});
-    //humid_chart.options.data[0].dataPoints[0].y = temp; 
- // Update an existing dataPoint
+	var humid_chart = new CanvasJS.Chart ("chartContainer1", {
+		colorSet: "Shades",
+		backgroundColor: "rgb(255,255,255)",
+		title: {
+			text: "Humidity-Sensor Line Chart",
+			fontColor: "black"
+		},
+		axisX: {
+			title: "Timeline",
+			valueFormatString: "DD-MMM HH:mm" ,
+			labelAngle: -50,
+			gridThickness: 1
+		},
+		axisY: [
+		{
+			stripLines: [
+			{
+				startValue:81,
+				endValue:82,
+				color:"red"
+			},
+			{
+				startValue:72,
+				endValue:73,
+				color:"yellow"
+			}
+			]
+		},
+		{
+			title: "Humidity",
+			lineColor: "green"
+		},
+		{
+			lineColor: "rgb(255,255,255)"
+		},
+		{
+			lineColor: "rgb(255,255,255)"
+		}
+		],
+		data: [
+		{
+			type: "line",
+			showInLegend: true,
+			legendText: "AvgHumidity",
+			dataPoints: [
+			]
+		},
+		{
+			type: "line",
+			showInLegend: true,
+			legendText: "MaxHumidity",
+			dataPoints: [
+			]
+		},
+		{
+			type: "line",
+			showInLegend: true,
+			legendText: "MinHumidity",
+			dataPoints: [
+			]
+		}
+		]
+	});
+	humid_chart.render();
     
 
     var so2_chart = new CanvasJS.Chart("chartContainer2",
@@ -375,7 +370,7 @@ var deviceId=getItem();
       no2_chart.render();
     
   } else {
-   alert(data.results);
+   //alert(data.results);
    
   }
   

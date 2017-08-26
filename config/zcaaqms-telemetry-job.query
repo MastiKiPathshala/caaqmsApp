@@ -21,17 +21,34 @@ FROM
 SELECT
     System.Timestamp AS time,
     IoTHub.ConnectionDeviceId AS deviceId,
-    AVG (humidity) AS [AverageHumidity],
-    MIN(humidity) AS [MinimumHumidity],
-    MAX(humidity) AS [MaxHumidity],
-    AVG (humidity) AS [qualityScore],
+    AVG (humidity) AS [avghumidity],
+    MIN (humidity) AS [minhumidity],
+    MAX (humidity) AS [maxhumidity],
+    AVG (humidity) AS [qualityscore],
     sensorId,
     5.0 AS TimeframeMinutes 
 INTO
-    [telemetry-humidity-metaData]
+    [telemetry-humidity-metadata]
 FROM [StreamData]
 WHERE
     [humidity] IS NOT NULL AND [time] IS NOT NULL
+GROUP BY
+    IoTHub.ConnectionDeviceId,sensorId,
+    TumblingWindow (mi, 5)
+
+SELECT
+    System.Timestamp AS time,
+    IoTHub.ConnectionDeviceId AS deviceId,
+    AVG (latitude) AS [latitude],
+    AVG (longitude) AS [longitude],
+    AVG (qualityScore) AS [qualityscore],
+    sensorId,
+    5.0 AS TimeframeMinutes 
+INTO
+    [telemetry-gps-metadata]
+FROM [StreamData]
+WHERE
+    [latitude] IS NOT NULL
 GROUP BY
     IoTHub.ConnectionDeviceId,sensorId,
     TumblingWindow (mi, 5)

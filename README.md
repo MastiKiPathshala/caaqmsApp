@@ -27,3 +27,11 @@ caaqms@ubuntu-2gb-nyc3-01:~/caaqmsApp# $ sudo npm install forever -g
 caaqms@ubuntu-2gb-nyc3-01:~/caaqmsApp# $ sudo npm install forever-service -g
 
 caaqms@ubuntu-2gb-nyc3-01:~/caaqmsApp# sudo forever-service install caaqmsApp --script bin/www
+
+
+Active Directory -> Properties : Copy the Dirctory ID
+
+View My Bill -> Subscriptions : Copy Subscription ID
+
+Subscriptions -> <specific Subscription> -> Access Control (IAM) -> add webApp as app user
+Subscriptions -> <specific Subscription> -> Resource Providers -> Register for Microsoft.StreamAnalytics

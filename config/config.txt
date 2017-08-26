@@ -1,29 +1,28 @@
 {
 	"Client": {
-		"ClientId":"09220503-e848-4fd6-9972-b25d0496491f",
-		"ClientSecret":"fo/s/8qzFgKBYhdQSCgcoUsyhzeXtrRmYvt8YA7dhQw=",
-		"TenantId":"cb76d069-a90e-4c19-92f4-89eb61d54f8e",
-		"SubscriptionId":"f2992d72-a9ff-47e2-875d-7cfa4acaa857"
+		"ClientId":"1a862baf-4c20-40e3-9b8f-365e7299b4bf",
+		"ClientSecret":"NLzyYFxf4CAIWpn6rc/mxmxKpFbvPjJgKMgciRYgsDs=",
+		"TenantId":"1f8bf23f-751e-4b07-aea1-cbaa120dec88",
+		"SubscriptionId":"39676945-d636-4b50-bf0a-086f715de6e6"
 	},
 	"IoTHub": {
-		"ResourceGroup": "testCaaqmstelemetry",
-		"HostName": "testCaaqms",
+		"ResourceGroup": "ztestCaaqmstelemetry",
+		"HostName": "ztestCaaqms",
 		"SharedAccessKeyName": "iothubowner"
 	},
 	"Storage": {
-		"account" : "testcaaqmsstore",
+		"account" : "ztestcaaqmsstore",
 		"container" : "caaqms-container",
 		"Blob": {
-			"alarmRule": "alarmBlob/alarm-deviceRule-blob.json",
-			"alarmData": "alarmBlob/alarm-sensorData-blob.json"
+			"alarmRule": "alarm/rule-data.json"
 		}
 	},
 	"StreamJobs": [
 	{
-		"JobName": "caaqms-telemetry-job",
+		"JobName": "zcaaqms-telemetry-job",
 		"inputs": [
 		{
-			"name":"MyIoTHubSource",
+			"name":"caaqmsStream",
 			"properties":{
 				"type":"stream",
 				"serialization":{
@@ -45,47 +44,151 @@
 		}
 		],
 		"transformation": {
-			"name":"ProcessSampleData",
+			"name":"process-telemetry-data",
 			"properties": {
 			}
 		},
 		"outputs": [
 		{
-			"name":"MyBlobSource",  
-			"properties":{    
-				"serialization":{    
-					"type":"JSON",  
-					"properties":{    
-						"format":"LineSeparated",  
-						"encoding":"UTF8"  
-					}  
-				},  
-				"datasource":{    
-					"type":"Microsoft.Storage/Blob",  
-					"properties":{    
-						"storageAccounts":[    
+			"name":"telemetry-blob-raw-data",
+			"properties":{
+				"serialization":{
+					"type":"JSON",
+					"properties":{
+						"format":"LineSeparated",
+						"encoding":"UTF8"
+					}
+				},
+				"datasource":{
+					"type":"Microsoft.Storage/Blob",
+					"properties":{
+						"storageAccounts":[
 						{
-							"accountName":"",  
+							"accountName":"",
 							"accountKey":""
-						}  
-						],  
-						"container":"samplecontainer",  
-						"pathPattern":"/telemetry-raw-data/NO2/{date}/{time}"
-					}  
-				}  
-			}  
+						}
+						],
+						"container":"caaqms-container",
+						"pathPattern":"telemetry/raw-data/{date}/{time}",
+						"dateFormat":"yyyy/MM/dd",
+						"timeFormat":"HH"
+					}
+				}
+			}
+		},
+		{
+			"name":"telemetry-humidity-metadata",
+			"properties":{
+				"serialization":{
+					"type":"JSON",
+					"properties":{
+						"format":"LineSeparated",
+						"encoding":"UTF8"
+					}
+				},
+				"datasource":{
+					"type":"Microsoft.Storage/Blob",
+					"properties":{
+						"storageAccounts":[
+						{
+							"accountName":"",
+							"accountKey":""
+						}
+						],
+						"container":"caaqms-container",
+						"pathPattern":"telemetry/humidity-metadata/{date}/{time}",
+						"dateFormat":"yyyy/MM/dd",
+						"timeFormat":"HH"
+					}
+				}
+			}
 		}
 		]
 	},
 	{
-		"JobName": "caaqms-alarm-job",
-		"inputs": [],
+		"JobName": "zcaaqms-alarm-job",
+		"inputs": [
+		{
+			"name":"caaqmsStream",
+			"properties":{
+				"type":"stream",
+				"serialization":{
+					"type":"JSON",
+					"properties":{
+						"encoding":"UTF8"
+					}
+				},
+				"datasource":{
+					"type":"Microsoft.Devices/IotHubs",
+					"properties":{
+						"iotHubNamespace":"",
+						"sharedAccessPolicyName":"",
+						"sharedAccessPolicyKey":"",
+						"consumerGroupName":"$Default"
+					}
+				}
+			}
+		},
+		{
+			"name":"alarmRuleData",
+			"properties":{
+				"type":"Reference",
+				"serialization":{
+					"type":"JSON",
+					"properties":{
+						"encoding":"UTF8"
+					}
+				},
+				"datasource":{
+					"type":"Microsoft.Storage/Blob",
+					"properties":{
+						"storageAccounts":[
+						{
+							"accountName":"",
+							"accountKey":""
+						}
+						],
+						"container":"caaqms-container",
+						"pathPattern":"alarm/rul-data.json"
+					}
+				}
+			}
+		}
+		],
 		"transformation": {
-			"name": "telemtrey-alarm-job",
+			"name": "process-alarm-data",
 			"properties": {
 			}
 		},
-		"outputs": []
+		"outputs": [
+		{
+			"name":"alarmMROData",
+			"properties":{
+				"serialization":{
+					"type":"JSON",
+					"properties":{
+						"format":"LineSeparated",
+						"encoding":"UTF8"
+					}
+				},
+				"datasource":{
+					"type":"Microsoft.Storage/Blob",
+					"properties":{
+						"storageAccounts":[
+						{
+							"accountName":"",
+							"accountKey":""
+						}
+						],
+						"container":"caaqms-container",
+						"pathPattern":"alarm/mro-data/{date}/{time}",
+						"dateFormat":"yyyy/MM/dd",
+						"timeFormat":"HH"
+					}
+				}
+			}
+		}
+		]
 	}
 	]
 }

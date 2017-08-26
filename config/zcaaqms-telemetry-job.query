@@ -1,0 +1,37 @@
+WITH 
+    [StreamData]
+AS (
+    SELECT
+        *
+    FROM [caaqmsStream]
+    WHERE
+        [ObjectType] IS NULL -- Filter out device info and command responses
+) 
+
+SELECT
+    IoTHub.ConnectionDeviceId AS deviceId,
+    latitude,longitude,dataType,sensorId,
+    temperature,
+    humidity,so2,no2,qualityScore,time
+INTO
+    [telemetry-blob-raw-data]
+FROM
+    [StreamData]
+
+SELECT
+    System.Timestamp AS time,
+    IoTHub.ConnectionDeviceId AS deviceId,
+    AVG (humidity) AS [AverageHumidity],
+    MIN(humidity) AS [MinimumHumidity],
+    MAX(humidity) AS [MaxHumidity],
+    AVG (humidity) AS [qualityScore],
+    sensorId,
+    5.0 AS TimeframeMinutes 
+INTO
+    [telemetry-humidity-metaData]
+FROM [StreamData]
+WHERE
+    [humidity] IS NOT NULL AND [time] IS NOT NULL
+GROUP BY
+    IoTHub.ConnectionDeviceId,sensorId,
+    TumblingWindow (mi, 5)

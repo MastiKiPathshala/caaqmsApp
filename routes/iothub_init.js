@@ -161,9 +161,14 @@ var InitializeStreamAnalyticsJobs = function (config, callback) {
 		}
 		reqForm.properties["inputs"] = config[index].inputs;
 		for (innerIndex in reqForm.properties.inputs) {
-			reqForm.properties.inputs[innerIndex].properties.datasource.properties.iotHubNamespace = iotHubName;
-			reqForm.properties.inputs[innerIndex].properties.datasource.properties.sharedAccessPolicyName = sharedAccessKeyName;
-			reqForm.properties.inputs[innerIndex].properties.datasource.properties.sharedAccessPolicyKey = sharedAccessKey;
+			if (reqForm.properties.inputs[innerIndex].properties.datasource.type == "Microsoft.Devices/IotHubs") {
+				reqForm.properties.inputs[innerIndex].properties.datasource.properties.iotHubNamespace = iotHubName;
+				reqForm.properties.inputs[innerIndex].properties.datasource.properties.sharedAccessPolicyName = sharedAccessKeyName;
+				reqForm.properties.inputs[innerIndex].properties.datasource.properties.sharedAccessPolicyKey = sharedAccessKey;
+			} else if (reqForm.properties.inputs[innerIndex].properties.datasource.type == "Microsoft.Storage/Blob") {
+				reqForm.properties.inputs[innerIndex].properties.datasource.properties.storageAccounts[0].accountName = storageAccountName;
+				reqForm.properties.inputs[innerIndex].properties.datasource.properties.storageAccounts[0].accountKey = storageAccessKey;
+			}
 		}
 
 		sqlQuery = fs.readFileSync ("/etc/caaqms/"+streamJobName+".query").toString();
@@ -174,7 +179,7 @@ var InitializeStreamAnalyticsJobs = function (config, callback) {
 		}
 
 		reqForm.properties["outputs"] = config[index].outputs;
-		for (innerIndex in reqForm.properties.inputs) {
+		for (innerIndex in reqForm.properties.outputs) {
 			reqForm.properties.outputs[innerIndex].properties.datasource.properties.storageAccounts[0].accountName = storageAccountName;
 			reqForm.properties.outputs[innerIndex].properties.datasource.properties.storageAccounts[0].accountKey = storageAccessKey;
 		}

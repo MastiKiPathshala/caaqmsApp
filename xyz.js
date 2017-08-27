@@ -59,8 +59,8 @@ lower_mg = 5;
 upper_mg = 15;
 lower_gy = 5;
 upper_gy = 15;
-lower_amb = 28;
-upper_amb = 38;
+lower_temperature = 28;
+upper_temperature = 38;
 lower_so2 = 17;
 upper_so2 = 37;
 lower_no2 = 17;
@@ -77,8 +77,8 @@ var switchMode = function(){
 		upper_mg = 10;
 		lower_gy = 1;
 		upper_gy = 10;
-		lower_amb = 23;
-		upper_amb = 33;
+		lower_temperature = 23;
+		upper_temperature = 33;
 		lower_so2 = 17;
 		upper_so2 = 37;
 		lower_no2 = 17;
@@ -93,8 +93,8 @@ var switchMode = function(){
 		upper_mg = 15;
 		lower_gy = 5;
 		upper_gy = 15;
-		lower_amb = 28;
-		upper_amb = 38;
+		lower_temperature = 28;
+		upper_temperature = 38;
 		lower_so2 = 67;
 		upper_so2 = 77;
 		lower_no2 = 77;
@@ -146,10 +146,21 @@ var generateRandomNumber = function(sensorTagArr) {
 	
 	//localClient.publish('topic/sensor/data/gyroscope', finalDataGy.toString());
 	
-	var amb = random.real(lower_amb, upper_amb, true);
-	var finalDataAmb = amb+"-"+sensorTagArr+"-"+"ambientTemperature"+"-"+"C";
+	var temperature = random.real(lower_temperature, upper_temperature, true);
+	var finalDataAmb = temperature+"-"+sensorTagArr+"-"+"ambientTemperature"+"-"+"C";
 	
-	//localClient.publish('topic/sensor/data/ambientTemperature', finalDataAmb.toString());
+	if (connectionType == "local") {	
+		localClient.publish('topic/sensor/data/accelerometer', finalDataAc.toString());
+	} else if (connectionType == "azure") {
+		sensorData = {};
+		sensorData.time = currentTime;
+		sensorData.dataType = "temperature";
+		sensorData.temperature = temperature;
+		sensorData.sensorId = deviceId;
+		sensorDataMsg = new Message (JSON.stringify(sensorData));
+		cloudClient.sendEvent (sensorDataMsg, function (err) {
+		});
+	}
 	
 	var so2 = random.real(lower_so2, upper_so2, true);
 	var finalDataObj = so2+"-"+sensorTagArr+"-"+"objectTemperature"+"-"+"C";

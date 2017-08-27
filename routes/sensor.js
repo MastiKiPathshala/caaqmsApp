@@ -49,7 +49,7 @@ router.get('/gatewayLocations', function(req, res, next) {
 			var lastData = splitData[i];
 			var parseData = JSON.parse(lastData);
 				
-			log.debug("GatewayId: "+parseData.deviceid +" latitude: "+parseData.latitude + " longitude: "+parseData.longitude+ " qualityScore: "+parseData.qualityscore);
+			//log.debug("GatewayId: "+parseData.deviceid +" latitude: "+parseData.latitude + " longitude: "+parseData.longitude+ " qualityScore: "+parseData.qualityscore);
 				
 			var latitude = parseFloat(parseData.latitude);
 			var longitude = parseFloat(parseData.longitude);
@@ -95,7 +95,7 @@ router.get('/temperature/:gatewayId', function(req, res, next) {
 			var lastData = splitData[i];
 			var parseData = JSON.parse(lastData);
 				
-			log.debug("GatewayId: "+parseData.deviceid + " Temperature: "+parseData.averagetemperature+ " qualityScore: "+parseData.qualityscore);
+			//log.debug("GatewayId: "+parseData.deviceid + " Temperature: "+parseData.averagetemperature+ " qualityScore: "+parseData.qualityscore);
 			var gatewayId = parseData.deviceid;
 						
 			if ( gatewayId == gatewayUniqueId ) {
@@ -153,7 +153,6 @@ router.get('/humidity/:gatewayId', function(req, res, next) {
 			var parseData = JSON.parse(lastData);
 					
 			//log.debug("GatewayId: "+parseData.deviceid + " Humidity: "+parseData.avghumidity+ " qualityScore: "+parseData.qualityscore);
-						
 			var gatewayId = parseData.deviceid;
 						
 			if ( gatewayId == gatewayUniqueId ) {
@@ -214,8 +213,7 @@ router.get('/so2/:gatewayId', function(req, res, next) {
 			var lastData = splitData[i];
 			var parseData = JSON.parse(lastData);
 				
-			log.debug("GatewayId: "+parseData.deviceid + " So2: "+parseData.so2+ " qualityScore: "+parseData.qualityscore);
-						
+			//log.debug("GatewayId: "+parseData.deviceid + " So2: "+parseData.so2+ " qualityScore: "+parseData.qualityscore);
 			var gatewayId = parseData.deviceid;
 						
 			if ( gatewayId == gatewayUniqueId ) {
@@ -274,7 +272,7 @@ router.get('/no2/:gatewayId', function(req, res, next) {
 			var lastData = splitData[i];
 			var parseData = JSON.parse(lastData);
 				
-			log.debug("GatewayId: "+parseData.deviceid + " No2: "+parseData.no2+ " qualityScore: "+parseData.qualityscore);
+			//log.debug("GatewayId: "+parseData.deviceid + " No2: "+parseData.no2+ " qualityScore: "+parseData.qualityscore);
 			var gatewayId = parseData.deviceid;
 						
 			if ( gatewayId == gatewayUniqueId ) {

@@ -76,13 +76,13 @@ router.get('/temperature/:gatewayId', function(req, res, next) {
 	
 	var dataType = "temperature";
 	var gatewayUniqueId = req.params.gatewayId;
+	log.debug('GET request for dataType : ' + dataType + ', gatewayUniqueId : ' + gatewayUniqueId);
 	
-	var tempSensor = [];
+	var temperatureMetaData = [];
 	
 	var countGatewayId = 0;
 	var countMatchedGatewayId = 0;
 	var reqStatus = "OK";
-	log.debug('GET request for Temperature : ' + req);
 	
 	GetFinalDataFromFile(dataType,res,function(fileData){
 		
@@ -100,14 +100,13 @@ router.get('/temperature/:gatewayId', function(req, res, next) {
 						
 			if ( gatewayId == gatewayUniqueId ) {
 				temperatureData = {
-					avgTemperature : parseFloat(parseData.averagetemperature),
+					avgTemperature : parseFloat(parseData.avgtemperature),
 					maxTemperature : parseFloat(parseData.maxtemperature),
-					minTemperature : parseFloat(parseData.minimumtemperature),
+					minTemperature : parseFloat(parseData.mintemperature),
 					qualityScore : parseFloat(parseData.qualityscore),
-					qualityColour : "green",
 					time : parseData.time
 				}
-				tempSensor.push (temperatureData);
+				temperatureMetaData.push (temperatureData);
 				countMatchedGatewayId++
 							
 			}else {
@@ -119,8 +118,8 @@ router.get('/temperature/:gatewayId', function(req, res, next) {
 			log.debug("required gateway not found in blob data");
 			res.json({status: "error", results: "required gateway not found in blob data "});
 		}else{
-			log.debug("TEMPERATURE: "+JSON.stringify(tempSensor));
-			res.json({status: reqStatus, results: tempSensor});
+			log.debug("TEMPERATURE: "+JSON.stringify(temperatureMetaData));
+			res.json({status: reqStatus, results: temperatureMetaData});
 				
 			log.debug('GET response for gatewayLocations : status = ' + reqStatus);
 			return;
@@ -132,7 +131,6 @@ router.get('/temperature/:gatewayId', function(req, res, next) {
 /* GET humidity data */
 router.get('/humidity/:gatewayId', function(req, res, next) {
 	
-	//var dataType = req.params.humidity;
 	var dataType = "humidity";
 	var gatewayUniqueId = req.params.gatewayId;
 	log.debug('GET request for dataType : ' + dataType + ', gatewayUniqueId : ' + gatewayUniqueId);
@@ -195,21 +193,15 @@ router.get('/humidity/:gatewayId', function(req, res, next) {
 /* GET so2 data*/
 router.get('/so2/:gatewayId', function(req, res, next) {
 	
-	//var dataType = req.params.so2;
 	var dataType = "so2";
-	log.debug("data type: "+dataType);
 	var gatewayUniqueId = req.params.gatewayId;
-	log.debug("gatewayUniqueId : "+gatewayUniqueId);
+	log.debug('GET request for dataType : ' + dataType + ', gatewayUniqueId : ' + gatewayUniqueId);
 	
-	var so2Sensor = {};
-	
-	so2Sensor.so2 = [];
-	so2Sensor.airQuality = [];
+	var so2MetaData = [];
 	
 	var countGatewayId = 0;
 	var countMatchedGatewayId = 0;
 	var reqStatus = "OK";
-	log.debug('GET request for so2 : ' + req);
 				
 	GetFinalDataFromFile(dataType,res,function(fileData){
 				
@@ -228,25 +220,29 @@ router.get('/so2/:gatewayId', function(req, res, next) {
 						
 			if ( gatewayId == gatewayUniqueId ) {
 				
-				var so2Data = parseFloat(parseData.so2);
-				var qualityscore = parseFloat(parseData.qualityscore);
-						
-				so2Sensor.so2[countMatchedGatewayId] = so2Data; 
-				so2Sensor.airQuality[countMatchedGatewayId] = qualityscore;
+				var so2MetaDataPoint = {};
+				so2MetaDataPoint.avgSo2 = parseFloat(parseData.avgso2);
+				so2MetaDataPoint.minSo2 = parseFloat(parseData.minso2);
+				so2MetaDataPoint.maxSo2 = parseFloat(parseData.maxso2);
+				so2MetaDataPoint.airQuality = parseFloat(parseData.qualityscore);
+				so2MetaDataPoint.time = parseData.time;
+
+				so2MetaData.push (so2MetaDataPoint);
+
 				countMatchedGatewayId ++;
-				
+
 			}else {
-										
+
 				countGatewayId ++;
 			}
-				
+
 		}if( countGatewayId == numberOfRowsInFile ){
 									
 			log.debug("required gateway not found in blob data");
 			res.json({status: "error", results: "required gateway not found in blob data "});
 		}else{
-			log.debug("SO2: "+JSON.stringify(so2Sensor));
-			res.json({status: reqStatus, results: so2Sensor});
+			log.debug("SO2: "+JSON.stringify(so2MetaData));
+			res.json({status: reqStatus, results: so2MetaData});
 				
 			log.debug('GET response for gatewayLocations : status = ' + reqStatus);
 			return;
@@ -257,22 +253,15 @@ router.get('/so2/:gatewayId', function(req, res, next) {
 /* GET no2 data */
 router.get('/no2/:gatewayId', function(req, res, next) {
 	
-	//var dataType = req.params.no2;
 	var dataType = "no2";
-	log.debug("data type: "+dataType);
 	var gatewayUniqueId = req.params.gatewayId;
-	log.debug("gatewayUniqueId : "+gatewayUniqueId);
+	log.debug('GET request for dataType : ' + dataType + ', gatewayUniqueId : ' + gatewayUniqueId);
 	
-	var no2Sensor = {};
-	
-	no2Sensor.no2 = [];
-	no2Sensor.airQuality = [];
+	var no2MetaData = [];
 	
 	var countGatewayId = 0;
 	var countMatchedGatewayId = 0;
-	
 	var reqStatus = "OK";
-	log.debug('GET request for no2: ' + req);
 	
 	GetFinalDataFromFile(dataType,res,function(fileData){
 	
@@ -290,12 +279,17 @@ router.get('/no2/:gatewayId', function(req, res, next) {
 						
 			if ( gatewayId == gatewayUniqueId ) {
 				
-				var no2Data = parseFloat(parseData.no2);
-				var qualityscore = parseFloat(parseData.qualityscore);
+				var no2MetaDataPoint = {};
+				no2MetaDataPoint.avgNo2 = parseFloat(parseData.avgno2);
+				no2MetaDataPoint.minNo2 = parseFloat(parseData.minno2);
+				no2MetaDataPoint.maxNo2 = parseFloat(parseData.maxno2);
+				no2MetaDataPoint.airQuality = parseFloat(parseData.qualityscore);
+				no2MetaDataPoint.time = parseData.time;
 						
-				no2Sensor.no2[countMatchedGatewayId] = no2Data; 
-				no2Sensor.airQuality[countMatchedGatewayId] = qualityscore;
+				no2MetaData.push (no2MetaDataPoint);
+
 				countMatchedGatewayId ++;
+
 			}else {
 										
 				countGatewayId ++;
@@ -309,8 +303,8 @@ router.get('/no2/:gatewayId', function(req, res, next) {
 			
 		}else{
 			
-			log.debug("NO2: "+JSON.stringify(no2Sensor));
-			res.json({status: reqStatus, results: no2Sensor});
+			log.debug("NO2: "+JSON.stringify(no2MetaData));
+			res.json({status: reqStatus, results: no2MetaData});
 				
 			log.debug('GET response for gatewayLocations : status = ' + reqStatus);
 			return;

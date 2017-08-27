@@ -392,7 +392,7 @@ var deviceId=getItem();
           temp_chart.options.data[0].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].avgTemperature});
           temp_chart.options.data[1].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].maxTemperature});
           temp_chart.options.data[2].dataPoints.push({x:new Date(data.results[i].time),y: data.results[i].minTemperature});
-    	  console.log(data.results[i].avgTemperature);
+
     }
     temp_chart.render(); 
     

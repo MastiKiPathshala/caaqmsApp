@@ -97,6 +97,7 @@ var InitializeIoTHub = function (config, callback) {
 
 	log.debug ("Initializing IoTHub");
 
+	iotHubCreateTimer = setInterval (function () {
 	iotHubName = config.HostName;
 	reqUrl = "https://management.azure.com/subscriptions/"+subscriptionId+"/resourceGroups/"+resourceGroupName+"/providers/Microsoft.Devices/IotHubs/"+iotHubName+"?api-version=2017-01-19";
 	reqForm = {
@@ -110,38 +111,48 @@ var InitializeIoTHub = function (config, callback) {
 	}
 	request.put ({url: reqUrl, headers: azureAuthHeader, json: reqForm}, function (error, response, body) {
 		if (error) {
-			log.error ("Error : " + error + " body : " + body);
+			log.error ("IoTHub creation error : " + error + " body : " + body);
 			callback();
 		} else if (response.statusCode == 201) {
 			authorizationPolicies = body.properties.authorizationPolicies;
 			reqUrl = response.headers["azure-asyncoperation"];
 			request ({url: reqUrl, headers: azureAuthHeader}, function (error, response, body) {
 				if (error) {
-					log.error ("Error 2 : " + error + " body : " + body);
+					log.error ("IoTHub creation status error : " + error + " body : " + body);
 				} else if (response.statusCode == 200) {
+					//log.debug ("IoTHub creation status : " + JSON.stringify(body));
 					hostName = iotHubConfig.HostName + ".azure-devices.net";
 					sharedAccessKeyName = config.SharedAccessKeyName;
-					sharedAccessKey = "";
+					sharedAccessKey = null;
 					for (var index in authorizationPolicies) {
 						if (authorizationPolicies[index].keyName == sharedAccessKeyName){
 							sharedAccessKey = authorizationPolicies[index].primaryKey;
 						}
 					}
-					connectionString = 'HostName='+hostName+';SharedAccessKeyName='+sharedAccessKeyName+';SharedAccessKey='+sharedAccessKey;
+					if (sharedAccessKey) {
+						connectionString = 'HostName='+hostName+';SharedAccessKeyName='+sharedAccessKeyName+';SharedAccessKey='+sharedAccessKey;
 
-					registry = Registry.fromConnectionString(connectionString);
-					client = Client.fromConnectionString(connectionString);
-					jobClient = JobClient.fromConnectionString(connectionString);
+						registry = Registry.fromConnectionString(connectionString);
+						client = Client.fromConnectionString(connectionString);
+						jobClient = JobClient.fromConnectionString(connectionString);
+						clearInterval (iotHubCreateTimer);
+						log.debug ("IoTHub creation : complete ....");
+						callback ();
+					} else {
+						log.debug ("IoTHub creation : validation successful ....");
+					}
 				} else {
-					log.error ("Unknown response 2 - " + response.statusCode + " : " +JSON.stringify(body));
+					log.error ("IoTHub creation status unknown response - " + response.statusCode + " : " +JSON.stringify(body));
 				}
-				callback();
 			});
+		} else if (response.statusCode == 409) {
+			log.debug ("IoTHub creation : " + body.Code);
 		} else {
-			log.error ("Unknown response - " + response.statusCode + " : " +JSON.stringify(body));
+			log.error ("IoTHub creation unknown response - " + response.statusCode + " : " +JSON.stringify(body));
 			callback();
 		}
 	});
+	}, 15000);
 }
 
 var InitializeStreamAnalyticsJobs = function (config, callback) {

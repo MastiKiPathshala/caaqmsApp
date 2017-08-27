@@ -1,0 +1,69 @@
+WITH AlarmsData AS 
+(
+SELECT
+     Stream.IoTHub.ConnectionDeviceId AS deviceId,
+     Ref.ruleId AS ruleId,
+     'ambientTemperature' as dataType,
+     Stream.ambientTemperature as reading,
+     Ref.yThreshold as threshold,
+     Ref.ruleOutput as ruleOutput,
+     Stream.EventEnqueuedUtcTime AS [Time]
+FROM caaqmsStream Stream
+JOIN alarmRuleData Ref ON Stream.IoTHub.ConnectionDeviceId = Ref.deviceId
+ AND Stream.dataType = Ref.dataType
+WHERE
+    Stream.ambientTemperature > Ref.yThreshold
+
+UNION ALL
+
+SELECT
+     Stream.IoTHub.ConnectionDeviceId AS deviceId,
+     Ref.ruleId AS ruleId,
+     'humidity' as dataType,
+     Stream.humidity as reading,
+     Ref.yThreshold as threshold,
+     Ref.ruleOutput as ruleOutput,
+     Stream.EventEnqueuedUtcTime AS [Time]
+FROM caaqmsStream Stream
+JOIN alarmRuleData Ref ON Stream.IoTHub.ConnectionDeviceId = Ref.deviceId
+ AND Stream.dataType = Ref.dataType
+WHERE
+     Stream.humidity > Ref.yThreshold
+
+UNION ALL
+
+SELECT
+     Stream.IoTHub.ConnectionDeviceId AS deviceId,
+     Ref.ruleId AS ruleId,
+     'so2' as dataType,
+     Stream.so2 as reading,
+     Ref.yThreshold as threshold,
+     Ref.ruleOutput as ruleOutput,
+     Stream.EventEnqueuedUtcTime AS [Time]
+FROM caaqmsStream Stream
+JOIN alarmRuleData Ref ON Stream.IoTHub.ConnectionDeviceId = Ref.deviceId
+ AND Stream.dataType = Ref.dataType
+WHERE
+     Stream.so2 > Ref.yThreshold
+
+UNION ALL
+
+SELECT
+     Stream.IoTHub.ConnectionDeviceId AS deviceId,
+     Ref.ruleId AS ruleId,
+     'no2' as dataType,
+     Stream.no2 as reading,
+     Ref.yThreshold as threshold,
+     Ref.ruleOutput as ruleOutput,
+     Stream.EventEnqueuedUtcTime AS [Time]
+FROM caaqmsStream Stream
+JOIN alarmRuleData Ref ON Stream.IoTHub.ConnectionDeviceId = Ref.deviceId
+ AND Stream.dataType = Ref.dataType
+WHERE
+     Stream.no2 > Ref.yThreshold   
+
+)
+
+SELECT *
+INTO alarmMROData
+FROM AlarmsData

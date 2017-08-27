@@ -110,35 +110,32 @@ var createMap =function()
 		/**/
 
 }
-var locationInit = function () 
-{   createMap();
+
+var locationInit = function () {
+	createMap();
 	var locationSet = [];
 	var gateways    =[];
 	
-    $.ajax({
+	$.ajax({
 		method: 'GET',
 		url: '/api/sensorData/v1.0/gatewayLocations'
 	}).done(function(data) {
 
 		if (data.status === "OK") {
 			for(var i = 0; i < data.results.lat.length; i++){
-				
+
 				console.log(data.results);
-			    gatewayLocation = { gatewayId: data.results.gatId[i], lat: data.results.lat[i], lng: data.results.lng[i] ,quality: data.results.airQuality[i]};
-				
-			    console.log ("SecurIoT Gateway location: " + JSON.stringify(gatewayLocation));
-			    locationSet.push (gatewayLocation);
-			    //map.setCenter({ lat:gatewayLocation.lat , lng: gatewayLocation.lng });
-				
+				gatewayLocation = { gatewayId: data.results.gatId[i], lat: data.results.lat[i], lng: data.results.lng[i] ,quality: data.results.airQuality[i]};
+				console.log ("SecurIoT Gateway location: " + JSON.stringify(gatewayLocation));
+				locationSet.push (gatewayLocation);
+				//map.setCenter({ lat:gatewayLocation.lat , lng: gatewayLocation.lng });
 			}
 		} else {
 			
-			gatewayLocation = { gatewayId: "BLR-CAAQMS-LAB-1" ,lat:12.963778 , lng: 77.712111 ,quality: 30};
-			locationSet.push (gatewayLocation);
+			//gatewayLocation = { gatewayId: "BLR-CAAQMS-LAB-1" ,lat:12.963778 , lng: 77.712111 ,quality: 30};
+			//locationSet.push (gatewayLocation);
 			console.log(data.results);
 		}
-		
-		
 
 		/*
 		var heatmap = new google.maps.visualization.HeatmapLayer({

@@ -15,7 +15,7 @@
 
 var async = require('async');
 var request = require('request');
-var fs = require('fs');
+fs = require('fs');
 var Registry = require('azure-iothub').Registry;
 var Client = require('azure-iothub').Client;
 var JobClient = require('azure-iothub').JobClient;
@@ -144,21 +144,61 @@ var InitializeIoTHub = function (config, callback) {
 	});
 }
 
-var InitializeStreamAnalyticsJobs = function (callback) {
+var InitializeStreamAnalyticsJobs = function (config, callback) {
 
 	log.debug ("Initializing Stream Analytics jobs");
-	reqUrl = "https://management.azure.com/subscriptions/f2992d72-a9ff-47e2-875d-7cfa4acaa857/resourcegroups/"+resourceGroupName+"/providers/Microsoft.StreamAnalytics/streamingjobs?$expand={Inputs}&api-version=2015-10-01";
-	request({url: reqUrl, headers: azureAuthHeader}, function (error, response, body) {
-		if (!error && response.statusCode == 200) {
-			log.debug ("Job List : " + JSON.stringify(body));
-		}else {
-			log.error ("Error : " + error + " body : " + body);
+	for (index in config) {
+		streamJobName = config[index].JobName;
+		reqForm = {
+			"location":"West US 2",
+			"properties":{
+				"sku":{
+					"name":"standard"
+				},
+				"eventsOutOfOrderPolicy":"drop",
+				"eventsOutOfOrderMaxDelayInSeconds":10
+			}
 		}
-		callback();
-	});
+		reqForm.properties["inputs"] = config[index].inputs;
+		for (innerIndex in reqForm.properties.inputs) {
+			if (reqForm.properties.inputs[innerIndex].properties.datasource.type == "Microsoft.Devices/IotHubs") {
+				reqForm.properties.inputs[innerIndex].properties.datasource.properties.iotHubNamespace = iotHubName;
+				reqForm.properties.inputs[innerIndex].properties.datasource.properties.sharedAccessPolicyName = sharedAccessKeyName;
+				reqForm.properties.inputs[innerIndex].properties.datasource.properties.sharedAccessPolicyKey = sharedAccessKey;
+			} else if (reqForm.properties.inputs[innerIndex].properties.datasource.type == "Microsoft.Storage/Blob") {
+				reqForm.properties.inputs[innerIndex].properties.datasource.properties.storageAccounts[0].accountName = storageAccountName;
+				reqForm.properties.inputs[innerIndex].properties.datasource.properties.storageAccounts[0].accountKey = storageAccessKey;
+			}
+		}
+
+		sqlQuery = fs.readFileSync ("/etc/caaqms/"+streamJobName+".query").toString();
+		reqForm.properties["transformation"] = config[index].transformation;
+		log.debug (JSON.stringify(reqForm.properties.transformation.properties));
+		reqForm.properties.transformation.properties = {
+			"query": sqlQuery
+		}
+
+		reqForm.properties["outputs"] = config[index].outputs;
+		for (innerIndex in reqForm.properties.outputs) {
+			reqForm.properties.outputs[innerIndex].properties.datasource.properties.storageAccounts[0].accountName = storageAccountName;
+			reqForm.properties.outputs[innerIndex].properties.datasource.properties.storageAccounts[0].accountKey = storageAccessKey;
+		}
+
+		reqUrl = "https://management.azure.com/subscriptions/"+subscriptionId+"/resourcegroups/"+resourceGroupName+"/providers/Microsoft.StreamAnalytics/streamingjobs/"+streamJobName+"?api-version=2015-10-01";
+		//log.debug ("Stream Job : " + reqUrl + " Form : " + JSON.stringify(reqForm));
+
+		request.put ({url: reqUrl, headers: azureAuthHeader, json: reqForm}, function (error, response, body) {
+			if (!error && response.statusCode == 200) {
+				log.debug ("Stream Job List : " + JSON.stringify(body));
+			}else {
+				log.error ("Stream Job error : " + error + " body : " + JSON.stringify(body));
+			}
+		});
+	}
+	callback();
 }
 
-var InitializeStorageConfig = function (storageConfig, blobConfig, callback) {
+var InitializeStorageConfig = function (storageConfig, callback) {
 
 	log.debug ("Storage : Creating or updating Storage account");
 	storageAccountName = storageConfig.account;
@@ -181,24 +221,24 @@ var InitializeStorageConfig = function (storageConfig, blobConfig, callback) {
 				log.error ("Storage Account list error  : " + err);
 			} else {
 				storageAccessKeys = result.keys;
-					sharedAccessKey = "";
+					storageAccessKey = "";
 					for (var index in storageAccessKeys) {
 						if (storageAccessKeys[index].keyName == "key1"){
 							storageAccessKey = storageAccessKeys[index].value;
 						}
 					}
 			}
-	blobService = Storage.createBlobService(storageAccountName, storageAccessKey);
+			blobService = Storage.createBlobService(storageAccountName, storageAccessKey);
 
-	alarmRuleBlob = blobConfig.alarmRule;
-	blobService.createContainerIfNotExists(containerName, function(err) {
-		if (err) {
-			log.error ('Container creation error : ' + JSON.stringify (err));
-		} else {
-			log.debug ('Container ' + containerName + ' created');
-		}
-		callback();
-	});
+			blobService.createContainerIfNotExists(containerName, function(err) {
+				if (err) {
+					log.error ('Container creation error : ' + JSON.stringify (err));
+				} else {
+					log.debug ('Container ' + containerName + ' created');
+				}
+				alarmRuleBlob = storageConfig.Blob.alarmRule;
+			});
+			callback();
 		});
 	});
 
@@ -218,8 +258,8 @@ var configure = function () {
 	log.debug("iotHub Config : " + JSON.stringify(iotHubConfig));
 	storageConfig = parsedConfig.Storage;
 	log.debug("Storage Config : " + JSON.stringify(storageConfig));
-	blobConfig = parsedConfig.Blob;
-	log.debug("Blob Config : " + JSON.stringify(blobConfig));
+	streamJobsConfig = parsedConfig.StreamJobs;
+	//log.debug("Stream Jobs Config : " + JSON.stringify(streamJobsConfig));
 
 
 	async.series([
@@ -238,11 +278,11 @@ var configure = function () {
 		},
 		function(callback) {
 
-			InitializeStorageConfig (storageConfig, blobConfig, callback);
+			InitializeStorageConfig (storageConfig, callback);
 		},
 		function(callback) {
 
-			InitializeStreamAnalyticsJobs(callback);
+			InitializeStreamAnalyticsJobs(streamJobsConfig, callback);
 		}
 	]);
 }

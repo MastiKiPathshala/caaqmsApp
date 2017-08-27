@@ -44,6 +44,7 @@ router.get('/hostNameDevicePrimaryKey/:deviceId', function(req,res,next){
 router.post('/createDevice/:deviceId', function(req,res,next){ 
 
 	var uniqueDeviceId = req.params.deviceId;
+	log.debug("Create request for device " + uniqueDeviceId);
 	var device = {
 		deviceId: uniqueDeviceId,
 	};
@@ -53,8 +54,11 @@ router.post('/createDevice/:deviceId', function(req,res,next){
 			log.debug(err);
 			res.json({status: "error", results: "error: "+err });
 		}else {
-			log.debug(uniqueDeviceId);
-			res.json({status: "OK", results: "device created with Id: "+uniqueDeviceId});
+			var devicePrimaryKey = dev.authentication.symmetricKey.primaryKey;
+			var hostNameDevicePrimaryKey = {};
+			hostNameDevicePrimaryKey = {"hostName" : iotHubName, "devicePrimaryKey": devicePrimaryKey, "deviceId": dev.deviceId};
+			log.debug("Device created : " + uniqueDeviceId);
+			res.json({status: "OK", results: hostNameDevicePrimaryKey});
 		}
 	});
 })
@@ -64,13 +68,14 @@ router.post('/createDevice/:deviceId', function(req,res,next){
 router.delete('/deleteDevice/:deviceId', function(req,res,next){ 
 
 	var uniqueDeviceId = req.params.deviceId;
+	log.debug("Delete request for device " + uniqueDeviceId);
 	registry.delete(uniqueDeviceId, function(err) {
 
 		if (err){
 			log.debug("Device {" + uniqueDeviceId + ") delete failed : " + err);
 			res.json({status: "error", results: "error: "+err });
 		}else {
-			log.debug("Device {" + uniqueDeviceId + ") deleted : " + uniqueDeviceId);
+			log.debug("Device deleted : " + uniqueDeviceId);
 			res.json({status: "OK", results: "device deleted with Id: "+uniqueDeviceId});
 		}
 	});
@@ -99,7 +104,7 @@ router.post('/updateDevice/:deviceId', function(req,res,next){
 // fetch config from device twin for all existing devices in iot-hub...
 
 router.get('/deviceId', function(req, res, next) {
-	log.debug("get request");
+	log.debug("GET request for device list");
 	var deviceInfoArray = [];
 	var currentDeviceCount = 0;
 	var query = registry.createQuery('SELECT * FROM devices');
@@ -110,8 +115,11 @@ router.get('/deviceId', function(req, res, next) {
 		} else {
 
 			var totalDeviceCount = results.length;
-			log.debug (totalDeviceCount);
+			log.debug ("Device count : " + totalDeviceCount);
 
+			if (totalDeviceCount == 0) {
+				res.json({status: "OK", results: deviceInfoArray});
+			}
 			results.forEach(function(twin) {
 
 				if (twin.properties.reported.SystemStatus === undefined) {

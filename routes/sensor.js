@@ -103,7 +103,7 @@ router.get('/temperature/:gatewayId', function(req, res, next) {
 					avgTemperature : parseFloat(parseData.avgtemperature),
 					maxTemperature : parseFloat(parseData.maxtemperature),
 					minTemperature : parseFloat(parseData.mintemperature),
-					qualityScore : parseFloat(parseData.qualityscore),
+					airQuality : parseFloat(parseData.qualityscore),
 					time : parseData.time
 				}
 				temperatureMetaData.push (temperatureData);

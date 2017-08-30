@@ -212,188 +212,176 @@ var locationInit = function () {
 }
 
 
-function getItem()
-{  
+function getItem() {
 	return window.localStorage.getItem('gateway');
 }
 
-var TemperatureInit = function () 
-{   var gatewayId = window.localStorage.getItem('gateway');
+var TemperatureInit = function () {
+	var gatewayId = window.localStorage.getItem('gateway');
 	var wholeTempInfo = [];
 
-    $.ajax({
+	$.ajax({
 		method: 'GET',
 		url: '/api/sensorData/v1.0/temperature/'+gatewayId
 	}).done(function(data) {
         
+		var key = gatewayId+"temperature";
 		if (data.status === "OK") {
-			for(var i = 0; i < data.results.temp.length; i++){
+			for (var i = 0; i < data.results.length; i++){
 				
-				console.log(data.results);
-			    temperatureData = { temperature: data.results.temp[i] ,quality: data.results.airQuality[i]};
+			    temperatureData = { quality: data.results[i].airQuality};
 			    var key1=gatewayId+"temperature_dashboard";
 			    window.localStorage.setItem(key1,temperatureData.temperature);
 
-			    console.log ("SecurIoT temperature data: " + JSON.stringify(temperatureData));
 			    wholeTempInfo.push (temperatureData);
 
-			    var key=gatewayId+"temperature";
+			}
+			console.log ("SecurIoT temperature data: " + JSON.stringify(temperatureData));
 
-			    if(temperatureData.quality>=60)
-			    	{
-			    	 	window.localStorage.setItem(key,"green");
-					}	
-					else if(temperatureData.quality>=40 && temperatureData.quality<60)
-			   		{
-			   		 	window.localStorage.setItem(key,"yellow");
-					}
-					else
-					{
-			    		window.localStorage.setItem(key,"red");
-					}
-	
-				
+			if (temperatureData.quality >= 60) {
+
+				window.localStorage.setItem(key,"green");
+
+			} else if (temperatureData.quality >= 40 && temperatureData.quality < 60) {
+
+				window.localStorage.setItem(key,"yellow");
+
+			} else {
+
+				window.localStorage.setItem(key,"red");
+
 			}
 		} else {
 			window.localStorage.setItem(key,"grey");
 			console.log(data.results);
 		}
-		
+
 	}).fail(function(data) {
 		console.log (data);
 	});
 }
 
-var HumidityInit = function () 
-{   var gatewayId = window.localStorage.getItem('gateway');
+var HumidityInit = function () {
+	var gatewayId = window.localStorage.getItem('gateway');
 	var wholeHumidInfo = [];
 
-    $.ajax({
+	$.ajax({
 		method: 'GET',
 		url: '/api/sensorData/v1.0/humidity/'+gatewayId
 	}).done(function(data) {
 
+		var key = gatewayId+"humidity";
 		if (data.status === "OK") {
-			for(var i = 0; i < data.results.humid.length; i++){
-				
-				console.log(data.results);
-				humidityData = { humidity: data.results.humid[i],quality: data.results.airQuality[i]};
-				
-			    console.log ("SecurIoT humidity data: " + JSON.stringify(humidityData));
-			    wholeHumidInfo.push (humidityData);
-			    
-			     var key=gatewayId+"humidity";
-			    
-			    if(humidityData.quality>=60)
-			    {
-			    		window.localStorage.setItem(key,"green");
-				}		
-					else if(humidityData.quality>=40 && humidityData.quality<60)
-			    {
-			   			 window.localStorage.setItem(key,"yellow");
-				}
-					else
-				{
-			    		window.localStorage.setItem(key,"red");
-				}
-			    
-				
+			for (var i = 0; i < data.results.length; i++){
+
+				humidityData = { quality: data.results[i].airQuality};
+
+				wholeHumidInfo.push (humidityData);
+
+			}
+			console.log ("SecurIoT humidity data: " + JSON.stringify(humidityData));
+
+			if(humidityData.quality >= 60) {
+
+				window.localStorage.setItem(key,"green");
+
+			} else if (humidityData.quality >= 40 && humidityData.quality < 60) {
+
+				window.localStorage.setItem(key,"yellow");
+
+			} else {
+
+				window.localStorage.setItem(key,"red");
+
 			}
 		} else {
 			window.localStorage.setItem(key,"grey");
 			console.log(data.results);
 		}
-		
+
 	}).fail(function(data) {
 		console.log (data);
 	});
 }
 
-var So2Init = function () 
-{   var gatewayId = window.localStorage.getItem('gateway');
+var So2Init = function () {
+	var gatewayId = window.localStorage.getItem('gateway');
 	var wholeSo2Info = [];
 
-    $.ajax({
+	$.ajax({
 		method: 'GET',
 		url: '/api/sensorData/v1.0/so2/'+gatewayId
 	}).done(function(data) {
 
 		if (data.status === "OK") {
-			for(var i = 0; i < data.results.so2.length; i++){
+			var key = gatewayId+"so2";
+			for (var i = 0; i < data.results.length; i++){
 				
-				console.log(data.results);
-			    so2Data = { so2: data.results.so2[i],quality: data.results.airQuality[i]};
+				so2Data = { quality: data.results[i].airQuality};
 				
-			    console.log ("SecurIoT So2 data: " + JSON.stringify(so2Data));
-			    wholeSo2Info.push (so2Data);
-
-			     var key=gatewayId+"so2";
-			    if(so2Data.quality>=60)
-			    {
-			    		window.localStorage.setItem(key,"green");
-				}
-					else if(so2Data.quality>=40 && so2Data.quality<60)
-			    {
-			    		window.localStorage.setItem(key,"yellow");
-				}
-					else
-				{
-			    		window.localStorage.setItem(key,"red");
-				}
-			    
-				
+				wholeSo2Info.push (so2Data);
 			}
+			console.log ("SecurIoT So2 data: " + JSON.stringify(so2Data));
+			if (so2Data.quality >= 60) {
+
+				window.localStorage.setItem(key,"green");
+
+			} else if (so2Data.quality >= 40 && so2Data.quality < 60) {
+
+				window.localStorage.setItem(key,"yellow");
+
+			} else {
+
+				window.localStorage.setItem(key,"red");
+
+			}
+
 		} else {
 			window.localStorage.setItem(key,"grey");
 			console.log(data.results);
-			
 		}
-		
 	}).fail(function(data) {
 		console.log (data);
 	});
 }
 
-var No2Init = function () 
-{	var gatewayId = window.localStorage.getItem('gateway');
+var No2Init = function () {
+	var gatewayId = window.localStorage.getItem('gateway');
 	var wholeNo2Info = [];
 
-    $.ajax({
+	$.ajax({
 		method: 'GET',
 		url: '/api/sensorData/v1.0/no2/'+gatewayId
 	}).done(function(data) {
 
+		var key = gatewayId+"no2";
 		if (data.status === "OK") {
-			for(var i = 0; i < data.results.no2.length; i++){
+			for (var i = 0; i < data.results.length; i++){
 				
-				console.log(data.results);
-			    no2Data = { no2: data.results.no2[i], quality: data.results.airQuality[i]};
+				no2Data = { quality: data.results[i].airQuality};
 				
-			    console.log ("SecurIoT No2 data: " + JSON.stringify(no2Data));
-			    wholeNo2Info.push (no2Data);
+				wholeNo2Info.push (no2Data);
+`
+			}
+			console.log ("SecurIoT No2 data: " + JSON.stringify(no2Data));
+			if (no2Data.quality >= 60) {
 
-			     var key=gatewayId+"no2";
-			    
-			    if(no2Data.quality>=60)
-			    {
-			   		 window.localStorage.setItem(key,"green");
-				}	
-					else if(no2Data.quality>=40 && no2Data.quality<60)
-			    {
-			   		 	window.localStorage.setItem(key,"yellow");
-				}
-					else
-				{
-			    	 	window.localStorage.setItem(key,"red");
-				}
-			    
-				
+				window.localStorage.setItem(key,"green");
+
+			} else if (no2Data.quality >= 40 && no2Data.quality < 60) {
+
+				window.localStorage.setItem(key,"yellow");
+
+			} else {
+
+				window.localStorage.setItem(key,"red");
+
 			}
 		} else {
 			window.localStorage.setItem(key,"grey");
-			//alert(data.results);
+			console.log (data.results);
 		}
-		
+
 	}).fail(function(data) {
 		console.log (data);
 	});
